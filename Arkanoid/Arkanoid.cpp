@@ -179,7 +179,7 @@ void main()
 		if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			juego = false;
 		}
-	
+		//TODO: definir donde se escoje la velocidad, ahorita solo en 10
 		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) 
 			moverBarra(barra, 10,true);
 		else if (al_key_down(&teclado, ALLEGRO_KEY_LEFT))

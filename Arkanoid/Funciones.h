@@ -77,6 +77,7 @@ void dibujarBarra(PtrBarra& barra) {
 
 void moverBarra(PtrBarra& barra, int velocidad,bool dir) {
 	// dir = true -> derecha || dir = false -> izquierda
+	//TODO: Se puede plantear un enum en dir
 	if (dir && barra->x + velocidad < barra->limiteDerecho) 
 			barra->x += velocidad;
 	else if(dir)
