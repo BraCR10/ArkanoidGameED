@@ -49,29 +49,60 @@ void main()
 
 	//Inicializacion de addons
 	al_init_image_addon();
-
+	//al_init_primitives_addon();
 
 	//Carga de imagenes
-	ALLEGRO_BITMAP* pared = al_load_bitmap("paredDemo.jpeg");
-	if (!pared) {
-		fprintf(stderr, "No se encontro la imagen de las paredes!\n");
+	ALLEGRO_BITMAP* imagenParedHorizontal = al_load_bitmap("paredDemoHorizontal.png");
+	ALLEGRO_BITMAP* imagenParedVertical = al_load_bitmap("paredDemoVertical.png");
+	if (!imagenParedHorizontal || !imagenParedVertical) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagenes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return ;
 	}
-	al_draw_scaled_bitmap(pared, 0, 0, al_get_bitmap_width(pared), al_get_bitmap_height(pared), 30, 70, 20, 90, 0);
-	al_flip_display();
-
-	//Creacion de lista enlazada de paredes
-	PtrPared paredes = NULL;	
-	
-	
 
 
 
+	//Parametros para formar el marco
+	int margenX = AnchoMonitor / 4;
+	int MargenY = AltoMonitor / 8;
+    
 
+    // Crear la lista enlazada de paredes para el marco
+    PtrPared listaEnlazadaParedes = NULL;
 
+	//Configutacion de cada pared horizontal 
+	int anchoImagen = 120;
+	int altoImagen = 80;
 
+    // Parte superior del marco
+    for (int x = margenX; x < AnchoMonitor- margenX; x += anchoImagen) {
+        crearPared(listaEnlazadaParedes,x, MargenY, anchoImagen, altoImagen, imagenParedHorizontal);
+    }
 
+	//Configuracion de cada pared  vertical
+	anchoImagen = 80;
+	altoImagen = 120;
+
+    // Parte izquierda del marco
+    margenX = AnchoMonitor / 4-anchoImagen;
+    MargenY = AltoMonitor / 8;
+    for (int y = MargenY; y < AltoMonitor - MargenY; y += altoImagen) {
+         crearPared(listaEnlazadaParedes,margenX, y, anchoImagen, altoImagen, imagenParedVertical);
+    }
+
+    // Parte derecha del marco
+	margenX = AnchoMonitor / 4 ;
+	MargenY = AltoMonitor / 8;
+    for (int y = MargenY; y < AltoMonitor - MargenY; y += altoImagen) {
+		 crearPared(listaEnlazadaParedes,AnchoMonitor-margenX, y, anchoImagen, altoImagen, imagenParedVertical);
+    }
+
+    // TODO:DEFINIR FONDO 
+    al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco
+    // Dibujar cada pared en la lista
+	dibujarParedes(listaEnlazadaParedes);
+
+    al_flip_display(); // Actualizar la pantalla
 
 
 
@@ -81,8 +112,12 @@ void main()
 	
 	
 	al_rest(8);
-	//Destruccion de elementos
+	//Destruccion de elemontos propios del juego
+	eliminarListaParedes(listaEnlazadaParedes);
+	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
+	al_destroy_bitmap(imagenParedHorizontal);
+	al_destroy_bitmap(imagenParedVertical);
 }
 
 
