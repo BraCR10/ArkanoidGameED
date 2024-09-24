@@ -1,7 +1,15 @@
-# Ignorar todo
-*
-
 # No ignorar los archivos .gitignore y .cpp
 !.gitignore
 !*.cpp
-!*.h
+
+#Carpetas a ignorar
+Arkanoid/.vs
+Arkanoid/.x64
+Arkanoid/Arkanoid
+Arkanoid/packages
+Arkanoid/x64
+
+#Extenciones a ignorar
+*.vcxproj
+*.config
+*.sln
