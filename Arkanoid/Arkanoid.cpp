@@ -72,7 +72,7 @@ void main()
 
 	//Configutacion de cada pared horizontal 
 	int anchoImagen = 120;
-	int altoImagen = 80;
+	int altoImagen = 40;
 
     // Parte superior del marco
     for (int x = margenX; x < AnchoMonitor- margenX; x += anchoImagen) {
@@ -80,7 +80,7 @@ void main()
     }
 
 	//Configuracion de cada pared  vertical
-	anchoImagen = 80;
+	anchoImagen = 40;
 	altoImagen = 120;
 
     // Parte izquierda del marco
