@@ -1,8 +1,8 @@
 //Librerias de Allegro
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
-#ifndef PARED_H
-#define PARED_H
+#ifndef STRUCTS_H//Si no se ha definido las estructuras
+#define STRUCTS_H//Se define las estructuras
 
 //Estructura de la pared
 typedef struct  Pared{
@@ -15,4 +15,4 @@ typedef struct  Pared{
 } * PtrPared;
 
 
-#endif // PARED_H
+#endif //En caso de que ya se haya definido la estructura

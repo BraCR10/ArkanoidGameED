@@ -3,7 +3,7 @@
 #include <allegro5/allegro_image.h>
 
 //Librerias propias del juego
-#include "Pared.h"
+#include "Estructuras.h"
 
 
 

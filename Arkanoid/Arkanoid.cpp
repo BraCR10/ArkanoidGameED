@@ -21,7 +21,7 @@
 using namespace std;
 
 //Librerias propias del juego
-#include "Pared.h"
+#include "Estructuras.h"
 #include "Funciones.h"
 
 
