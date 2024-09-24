@@ -14,3 +14,4 @@ Arkanoid/x64
 *.config
 *.sln
 *.filters
+*.user

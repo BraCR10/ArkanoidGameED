@@ -3,9 +3,7 @@
 #include <allegro5/allegro_image.h>
 
 //Librerias propias del juego
-#include "Pared.h"
-
-
+#include "Estructuras.h"
 
 
 void insertarPared(PtrPared &lista, PtrPared &Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
@@ -48,4 +46,49 @@ void dibujarParedes(PtrPared &paredes) {
 		);
 		pared = pared->siguiente;
 	}
+}
+
+void crearBarra(PtrBarra& barra, int x, int y, float ancho, float alto,int limiteDerecho,int limiteIzquierdo, int superficie, ALLEGRO_BITMAP* imagen)
+{
+
+	barra = new Barra;
+	barra->x = x;
+	barra->y = y;
+	barra->ancho = ancho;
+	barra->alto = alto;
+	barra->imagen = imagen;
+	barra->limiteDerecho = limiteDerecho;
+	barra->limiteIzquierdo = limiteIzquierdo;
+	barra->superficie = superficie;
+
+}
+
+void dibujarBarra(PtrBarra& barra) {
+		al_draw_scaled_bitmap(
+			barra->imagen,
+			0, 0, // Coordenadas de origen en el bitmap fuente
+			al_get_bitmap_width(barra->imagen), // Ancho del bitmap fuente
+			al_get_bitmap_height(barra->imagen), // Alto del bitmap fuente
+			barra->x, barra->y, // Coordenadas de destino en la pantalla
+			barra->ancho, barra->alto, // Nuevo ancho y alto
+			0 // Flags
+		);
+}
+
+void moverBarra(PtrBarra& barra, int velocidad,bool dir) {
+	// dir = true -> derecha || dir = false -> izquierda
+	//TODO: Se puede plantear un enum en dir
+	if (dir && barra->x + velocidad < barra->limiteDerecho) 
+			barra->x += velocidad;
+	else if(dir)
+		barra->x = barra->limiteDerecho;
+
+	if (!dir && barra->x - velocidad > barra->limiteIzquierdo) 
+			barra->x -= velocidad;
+	else if(!dir)
+		barra->x = barra->limiteIzquierdo;
+}
+
+void eliminarBarra(PtrBarra& barra) {
+	delete (barra);
 }
