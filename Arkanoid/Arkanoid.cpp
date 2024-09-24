@@ -21,9 +21,34 @@
 using namespace std;
 
 
-int main()
+void main()
 {
-    cout << "Hello World!\n";
+	//Validacion de inicializacion de Allegro
+	if (!al_init()) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo inicializar Allegro", NULL, NULL);
+		return;
+	}
+
+	//Informacion del monitor
+	ALLEGRO_MONITOR_INFO monitor;
+	al_get_monitor_info(0, &monitor);
+	const int AnchoMonitor = monitor.x2 - monitor.x1;
+	const int AltoMonitor = monitor.y2 - monitor.y1;
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+	ALLEGRO_DISPLAY* pantalla = al_create_display(AnchoMonitor, AltoMonitor);
+
+	//Validacion de creacion de pantalla
+	if (!pantalla)
+	{
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se puede crear la pantalla", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		return;
+	}
+
+	
+	
+
+	//Destruccion de elementos
+	al_destroy_display(pantalla);
 }
 
 
