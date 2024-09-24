@@ -16,7 +16,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
-
+using namespace std;
 int main()
 {
     std::cout << "Hello World!\n";
