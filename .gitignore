@@ -1,15 +1,7 @@
+# Ignorar todo
+*
 
-*.vsidx
-/.vs/ArkanoidGameED/v17
-.vs/ProjectSettings.json
-.vs/slnx.sqlite
-.vs/VSWorkspaceState.json
-Arkanoid/Arkanoid.vcxproj
-Arkanoid/Arkanoid.vcxproj.filters
-Arkanoid/Arkanoid.vcxproj.user
-Arkanoid/Arkanoid.sln
-Arkanoid/.vs
-Arkanoid/Arkanoid
-Arkanoid/x64
-Arkanoid/packages
-*.config
+# No ignorar los archivos .gitignore y .cpp
+!.gitignore
+!*.cpp
+!*.h
