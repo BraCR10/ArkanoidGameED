@@ -14,5 +14,17 @@ typedef struct  Pared{
 	Pared* siguiente;
 } * PtrPared;
 
+//Estructura de la barra
+typedef struct  Barra {
+	int x;
+	int y;
+	float ancho;
+	float alto;
+	int limiteDerecho;
+	int limiteIzquierdo;
+	int superficie;
+	ALLEGRO_BITMAP* imagen;
+} *PtrBarra;
+
 
 #endif //En caso de que ya se haya definido la estructura
