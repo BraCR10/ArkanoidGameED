@@ -13,3 +13,4 @@ Arkanoid/x64
 *.vcxproj
 *.config
 *.sln
+*.filters
