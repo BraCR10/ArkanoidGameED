@@ -63,8 +63,8 @@ void main()
 
 
 	//Parametros para formar el marco
-	int margenX = AnchoMonitor / 4;
-	int MargenY = AltoMonitor / 8;
+	int margenX ;
+	int margenY ;
     
 
     // Crear la lista enlazada de paredes para el marco
@@ -75,25 +75,44 @@ void main()
 	int altoImagen = 40;
 
     // Parte superior del marco
+	 margenX = AnchoMonitor / 4;
+	 margenY = AltoMonitor / 8;
+
+
+	 //\ de rebote de la bola en las pared supeior
+	 const int reboteSuperiorBola = margenY+ altoImagen;
+
+	 //Crea y agrega las paredes horizintales a la lista
     for (int x = margenX; x < AnchoMonitor- margenX; x += anchoImagen) {
-        crearPared(listaEnlazadaParedes,x, MargenY, anchoImagen, altoImagen, imagenParedHorizontal);
+        crearPared(listaEnlazadaParedes,x, margenY, anchoImagen, altoImagen, imagenParedHorizontal);
     }
 
-	//Configuracion de cada pared  vertical
+	//Configuracion de cada pared  vertical 
 	anchoImagen = 40;
 	altoImagen = 120;
 
     // Parte izquierda del marco
     margenX = AnchoMonitor / 4-anchoImagen;
-    MargenY = AltoMonitor / 8;
-    for (int y = MargenY; y < AltoMonitor - MargenY; y += altoImagen) {
+    margenY = AltoMonitor / 8;
+
+	//limites de rebote de la bola en la pared izquierda
+	const int reboteIzquierdoBola = margenX + anchoImagen;
+
+	//Crea y agrega las paredes verticales izquierdas a la lista
+    for (int y = margenY; y < AltoMonitor - margenY; y += altoImagen) {
          crearPared(listaEnlazadaParedes,margenX, y, anchoImagen, altoImagen, imagenParedVertical);
     }
 
     // Parte derecha del marco
 	margenX = AnchoMonitor / 4 ;
-	MargenY = AltoMonitor / 8;
-    for (int y = MargenY; y < AltoMonitor - MargenY; y += altoImagen) {
+	margenY = AltoMonitor / 8;
+
+	//limites de rebote de la bola en la pared derecha
+	const int reboteDerechoBola = margenX + anchoImagen;
+
+
+	//Crea y agrega las paredes verticales derechas a la lista
+    for (int y = margenY; y < AltoMonitor - margenY; y += altoImagen) {
 		 crearPared(listaEnlazadaParedes,AnchoMonitor-margenX, y, anchoImagen, altoImagen, imagenParedVertical);
     }
 
@@ -102,7 +121,8 @@ void main()
     // Dibujar cada pared en la lista
 	dibujarParedes(listaEnlazadaParedes);
 
-    al_flip_display(); // Actualizar la pantalla
+
+    al_flip_display(); 
 
 
 
