@@ -44,9 +44,23 @@ void main()
 		return;
 	}
 
-	
-	
+	//
 
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	al_rest(8);
 	//Destruccion de elementos
 	al_destroy_display(pantalla);
 }
