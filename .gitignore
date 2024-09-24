@@ -11,3 +11,5 @@ Arkanoid/Arkanoid.sln
 Arkanoid/.vs
 Arkanoid/Arkanoid
 Arkanoid/x64
+Arkanoid/packages
+*.config
