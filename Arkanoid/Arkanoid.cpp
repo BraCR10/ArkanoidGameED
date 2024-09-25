@@ -19,7 +19,10 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 using namespace std;
+/*
+agregando 
 
+*/
 //Librerias propias del juego
 #include "Estructuras.h"
 #include "Funciones.h"
