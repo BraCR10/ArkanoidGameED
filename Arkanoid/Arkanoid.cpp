@@ -30,8 +30,8 @@ void nivel1(PtrPared &listaEnlazadaParedes, PtrBarra &barra,
 	ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	//Carga de imagenes
-	 imagenParedHorizontal = al_load_bitmap("paredDemoHorizontal.png");
-	 imagenParedVertical = al_load_bitmap("paredDemoVertical.png");
+	 imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
+	 imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagenes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
