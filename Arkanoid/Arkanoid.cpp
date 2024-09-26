@@ -68,6 +68,7 @@ float x1MaxPts;
 float y1MaxPts ;
 float x2MaxPts;
 float y2MaxPts;
+int mejorPuntaje= CargarPuntajeMasAlto();
 
 //Marcador de putaje actual
 float x1ActualPts ;
@@ -87,110 +88,107 @@ float x1ContadorVida;
 float  y1ContadorVida ;
 float altoVida ;
 float anchoVida ;
-void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
-	//Carga de imagenes
+void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
+	int margenX = AnchoMonitor / 4;
+	int margenY = AltoMonitor / 8;
+	const int anchoImagen = 120;
+	const int altoImagen = 40;
+
+	for (int x = margenX; x < AnchoMonitor - margenX; x += anchoImagen) {
+		crearPared(listaEnlazadaParedes, x, margenY, anchoImagen, altoImagen, imagenParedHorizontal);
+	}
+}
+
+void crearParedesVerticalesIzquierda(int AnchoMonitor, int AltoMonitor) {
+	int margenX = AnchoMonitor / 4 - 40;
+	int margenY = AltoMonitor / 8;
+	const int anchoImagen = 40;
+	const int altoImagen = 120;
+
+	for (int y = margenY; y < AltoMonitor - margenY; y += altoImagen) {
+		crearPared(listaEnlazadaParedes, margenX, y, anchoImagen, altoImagen, imagenParedVertical);
+	}
+}
+
+void crearParedesVerticalesDerecha(int AnchoMonitor, int AltoMonitor) {
+	int margenX = AnchoMonitor / 4;
+	int margenY = AltoMonitor / 8;
+	const int anchoImagen = 40;
+	const int altoImagen = 120;
+
+	for (int y = margenY; y < AltoMonitor - margenY; y += altoImagen) {
+		crearPared(listaEnlazadaParedes, AnchoMonitor - margenX, y, anchoImagen, altoImagen, imagenParedVertical);
+	}
+}
+
+void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierdoPared, int limiteDerechoPared) {
+	int margenX = AnchoMonitor / 4;
+	int margenY = AltoMonitor / 8;
+	const int anchoImagen = 40;
+	const int altoImagen = 120;
+	// Crear barra
+	crearBarra(barra, limiteIzquierdoPared + anchoBarra * 2.5, AltoMonitor - margenY, anchoBarra, altoBarra, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - altoBarra, imagenParedHorizontal);
+
+	// Crear marcadores
+	int y1MaxPts = AltoMonitor / 4;
+	x1MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*2;
+	x2MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*6;
+	y2MaxPts = y1MaxPts + altoImagen;
+	crearMarco(marcoMaxPts, mejorPuntaje, x1MaxPts, y1MaxPts,x2MaxPts ,y2MaxPts, "Mejor puntaje");
+
+	int y1ActualPts = y1MaxPts + altoImagen*2;
+	x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
+	x2ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 6;
+	y2ActualPts = y1ActualPts + altoImagen;
+	crearMarco(marcoActualPts, 0, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
+
+	// Cuadro de comodín
+	x1CuadroComodines = limiteIzquierdoPared - anchoImagen * 6;
+	y1CuadroComodines = y1MaxPts;
+	x2CuadroComodines = limiteIzquierdoPared - anchoImagen * 2;
+	y2CuadroComodines = y1MaxPts + altoImagen;
+	crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin Actual");
+
+	//Contador de vidas
+	x1ContadorVida = limiteIzquierdoPared - anchoImagen * 6;
+	y1ContadorVida = y1CuadroComodines + altoImagen * 2;
+	altoVida = y2CuadroComodines-y1CuadroComodines+50;
+	anchoVida = x2CuadroComodines- x1CuadroComodines;
+	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida,  altoVida, anchoVida);
+}
+
+
+void crearBola(int AnchoMonitor, int AltoMonitor) {
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 30) / 100, 40, 40, imagenBola);
+}
+
+void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+	crearParedesHorizontales(AnchoMonitor, AltoMonitor);
+	crearParedesVerticalesIzquierda(AnchoMonitor, AltoMonitor);
+	crearParedesVerticalesDerecha(AnchoMonitor, AltoMonitor);
+
+	// Definir límites para la barra y marcadores
+	const int limiteIzquierdoPared = AnchoMonitor / 4  ;
+	const int limiteDerechoPared = (AnchoMonitor - AnchoMonitor / 4)-120 ;
+
+	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, limiteIzquierdoPared, limiteDerechoPared);
+	crearBola(AnchoMonitor, AltoMonitor);
+}
+
+void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
+
 	if (!imagenParedHorizontal || !imagenParedVertical) {
-		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagenes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return;
 	}
 
-	//Parametros para formar el marco
-	int margenX;
-	int margenY;
+	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 
-	//Configutacion de cada pared horizontal 
-	int anchoImagen = 120;
-	int altoImagen = 40;
-
-	// Parte superior del marco
-	margenX = AnchoMonitor / 4;
-	margenY = AltoMonitor / 8;
-
-	// de rebote de la bola en las pared supeior
-	const int limiteSuperiorPared = margenY + altoImagen;//Se puedo usar para la bola
-
-	//Crea y agrega las paredes horizintales a la lista
-	for (int x = margenX; x < AnchoMonitor - margenX; x += anchoImagen) {
-		crearPared(listaEnlazadaParedes, x, margenY, anchoImagen, altoImagen, imagenParedHorizontal);
-	}
-
-	//Configuracion de cada pared  vertical 
-	anchoImagen = 40;
-	altoImagen = 120;
-
-	// Parte izquierda del marco
-	margenX = AnchoMonitor / 4 - anchoImagen;
-	margenY = AltoMonitor / 8;
-
-	//limites de rebote de la bola en la pared izquierda
-	const int limiteIzquierdoPared = margenX + anchoImagen;//Se puedo usar para la bola
-
-	//Crea y agrega las paredes verticales izquierdas a la lista
-	for (int y = margenY; y < AltoMonitor - margenY; y += altoImagen) {
-		crearPared(listaEnlazadaParedes, margenX, y, anchoImagen, altoImagen, imagenParedVertical);
-	}
-
-	// Parte derecha del marco
-	margenX = AnchoMonitor / 4;
-	margenY = AltoMonitor / 8;
-
-	//limites de rebote de la bola en la pared derecha
-	const int limiteDerechoPared = (AnchoMonitor - margenX)- altoImagen;//Se puedo usar para la bola
-
-
-	//Crea y agrega las paredes verticales derechas a la lista
-	for (int y = margenY; y < AltoMonitor - margenY; y += altoImagen) {
-		crearPared(listaEnlazadaParedes, AnchoMonitor - margenX, y, anchoImagen, altoImagen, imagenParedVertical);
-	}
-	
-
-	//Creacion de barra
-	crearBarra(barra, limiteIzquierdoPared + anchoBarra*2.5, AltoMonitor - margenY, anchoBarra, altoBarra,limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY)-altoBarra, imagenParedHorizontal);
-	// Barra se mueve de limiteDerechoPared a limiteIzquierdoPared
-
-	//Creacion de marcadores y otros
-	colorTitulosMarcos = al_map_rgb(0, 0, 0);
-	colorFondoMarcos = al_map_rgb(0, 0, 0);
-
-	//Marcador de putaje maximo
-	  x1MaxPts = limiteDerechoPared + anchoBarra+ anchoImagen*2;
-	  y1MaxPts = AltoMonitor/4;
-	  x2MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*6 ;
-	  y2MaxPts = AltoMonitor / 4+ altoImagen;
-	crearMarco(marcoMaxPts,50, x1MaxPts, y1MaxPts, x2MaxPts, y2MaxPts, "Mejor puntaje");
-	
-	
-
-	//Marcador de putaje actual
-	  x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
-	  y1ActualPts = y2MaxPts+ altoImagen;
-	  x2ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 6;
-	  y2ActualPts = y2MaxPts + altoImagen*2;
-	crearMarco(marcoActualPts, 50, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
-
-	//Cuadro de comodin 
-	  x1CuadroComodines = limiteIzquierdoPared- anchoImagen*6;
-	  y1CuadroComodines = AltoMonitor / 4;
-	  x2CuadroComodines = limiteIzquierdoPared - anchoImagen*2;
-	  y2CuadroComodines = AltoMonitor / 4 + altoImagen;
-	  crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin actual");
-
-	  //Vida contador
-	   x1ContadorVida = (limiteIzquierdoPared - anchoImagen*7	 );
-	   y1ContadorVida= y2MaxPts + altoImagen;
-	   altoVida = 200;
-	   anchoVida = 80;
-	  crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, altoVida);
-
-	  //crea bola
-	    const int anchoBola = 40;
-		const int altoBola = 40;
-		crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*30)/100, anchoBola, altoBola, imagenBola);
 }
 
 void main()
@@ -285,7 +283,6 @@ void main()
 			setDatoMarco(marcoActualPts, temp++);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
-			
 			al_flip_display(); // Actualizar la pantalla
 		}
 
