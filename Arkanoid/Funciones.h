@@ -191,13 +191,12 @@ void crearBola(PtrBola& bola, int x, int y, float ancho, float alto,int limiteDe
 	bola->ancho = ancho;
 	bola->alto = alto;
 	bola->estadoMovimiento = false;
-	bola->direccionMovimiento = false;
-	bola->imagen = imagen;
-	//Prueba
+	bola->direccionMovimientoX = false;
+	bola->direccionMovimientoY = false;
+	bola->imagen = imagen; 
 	bola->limiteDerecho = limiteDercho;
 	bola->limiteIzquierdo = limiteIzquierdo;
 	bola->limiteSuperior = limiteSuperior;
-	cout<<bola->limiteDerecho<<'x'<<bola->limiteIzquierdo<<'x'<<bola->limiteSuperior << endl;
 }
 
 //imprime bola en pantalla
@@ -221,15 +220,17 @@ void eliminarBola(PtrBola& bola) {
 //la bola empezará a moverse en la dirección en el eje X opuesta al de la barra
 void iniciarMovimientoBola(PtrBola& bola, int velocidad, bool direccion) {
 	if (bola->estadoMovimiento == false){ //Si la bola no está en movimiento
-		if (direccion == true) { // bola se mueve a izquierda
+		if (direccion == true) { // bola se mueve a izquierda y hacia arriba
 			bola->y -= velocidad;
 			bola->x -= velocidad;
-			bola->direccionMovimiento = false;
+			bola->direccionMovimientoX = false;
+			bola->direccionMovimientoY = true;
 		}
-		else if (direccion == false) { // bola se mueve a derecha
+		else if (direccion == false) { // bola se mueve a derecha y hacia arriba
 			bola->y -= velocidad;
 			bola->x += velocidad;
-			bola->direccionMovimiento = true;
+			bola->direccionMovimientoX = true;
+			bola->direccionMovimientoY = true;
 		}
 		bola->estadoMovimiento = true; //se declara que la bola está en movimiento
 	}
@@ -238,13 +239,25 @@ void iniciarMovimientoBola(PtrBola& bola, int velocidad, bool direccion) {
 //mantendrá el movimiento de la bola constante
 void moverBola(PtrBola& bola, int velocidad) {
 	if (bola->estadoMovimiento == true) { //Si la bola si está en movimiento
-		if (bola->direccionMovimiento == false) { //bola se mueve a derecha
-			bola->y -= velocidad;
-			bola->x -= velocidad;
+		if (bola->direccionMovimientoX) { //bola se mueve a derecha
+			if (bola->direccionMovimientoY) { //bola va hacia arriba
+				bola->y -= velocidad;
+				bola->x += velocidad;
+			}
+			else { //bola hacia abajo
+				bola->y += velocidad;
+				bola->x += velocidad;
+			}
 		}
-		else if (bola->direccionMovimiento == true) { //bola se mueve a izquierda
-			bola->y -= velocidad;
-			bola->x += velocidad;
+		else if (bola->direccionMovimientoX == false) { //bola se mueve a izquierda
+			if (bola->direccionMovimientoY) { // bola va hacia arriba
+				bola->y -= velocidad;
+				bola->x -= velocidad;
+			}
+			else { //bola va hacia abajo
+				bola->y += velocidad;
+				bola->x -= velocidad;
+			}
 		}
 	}
 }
@@ -253,18 +266,16 @@ void eliminarMarco(PtrMarcador& marcador) {
 }
 
 
-
-
-
-
-
-
-void reboteBolaPared(PtrBola& bola) {
-		if ((bola->x) > bola->limiteDerecho) {
-			bola->direccionMovimiento = !bola->direccionMovimiento;
+void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote lim superior***
+		if ((bola->x - bola->ancho * 2) >= bola->limiteDerecho) { // si choca con pared derecha
+			bola->direccionMovimientoX = false;
+		}else if ((bola->y - (bola->alto)*2) <= bola->limiteSuperior) { // si choca con pared de arriba
+			bola->direccionMovimientoY = false;
+		} else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de abajo
+			bola->direccionMovimientoX = true;
 		}
-
 }
+
 void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
 	vida = new Vida;
 	vida->cantidad = 3;

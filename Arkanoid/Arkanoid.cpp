@@ -284,7 +284,7 @@ void main()
 			dibujarMarco(marcoActualPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
-			//reboteBolaPared(bola, limiteDerechoPared,limiteIzquierdoPared);
+			reboteBolaPared(bola);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
 			al_flip_display(); // Actualizar la pantalla

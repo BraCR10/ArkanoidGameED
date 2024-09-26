@@ -49,7 +49,8 @@ typedef struct Bola {
 	float ancho;
 	float alto;
 	bool estadoMovimiento;
-	bool direccionMovimiento;
+	bool direccionMovimientoY; // true si va hacia arriba, false si va hacia abajo
+	bool direccionMovimientoX; // true si va hacia derecha, false si va a izquierda
 	int limiteDerecho;
 	int limiteIzquierdo;
 	int limiteSuperior;
