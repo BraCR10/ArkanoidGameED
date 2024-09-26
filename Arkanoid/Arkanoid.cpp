@@ -284,8 +284,6 @@ void main()
 			dibujarBarra(barra);
 			dibujarMarco(marcoMaxPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarMarco(marcoActualPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-			dibujarMarco(marcoMaxPts,fuenteMarcadores,"Mejor puntaje", colorFondoMarcos, colorTitulosMarcos);
-			dibujarMarco(marcoActualPts,fuenteMarcadores,"Puntaje Actual", colorFondoMarcos, colorTitulosMarcos);
 			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
