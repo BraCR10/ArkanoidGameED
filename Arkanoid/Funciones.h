@@ -181,7 +181,6 @@ void dibujarBola(PtrBola& bola) {
 void eliminarBola(PtrBola& bola) {
 	delete (bola);
 }
-<<<<<<< HEAD
 
 //la bola empezará a moverse en la dirección en el eje X opuesta al de la barra
 void iniciarMovimientoBola(PtrBola& bola, int velocidad, bool direccion) {
@@ -211,7 +210,8 @@ void moverBola(PtrBola& bola, int velocidad) {
 			bola->y -= velocidad;
 			bola->x += velocidad;
 		}
-=======
+	}
+}
 void eliminarMarco(PtrMarcador& marcador) {
 	delete (marcador);
 }
@@ -232,7 +232,6 @@ void crearSimboloVida(PtrVida& vida,float x, float y, float alto, float ancho) {
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {
 		PtrVida vida = vidas;
-<<<<<<< HEAD
 			al_draw_scaled_bitmap(
 				vida->imagen,
 				0, 0, // Coordenadas de origen en el bitmap fuente
@@ -242,76 +241,16 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 				vida->ancho, vida->alto, // Nuevo ancho y alto
 				0 // Flags
 			);
->>>>>>> 506157729863969da9ae223be015b15a91d68265
 	}
 }
 
 
-<<<<<<< HEAD
 void reboteBolaPared(PtrBola& bola, int limDer, int limIzq) {
 		if ((bola->x) > limDer) {
 			bola->direccionMovimiento = !bola->direccionMovimiento;
 		}
 
 }
-=======
-
-
-
-
-/*
-void insertarVida(PtrVida& lista, PtrVida& Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
-	Nuevo->siguiente = lista;
-	lista = Nuevo;
-=======
-		al_draw_scaled_bitmap(
-			vida->imagen,
-			0, 0, // Coordenadas de origen en el bitmap fuente
-			al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
-			al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
-			vida->x, vida->y, // Coordenadas de destino en la pantalla
-			vida->ancho, vida->alto, // Nuevo ancho y alto
-			0 // Flags
-		);
-
-		// Texto a dibujar
-		 char texto[20];
-		snprintf(texto, sizeof(texto), "# %d", vida->cantidad);
-		// Calcular el ancho y alto del texto
-		int anchoTexto = al_get_text_width(fuente, texto);
-		int altoTexto = al_get_font_line_height(fuente);
-
-		// Calcular las coordenadas para centrar el texto dentro del Ã¡rea de la imagen
-		float textX = vida->x + (vida->ancho - anchoTexto) / 2;
-		float textY = vida->y + (vida->alto - altoTexto) / 2 ;
-
-		// Dibujar el texto centrado dentro del Ã¡rea de la imagen
-		al_draw_text(fuente, colorTitulo, textX, textY-40, ALLEGRO_ALIGN_LEFT, "Vidas");
-		al_draw_text(fuente, colorTitulo, textX, textY , ALLEGRO_ALIGN_LEFT, texto);
-	}
-}
-
-void eliminarVida(PtrVida& vida) {
-	delete (vida);
-}
-void aumentarVida(PtrVida& vida) {
-	vida->cantidad++;
-}
-void disminuirVida(PtrVida& vida) {
-	vida->cantidad--;
->>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
-}
-
-
-<<<<<<< HEAD
-void vidaExtra(PtrVida& lista, ALLEGRO_BITMAP* imagen) {
-	PtrVida aux = lista;
-	while (aux->siguiente != NULL) {
-		aux = aux->siguiente;
-	}
-	crearVida(lista, aux->x- aux->ancho - 10, aux->y, aux->ancho, aux->alto,true,imagen);
-	
-}*/
 /*
 void dibujarVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	
@@ -362,6 +301,3 @@ void eliminarListaVidas(PtrVida& lista) {
 		delete (aux);
 	}
 }*/
->>>>>>> 506157729863969da9ae223be015b15a91d68265
-=======
->>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54

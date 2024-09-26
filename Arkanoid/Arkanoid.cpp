@@ -187,19 +187,13 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	   anchoVida = 80;
 	  crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, altoVida);
 
-<<<<<<< HEAD
-	  }
-	  */
+	  
+	  
 	//crea bola
 	const int anchoBola = 40;
 	const int altoBola = 40;
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*34)/100, anchoBola, altoBola, imagenBola);
-=======
-	  //crea bola
-	    const int anchoBola = 40;
-		const int altoBola = 40;
-		crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*30)/100, anchoBola, altoBola, imagenBola);
->>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*34)/100, anchoBola, altoBola, imagenBola);//Se puede usar para la bola
+
 }
 
 void main()
@@ -275,7 +269,6 @@ void main()
 			juego = false;
 		}
 		//TODO: definir donde se escoje la velocidad, ahorita solo en 10
-<<<<<<< HEAD
 		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) {
 			moverBarra(barra, 10, true);
 			iniciarMovimientoBola(bola, 5, true);
@@ -284,14 +277,7 @@ void main()
 			moverBarra(barra, 10, false);
 			iniciarMovimientoBola(bola, 5, false);
 		}
-		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
-=======
-		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) 
-			moverBarra(barra, 10,true);
-		else if (al_key_down(&teclado, ALLEGRO_KEY_LEFT))
-			moverBarra(barra, 10,false);
 		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) 
->>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
 			juego = false;
 		
 
@@ -305,13 +291,9 @@ void main()
 			dibujarMarco(marcoActualPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
-<<<<<<< HEAD
 			//reboteBolaPared(bola, limiteDerechoPared,limiteIzquierdoPared);
-=======
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
-			
->>>>>>> 506157729863969da9ae223be015b15a91d68265
+			//dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
 			al_flip_display(); // Actualizar la pantalla
 		}
 
@@ -327,7 +309,7 @@ void main()
 	eliminarMarco(marcoMaxPts);
 	eliminarMarco(marcoActualPts);
 	eliminarMarco(marcoCuadroComodines);
-	eliminarVida(contadorVidas);
+	//eliminarVida(contadorVidas);
 
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
