@@ -159,9 +159,7 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 }
 
 
-void crearBola(int AnchoMonitor, int AltoMonitor) {
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 30) / 100, 40, 40, imagenBola);
-}
+
 
 void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	crearParedesHorizontales(AnchoMonitor, AltoMonitor);
@@ -173,7 +171,7 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 	const int limiteDerechoPared = (AnchoMonitor - AnchoMonitor / 4)-120 ;
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, limiteIzquierdoPared, limiteDerechoPared);
-	crearBola(AnchoMonitor, AltoMonitor);
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 30) / 100, 40, 40, limiteDerechoPared, limiteIzquierdoPared,50, imagenBola);
 }
 
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {

@@ -184,7 +184,7 @@ void setDatoMarco(PtrMarcador& marcador, int dato) {
 }
 
 //inicializa valores de la bola
-void crearBola(PtrBola& bola, int x, int y, float ancho, float alto, ALLEGRO_BITMAP* imagen) {
+void crearBola(PtrBola& bola, int x, int y, float ancho, float alto,int limiteDercho,int limiteIzquierdo,int limiteSuperior, ALLEGRO_BITMAP* imagen) {
 	bola = new Bola;
 	bola->x = x;
 	bola->y = y;
@@ -193,6 +193,11 @@ void crearBola(PtrBola& bola, int x, int y, float ancho, float alto, ALLEGRO_BIT
 	bola->estadoMovimiento = false;
 	bola->direccionMovimiento = false;
 	bola->imagen = imagen;
+	//Prueba
+	bola->limiteDerecho = limiteDercho;
+	bola->limiteIzquierdo = limiteIzquierdo;
+	bola->limiteSuperior = limiteSuperior;
+	cout<<bola->limiteDerecho<<'x'<<bola->limiteIzquierdo<<'x'<<bola->limiteSuperior << endl;
 }
 
 //imprime bola en pantalla
@@ -248,7 +253,19 @@ void eliminarMarco(PtrMarcador& marcador) {
 }
 
 
-void crearSimboloVida(PtrVida& vida,float x, float y, float alto, float ancho) {
+
+
+
+
+
+
+void reboteBolaPared(PtrBola& bola) {
+		if ((bola->x) > bola->limiteDerecho) {
+			bola->direccionMovimiento = !bola->direccionMovimiento;
+		}
+
+}
+void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
 	vida = new Vida;
 	vida->cantidad = 3;
 	vida->imagen = al_load_bitmap("Imagenes/vida.png");
@@ -263,72 +280,39 @@ void crearSimboloVida(PtrVida& vida,float x, float y, float alto, float ancho) {
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {
 		PtrVida vida = vidas;
-			al_draw_scaled_bitmap(
-				vida->imagen,
-				0, 0, // Coordenadas de origen en el bitmap fuente
-				al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
-				al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
-				vida->x, vida->y, // Coordenadas de destino en la pantalla
-				vida->ancho, vida->alto, // Nuevo ancho y alto
-				0 // Flags
-			);
+		al_draw_scaled_bitmap(
+			vida->imagen,
+			0, 0, // Coordenadas de origen en el bitmap fuente
+			al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
+			al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
+			vida->x, vida->y, // Coordenadas de destino en la pantalla
+			vida->ancho, vida->alto, // Nuevo ancho y alto
+			0 // Flags
+		);
+
+		// Texto a dibujar
+		char texto[20];
+		snprintf(texto, sizeof(texto), "# %d", vida->cantidad);
+		// Calcular el ancho y alto del texto
+		int anchoTexto = al_get_text_width(fuente, texto);
+		int altoTexto = al_get_font_line_height(fuente);
+
+		// Calcular las coordenadas para centrar el texto dentro del área de la imagen
+		float textX = vida->x + (vida->ancho - anchoTexto) / 2;
+		float textY = vida->y + (vida->alto - altoTexto) / 2;
+
+		// Dibujar el texto centrado dentro del área de la imagen
+		al_draw_text(fuente, colorTitulo, textX, textY - 40, ALLEGRO_ALIGN_LEFT, "Vidas");
+		al_draw_text(fuente, colorTitulo, textX, textY, ALLEGRO_ALIGN_LEFT, texto);
 	}
 }
 
-
-void reboteBolaPared(PtrBola& bola, int limDer, int limIzq) {
-		if ((bola->x) > limDer) {
-			bola->direccionMovimiento = !bola->direccionMovimiento;
-		}
-
+void eliminarVida(PtrVida& vida) {
+	delete (vida);
 }
-/*
-void dibujarVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
-	
-	 // Coordenadas del tï¿½tulo basadas en la primera vida
-
-	float tituloX = aux->x - aux->ancho; // Centrar el tï¿½tulo horizontalmente
-	float tituloY = aux->y - 30; // Ajustar la posiciï¿½n del tï¿½tulo encima de la primera vida
-
-	/ Dibujar el tï¿½tulo
-	al_draw_text(fuente, colorTitulo, tituloX, tituloY, ALLEGRO_ALIGN_LEFT, "Vidas");
-	if (vidas != NULL) {
-		PtrVida vida = vidas;
-		while (vida != NULL) {
-			al_draw_scaled_bitmap(
-				vida->imagen,
-				0, 0, // Coordenadas de origen en el bitmap fuente
-				al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
-				al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
-				vida->x, vida->y, // Coordenadas de destino en la pantalla
-				vidas->ancho, vidas->alto, // Nuevo ancho y alto
-				0 // Flags
-			);
-			vida = vida->siguiente;
-		}
-	}
+void aumentarVida(PtrVida& vida) {
+	vida->cantidad++;
 }
-
-void eliminarUnaVida(PtrVida& vida) {
-	if (vida != NULL)
-	{
-		PtrVida aux = vida;
-		while (aux->activa==false && aux->siguiente != NULL)
-		{
-			aux=aux->siguiente;
-		}
-		//Usar una imagen de cancelacion de vida
-		aux->imagen = al_load_bitmap("Imagenes/noVida.png");
-		aux->activa = false;
-		Sleep(120);//Se pretende quitar
-	}
+void disminuirVida(PtrVida& vida) {
+	vida->cantidad--;
 }
-
-void eliminarListaVidas(PtrVida& lista) {
-	PtrVida aux;
-	while (lista != NULL) {
-		aux = lista;
-		lista = lista->siguiente;
-		delete (aux);
-	}
-}*/

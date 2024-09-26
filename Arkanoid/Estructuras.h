@@ -50,6 +50,9 @@ typedef struct Bola {
 	float alto;
 	bool estadoMovimiento;
 	bool direccionMovimiento;
+	int limiteDerecho;
+	int limiteIzquierdo;
+	int limiteSuperior;
 	ALLEGRO_BITMAP* imagen;
 }*PtrBola;
 
