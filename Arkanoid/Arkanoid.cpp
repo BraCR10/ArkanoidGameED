@@ -82,6 +82,11 @@ float y1CuadroComodines;
 float x2CuadroComodines ;
 float y2CuadroComodines;
 
+//Vida contador
+float x1ContadorVida;
+float  y1ContadorVida ;
+float altoVida ;
+float anchoVida ;
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	//Carga de imagenes
@@ -175,25 +180,26 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	  y2CuadroComodines = AltoMonitor / 4 + altoImagen;
 	  crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin actual");
 
-	  //Vida
-	  x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
-	  y1ActualPts = y2MaxPts + altoImagen;
-	  crearSimboloVida(contadorVidas, x1ActualPts, y1ActualPts, anchoImagen, altoImagen);
-	  /*
-	  float posicionInicialVidas = (limiteIzquierdoPared - anchoImagen * 7);
-	  int anchoVida = 60;
-	  int altoVida = 90;
-	  int yVidas = y1CuadroComodines + altoImagen*3;
-	  for (int i = posicionInicialVidas; i < posicionInicialVidas+anchoVida*3; i+= anchoVida+10)
-	  {
-		  crearVida(listaVidas, i, yVidas, anchoVida, altoVida,true,imagenVida);
+	  //Vida contador
+	   x1ContadorVida = (limiteIzquierdoPared - anchoImagen*7	 );
+	   y1ContadorVida= y2MaxPts + altoImagen;
+	   altoVida = 200;
+	   anchoVida = 80;
+	  crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, altoVida);
 
+<<<<<<< HEAD
 	  }
 	  */
 	//crea bola
 	const int anchoBola = 40;
 	const int altoBola = 40;
 	crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*34)/100, anchoBola, altoBola, imagenBola);
+=======
+	  //crea bola
+	    const int anchoBola = 40;
+		const int altoBola = 40;
+		crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*30)/100, anchoBola, altoBola, imagenBola);
+>>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
 }
 
 void main()
@@ -269,6 +275,7 @@ void main()
 			juego = false;
 		}
 		//TODO: definir donde se escoje la velocidad, ahorita solo en 10
+<<<<<<< HEAD
 		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) {
 			moverBarra(barra, 10, true);
 			iniciarMovimientoBola(bola, 5, true);
@@ -278,8 +285,15 @@ void main()
 			iniciarMovimientoBola(bola, 5, false);
 		}
 		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
+=======
+		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) 
+			moverBarra(barra, 10,true);
+		else if (al_key_down(&teclado, ALLEGRO_KEY_LEFT))
+			moverBarra(barra, 10,false);
+		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) 
+>>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
 			juego = false;
-		}
+		
 
 		if (evento.type == ALLEGRO_EVENT_TIMER) {
 			//TODO: definir mas timers
@@ -313,7 +327,8 @@ void main()
 	eliminarMarco(marcoMaxPts);
 	eliminarMarco(marcoActualPts);
 	eliminarMarco(marcoCuadroComodines);
-	//eliminarListaVidas(listaVidas);
+	eliminarVida(contadorVidas);
+
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
 	al_destroy_bitmap(imagenParedHorizontal);
@@ -322,6 +337,7 @@ void main()
 	al_destroy_event_queue(colaEventos);
 	al_destroy_timer(timerBarra);
 	al_destroy_font(fuenteMarcadores);
+
 
 }
 

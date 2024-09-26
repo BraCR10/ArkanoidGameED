@@ -217,9 +217,10 @@ void eliminarMarco(PtrMarcador& marcador) {
 }
 
 
-void crearSimboloVida(PtrVida& vida,int x,int y,int alto,int ancho) {
+void crearSimboloVida(PtrVida& vida,float x, float y, float alto, float ancho) {
 	vida = new Vida;
-	vida->imagen = al_load_bitmap("Imagenes/vida.jpg");
+	vida->cantidad = 3;
+	vida->imagen = al_load_bitmap("Imagenes/vida.png");
 	vida->x = x;
 	vida->y = y;
 	vida->alto = alto;
@@ -231,6 +232,7 @@ void crearSimboloVida(PtrVida& vida,int x,int y,int alto,int ancho) {
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {
 		PtrVida vida = vidas;
+<<<<<<< HEAD
 			al_draw_scaled_bitmap(
 				vida->imagen,
 				0, 0, // Coordenadas de origen en el bitmap fuente
@@ -261,22 +263,47 @@ void reboteBolaPared(PtrBola& bola, int limDer, int limIzq) {
 void insertarVida(PtrVida& lista, PtrVida& Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
+=======
+		al_draw_scaled_bitmap(
+			vida->imagen,
+			0, 0, // Coordenadas de origen en el bitmap fuente
+			al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
+			al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
+			vida->x, vida->y, // Coordenadas de destino en la pantalla
+			vida->ancho, vida->alto, // Nuevo ancho y alto
+			0 // Flags
+		);
+
+		// Texto a dibujar
+		 char texto[20];
+		snprintf(texto, sizeof(texto), "# %d", vida->cantidad);
+		// Calcular el ancho y alto del texto
+		int anchoTexto = al_get_text_width(fuente, texto);
+		int altoTexto = al_get_font_line_height(fuente);
+
+		// Calcular las coordenadas para centrar el texto dentro del área de la imagen
+		float textX = vida->x + (vida->ancho - anchoTexto) / 2;
+		float textY = vida->y + (vida->alto - altoTexto) / 2 ;
+
+		// Dibujar el texto centrado dentro del área de la imagen
+		al_draw_text(fuente, colorTitulo, textX, textY-40, ALLEGRO_ALIGN_LEFT, "Vidas");
+		al_draw_text(fuente, colorTitulo, textX, textY , ALLEGRO_ALIGN_LEFT, texto);
+	}
 }
 
-void crearVida(PtrVida& lista, int x, int y,float ancho,float alto,bool activa, ALLEGRO_BITMAP* imagen)
-{
-	PtrVida vida;
-	vida = new Vida;
-	vida->x = x;
-	vida->y = y;
-	vida->ancho = ancho;
-	vida->alto = alto;
-	vida->activa = activa;
-	vida->imagen = imagen;
-	vida->siguiente = NULL;
-	insertarVida(lista, vida);
+void eliminarVida(PtrVida& vida) {
+	delete (vida);
+}
+void aumentarVida(PtrVida& vida) {
+	vida->cantidad++;
+}
+void disminuirVida(PtrVida& vida) {
+	vida->cantidad--;
+>>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
 }
 
+
+<<<<<<< HEAD
 void vidaExtra(PtrVida& lista, ALLEGRO_BITMAP* imagen) {
 	PtrVida aux = lista;
 	while (aux->siguiente != NULL) {
@@ -336,3 +363,5 @@ void eliminarListaVidas(PtrVida& lista) {
 	}
 }*/
 >>>>>>> 506157729863969da9ae223be015b15a91d68265
+=======
+>>>>>>> 3d2a4d4a5709781bede3669fad2b905d1177ff54
