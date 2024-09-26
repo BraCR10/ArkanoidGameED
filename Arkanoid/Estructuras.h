@@ -31,6 +31,17 @@ typedef struct Marcador {
 	float x1,y1,x2,y2;
 } *PtrMarcador;
 
-
+//Estructura de la bola
+typedef struct Bola {
+	int x;
+	int y;
+	float ancho;
+	float alto;
+	int limiteArriba;
+	int limiteAbajo;
+	int limiteDerecha;
+	int limiteIzquierda;
+	ALLEGRO_BITMAP* imagen;
+}*PtrBola;
 
 #endif //En caso de que ya se haya definido la estructura

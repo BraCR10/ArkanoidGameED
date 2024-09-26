@@ -28,6 +28,7 @@ using namespace std;
 //Inicializacion de imagenes
 ALLEGRO_BITMAP* imagenParedHorizontal = NULL;
 ALLEGRO_BITMAP* imagenParedVertical = NULL;
+ALLEGRO_BITMAP* imagenBola = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -40,6 +41,9 @@ PtrMarcador marcoMaxPts = NULL;
 //Creacion de maracador para puntaje actual
 PtrMarcador marcoActualPts = NULL;
 
+//creacion de bola
+PtrBola bola = NULL;
+
 //fuente
 ALLEGRO_FONT* fuenteMarcadores = NULL;
 
@@ -49,11 +53,12 @@ ALLEGRO_COLOR colorTitulosMarcos = al_map_rgb(0, 0, 0);
 
 
 
-void nivel1( ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	//Carga de imagenes
-	 imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
-	 imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
+	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
+	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
+	imagenBola = al_load_bitmap("Imagenes/bola.png");
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagenes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
@@ -135,8 +140,10 @@ void nivel1( ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	const float y2ActualPts = y2MaxPts + altoImagen*2;
 	crearMarco(marcoActualPts, 50, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts);
 
-
-
+	//crea bola
+	const int anchoBola = 40;
+	const int altoBola = 40;
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*30)/100, anchoBola, altoBola, imagenBola);
 }
 
 void main()
@@ -226,6 +233,7 @@ void main()
 			dibujarBarra(barra);
 			dibujarMarco(marcoMaxPts,fuenteMarcadores,"Mejor puntaje", colorFondoMarcos, colorTitulosMarcos);
 			dibujarMarco(marcoActualPts,fuenteMarcadores,"Puntaje Actual", colorFondoMarcos, colorTitulosMarcos);
+			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
 			al_flip_display(); // Actualizar la pantalla
 		}
@@ -238,10 +246,12 @@ void main()
 	//Destruccion de elemontos propios del juego
 	eliminarListaParedes(listaEnlazadaParedes);
 	eliminarBarra(barra);
+	eliminarBola(bola);
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
 	al_destroy_bitmap(imagenParedHorizontal);
 	al_destroy_bitmap(imagenParedVertical);
+	al_destroy_bitmap(imagenBola);
 }
 
 

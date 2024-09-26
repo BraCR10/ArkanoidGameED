@@ -149,3 +149,35 @@ void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, const 
 void setDatoMarco(PtrMarcador& marcador, int dato) {
 	marcador->dato = dato;
 }
+
+//inicializa valores de la bola
+void crearBola(PtrBola& bola, int x, int y, float ancho, float alto, ALLEGRO_BITMAP* imagen) {
+	bola = new Bola;
+	bola->x = x;
+	bola->y = y;
+	bola->ancho = ancho;
+	bola->alto = alto;
+	bola->limiteArriba = y + alto;
+	bola->limiteAbajo = y - alto;
+	bola->limiteDerecha = x + ancho;
+	bola->limiteIzquierda = x - ancho;
+	bola->imagen = imagen;
+}
+
+//imprime bola en pantalla
+void dibujarBola(PtrBola& bola) {
+	al_draw_scaled_bitmap(
+		bola->imagen,
+		0, 0, // Coordenadas de origen en el bitmap fuente
+		al_get_bitmap_width(bola->imagen), // Ancho del bitmap fuente
+		al_get_bitmap_height(bola->imagen), // Alto del bitmap fuente
+		bola->x, bola->y, // Coordenadas de destino en la pantalla
+		bola->ancho, bola->alto, // Nuevo ancho y alto
+		0 // Flags
+	);
+}
+
+//eliminar bolar
+void eliminarBola(PtrBola& bola) {
+	delete (bola);
+}
