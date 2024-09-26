@@ -29,7 +29,17 @@ typedef struct  Barra {
 typedef struct Marcador {
 	int dato;
 	float x1,y1,x2,y2;
+	char titulo[20];
 } *PtrMarcador;
+
+//Estructura de vida en pantalla
+typedef struct Vida {
+	int x;
+	int y;
+	float ancho;
+	float alto;
+	ALLEGRO_BITMAP* imagen;
+} *PtrVida;
 
 //Estructura de la bola
 typedef struct Bola {
