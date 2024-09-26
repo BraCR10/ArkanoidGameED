@@ -117,6 +117,37 @@ ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
 
 	return colorNegativo;
 }
+void GuardarPuntajes(PtrMarcador& marcador) {
+	FILE* archivo;
+	fopen_s(&archivo, "Puntaje.txt", "a");
+	if (NULL == archivo) 
+		printf("No se pudo abrir el archivo.");
+	else 
+		fprintf(archivo, "%i\n", marcador->dato);
+	fclose(archivo);
+}
+
+int CargarPuntajeMasAlto() {
+	FILE* archivo;
+	fopen_s(&archivo, "Puntaje.txt", "r");
+	if (NULL == archivo) {
+		printf("No se pudo abrir el archivo");
+		return INT_MIN; // Retorna el valor mínimo de un entero si no se puede abrir el archivo
+	}
+
+	int puntaje;
+	int mayorPuntaje = INT_MIN; // Inicializar con el valor mínimo de un entero
+
+	while (fscanf_s(archivo, "%i\n", &puntaje) == 1) {
+		if (puntaje > mayorPuntaje) {
+			mayorPuntaje = puntaje;
+		}
+	}
+
+	fclose(archivo);
+	return mayorPuntaje; // Retorna el mayor puntaje encontrado
+}
+
 
 void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGRO_COLOR colorMarco, ALLEGRO_COLOR colorTitulo) {
 	// Dibujar el rect�ngulo
