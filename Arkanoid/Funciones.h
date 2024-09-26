@@ -2,10 +2,13 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 
+
 //Librerias propias del juego
 #include "Estructuras.h"
 
-
+//Librerias de C++
+#include <string>
+using namespace std;
 void insertarPared(PtrPared &lista, PtrPared &Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
@@ -91,4 +94,58 @@ void moverBarra(PtrBarra& barra, int velocidad,bool dir) {
 
 void eliminarBarra(PtrBarra& barra) {
 	delete (barra);
+}
+
+void crearMarco(PtrMarcador& marcador, int max, float x1, float y1, float x2, float y2) {
+	marcador = new Marcador;
+	marcador->dato = max;
+	marcador->x1 = x1;
+	marcador->y1 = y1;
+	marcador->x2 = x2;
+	marcador->y2 = y2;
+}
+
+ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
+	// Extraer los componentes RGB del color original
+	float r, g, b, a;
+	al_unmap_rgba_f(colorOriginal, &r, &g, &b, &a);
+
+	// Calcular el color negativo
+	ALLEGRO_COLOR colorNegativo = al_map_rgba_f(1.0f - r, 1.0f - g, 1.0f - b, a);
+
+	return colorNegativo;
+}
+
+void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, const char* titulo, ALLEGRO_COLOR colorMarco, ALLEGRO_COLOR colorTitulo) {
+	// Dibujar el rectángulo
+	al_draw_filled_rectangle(marcador->x1, marcador->y1, marcador->x2, marcador->y2, colorMarco);
+
+	// Convertir el dato a cadena de caracteres
+	char texto[15];
+	snprintf(texto, sizeof(texto), "%d", marcador->dato);
+
+	// Calcular el ancho y alto del texto
+	int anchoTexto = al_get_text_width(fuenteMarcadores, texto);
+	int altoTexto = al_get_font_line_height(fuenteMarcadores);
+
+	// Calcular las coordenadas para centrar el texto dentro del rectángulo
+	float textX = marcador->x1 + (marcador->x2 - marcador->x1 - anchoTexto) / 2;
+	float textY = marcador->y1 + (marcador->y2 - marcador->y1 - altoTexto) / 2;
+
+	// Dibujar el texto centrado dentro del rectángulo
+	al_draw_text(fuenteMarcadores, obtenerColorNegativo(colorMarco), textX, textY, ALLEGRO_ALIGN_LEFT, texto);
+
+	// Calcular el ancho del título
+	int anchoTitulo = al_get_text_width(fuenteMarcadores, titulo);
+
+	// Calcular las coordenadas para centrar el título encima del rectángulo
+	float tituloX = marcador->x1 + (marcador->x2 - marcador->x1 - anchoTitulo) / 2;
+	float tituloY = marcador->y1 - altoTexto - 5; // Ajustar la posición del título encima del rectángulo
+
+	// Dibujar el título centrado encima del rectángulo
+	al_draw_text(fuenteMarcadores, colorTitulo , tituloX, tituloY, ALLEGRO_ALIGN_LEFT, titulo);
+}
+
+void setDatoMarco(PtrMarcador& marcador, int dato) {
+	marcador->dato = dato;
 }

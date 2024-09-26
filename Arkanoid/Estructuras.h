@@ -26,5 +26,11 @@ typedef struct  Barra {
 	ALLEGRO_BITMAP* imagen;
 } *PtrBarra;
 
+typedef struct Marcador {
+	int dato;
+	float x1,y1,x2,y2;
+} *PtrMarcador;
+
+
 
 #endif //En caso de que ya se haya definido la estructura

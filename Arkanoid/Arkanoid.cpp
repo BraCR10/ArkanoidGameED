@@ -19,18 +19,37 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 using namespace std;
-/*
-agregando 
 
-*/
 //Librerias propias del juego
 #include "Estructuras.h"
 #include "Funciones.h"
 
 
-void nivel1(PtrPared &listaEnlazadaParedes, PtrBarra &barra,
-	ALLEGRO_BITMAP* imagenParedHorizontal, ALLEGRO_BITMAP* imagenParedVertical, 
-	ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+//Inicializacion de imagenes
+ALLEGRO_BITMAP* imagenParedHorizontal = NULL;
+ALLEGRO_BITMAP* imagenParedVertical = NULL;
+
+// Crear la lista enlazada de paredes para el marco
+PtrPared listaEnlazadaParedes = NULL;
+//Creacion de la barra
+PtrBarra barra = NULL;
+
+//Creacion de maracador para puntaje maximo
+PtrMarcador marcoMaxPts = NULL;
+
+//Creacion de maracador para puntaje actual
+PtrMarcador marcoActualPts = NULL;
+
+//fuente
+ALLEGRO_FONT* fuenteMarcadores = NULL;
+
+//Colores del nivel
+ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
+ALLEGRO_COLOR colorTitulosMarcos = al_map_rgb(0, 0, 0);
+
+
+
+void nivel1( ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	//Carga de imagenes
 	 imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
@@ -97,6 +116,27 @@ void nivel1(PtrPared &listaEnlazadaParedes, PtrBarra &barra,
 	crearBarra(barra, limiteIzquierdoPared + anchoBarra*2.5, AltoMonitor - margenY, anchoBarra, altoBarra,limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY)-altoBarra, imagenParedHorizontal);
 	// Barra se mueve de limiteDerechoPared a limiteIzquierdoPared
 
+	//Creacion de marcadores
+	colorTitulosMarcos = al_map_rgb(0, 0, 0);
+	colorFondoMarcos = al_map_rgb(0, 0, 0);
+	//Marcador de putaje maximo
+	const float x1MaxPts = limiteDerechoPared + anchoBarra+ anchoImagen*2;
+	const float y1MaxPts = AltoMonitor/4;
+	const float x2MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*6 ;
+	const float y2MaxPts = AltoMonitor / 4+ altoImagen;
+	crearMarco(marcoMaxPts,50, x1MaxPts, y1MaxPts, x2MaxPts, y2MaxPts);
+	
+	
+
+	//Marcador de putaje actual
+	const float x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
+	const float y1ActualPts = y2MaxPts+ altoImagen;
+	const float x2ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 6;
+	const float y2ActualPts = y2MaxPts + altoImagen*2;
+	crearMarco(marcoActualPts, 50, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts);
+
+
+
 }
 
 void main()
@@ -121,40 +161,35 @@ void main()
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se puede crear la pantalla", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		return;
 	}
+
 	//Inicializacion de addons
 	al_init_image_addon();
-	//al_init_primitives_addon();
-
-
-	//Inicializacion de imagenes
-	ALLEGRO_BITMAP* imagenParedHorizontal=NULL;
-	ALLEGRO_BITMAP* imagenParedVertical=NULL;
-
-	// Crear la lista enlazada de paredes para el marco
-	PtrPared listaEnlazadaParedes = NULL;
-	//Creacion de la barra
-	PtrBarra barra = NULL;
-
+	al_init_primitives_addon();
+	al_init_ttf_addon();
 
 	//TODO: PANTALLA DE INICIO
 	//Se pretende aqui crear un bucle para la pantalla de inicio donde se presentan diversas funciones del juego
 
 	// NIVEL 1
-	nivel1(listaEnlazadaParedes,barra, imagenParedHorizontal, imagenParedVertical, pantalla, AnchoMonitor, AltoMonitor);
-
-
+	nivel1( pantalla, AnchoMonitor, AltoMonitor);
 
 	//Configuracion de teclado
 	al_install_keyboard();
 	ALLEGRO_KEYBOARD_STATE teclado;
 
+	//Fuente
+	fuenteMarcadores = al_load_ttf_font("Fuentes/ARLETA.ttf", 25, 0);
+	if (!fuenteMarcadores) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
 	//Cola principal de eventos
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
 
 	//FPS de cada timer
 	 int FPS_Barra = 80;
-
 
 	//timers
 	ALLEGRO_TIMER* timerBarra = al_create_timer(1.0 / FPS_Barra);
@@ -163,15 +198,9 @@ void main()
 	//Inicio de timers
 	al_start_timer(timerBarra);
 
-	//Se genera la pantalla por primera vez, se podria quitar------------------------
-	// TODO:DEFINIR FONDO 
-	al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco
-	// Dibujar cada pared en la lista
-	dibujarParedes(listaEnlazadaParedes);
-	dibujarBarra(barra);
-	al_flip_display(); // Actualizar la pantalla
-	//---------------------------------------------------------------------------------
-	
+	//Varible temporal para ver que el marco se dibuje en un timer, se eliminara
+	int temp = 0;
+
 	//Bucle principal
 	bool juego = true;
 	while (juego) {
@@ -192,10 +221,12 @@ void main()
 		}
 
 		if (evento.type == ALLEGRO_EVENT_TIMER) {
-			al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco
+			al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
 			dibujarParedes(listaEnlazadaParedes);
 			dibujarBarra(barra);
-
+			dibujarMarco(marcoMaxPts,fuenteMarcadores,"Mejor puntaje", colorFondoMarcos, colorTitulosMarcos);
+			dibujarMarco(marcoActualPts,fuenteMarcadores,"Puntaje Actual", colorFondoMarcos, colorTitulosMarcos);
+			setDatoMarco(marcoActualPts, temp++);
 			al_flip_display(); // Actualizar la pantalla
 		}
 
