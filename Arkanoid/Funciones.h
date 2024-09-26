@@ -299,8 +299,106 @@ void reboteBolaBarra(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoM
 	}
 }
 
-void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, PtrBloque lista) {
+void insertarBloque(PtrBloque& lista, PtrBloque Nuevo) {
+	Nuevo->siguiente = lista;
+	lista = Nuevo;
+}
 
+void crearBloque(PtrBloque& lista, int x, int y, int comodin, int resistencia, ALLEGRO_BITMAP* imagen, float ancho, float alto) {
+	PtrBloque bloque = new(Bloque);
+	bloque->x = x;
+	bloque->y = y;
+	bloque->comodin = comodin;
+	bloque->resistencia = resistencia;
+	bloque->alto = alto;
+	bloque->ancho = ancho;
+	bloque->estadoExistencia = true;
+	bloque->imagen = imagen;
+	bloque->siguiente = NULL;
+	insertarBloque(lista, bloque);
+}
+
+void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado,PtrBloque& lista, float anchoBloque, float altoBloque) {
+	int ubicadorX = anchoMonitor/4;
+	int ubicadorY = altoMonitor / 6.14;
+	int n = 0;
+	while(n<84) {
+		while (n < 12) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+;		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n >11 && n < 24) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 23 && n < 36) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n> 35 && n < 48) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 47 && n < 60) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 59 && n < 72) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueVerde, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 71 && n < 84) {
+			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		
+	}
+}
+
+void eliminarListaBloque(PtrBloque& lista) {
+	PtrBloque& aux = lista;
+	while (aux != lista) {
+		lista = lista->siguiente;
+		delete (aux);
+		aux = lista;
+	}
+}
+
+void dibujarBloques(PtrBloque& lista) {
+	PtrBloque bloque = lista;
+	while (bloque != NULL) {
+		if (bloque->estadoExistencia) {
+			al_draw_scaled_bitmap(
+				bloque->imagen,
+				0, 0, // Coordenadas de origen en el bitmap fuente
+				al_get_bitmap_width(bloque->imagen), // Ancho del bitmap fuente
+				al_get_bitmap_height(bloque->imagen), // Alto del bitmap fuente
+				bloque->x, bloque->y, // Coordenadas de destino en la pantalla
+				bloque->ancho, bloque->alto, // Nuevo ancho y alto
+				0 // Flags
+			);
+		}
+		bloque = bloque->siguiente;
+	}
 }
 
 void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {

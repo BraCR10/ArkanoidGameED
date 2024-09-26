@@ -34,6 +34,8 @@ ALLEGRO_BITMAP* imagenBloqueVerde = NULL;
 ALLEGRO_BITMAP* imagenBloqueCeleste = NULL;
 ALLEGRO_BITMAP* imagenBloqueNaranja = NULL;
 ALLEGRO_BITMAP* imagenBloqueAmarillo = NULL;
+ALLEGRO_BITMAP* imagenBloqueRosado = NULL;
+ALLEGRO_BITMAP* imagenBloqueCafe = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -95,6 +97,10 @@ float x1ContadorVida;
 float  y1ContadorVida ;
 float altoVida ;
 float anchoVida ;
+
+//Bloques
+float anchoBloque = 80;
+float altoBloque = 55;
 
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
 	int margenX = AnchoMonitor / 4;
@@ -190,6 +196,8 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenBloqueRojo = al_load_bitmap("Imagenes/bloqueRojo.png");
 	imagenBloqueVerde = al_load_bitmap("Imagenes/bloqueVerde.png");
 	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
+	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
+	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -197,8 +205,8 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		return;
 	}
 
+	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, anchoBloque, altoBloque);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
-	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, listaEnlazadaBloques);
 
 }
 
@@ -296,6 +304,7 @@ void main()
 			dibujarMarco(marcoMaxPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarMarco(marcoActualPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarBola(bola);
+			dibujarBloques(listaEnlazadaBloques);
 			setDatoMarco(marcoActualPts, temp++);
 			reboteBolaPared(bola);
 			reboteBolaBarra(bola, barra, AnchoMonitor, AltoMonitor);
@@ -317,6 +326,7 @@ void main()
 	eliminarMarco(marcoActualPts);
 	eliminarMarco(marcoCuadroComodines);
 	eliminarVida(contadorVidas);
+	eliminarListaBloque(listaEnlazadaBloques);
 
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
@@ -328,6 +338,8 @@ void main()
 	al_destroy_bitmap(imagenBloqueRojo);
 	al_destroy_bitmap(imagenBloqueVerde);
 	al_destroy_bitmap(imagenBloqueNaranja);
+	al_destroy_bitmap(imagenBloqueCafe);
+	al_destroy_bitmap(imagenBloqueRosado);
 	al_destroy_event_queue(colaEventos);
 	al_destroy_timer(timerBarra);
 	al_destroy_font(fuenteMarcadores);
