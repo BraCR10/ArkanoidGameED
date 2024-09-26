@@ -143,7 +143,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	//crea bola
 	const int anchoBola = 40;
 	const int altoBola = 40;
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*30)/100, anchoBola, altoBola, imagenBola);
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor/2 +  (AltoMonitor*34)/100, anchoBola, altoBola, imagenBola);
 }
 
 void main()
@@ -219,22 +219,28 @@ void main()
 			juego = false;
 		}
 		//TODO: definir donde se escoje la velocidad, ahorita solo en 10
-		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) 
-			moverBarra(barra, 10,true);
-		else if (al_key_down(&teclado, ALLEGRO_KEY_LEFT))
-			moverBarra(barra, 10,false);
+		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT)) {
+			moverBarra(barra, 10, true);
+			iniciarMovimientoBola(bola, 5, true);
+		}
+		else if (al_key_down(&teclado, ALLEGRO_KEY_LEFT)) {
+			moverBarra(barra, 10, false);
+			iniciarMovimientoBola(bola, 5, false);
+		}
 		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
 			juego = false;
 		}
 
 		if (evento.type == ALLEGRO_EVENT_TIMER) {
 			al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
+			moverBola(bola, 5);
 			dibujarParedes(listaEnlazadaParedes);
 			dibujarBarra(barra);
 			dibujarMarco(marcoMaxPts,fuenteMarcadores,"Mejor puntaje", colorFondoMarcos, colorTitulosMarcos);
 			dibujarMarco(marcoActualPts,fuenteMarcadores,"Puntaje Actual", colorFondoMarcos, colorTitulosMarcos);
 			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
+			//reboteBolaPared(bola, limiteDerechoPared,limiteIzquierdoPared);
 			al_flip_display(); // Actualizar la pantalla
 		}
 

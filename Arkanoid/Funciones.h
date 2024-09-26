@@ -157,10 +157,8 @@ void crearBola(PtrBola& bola, int x, int y, float ancho, float alto, ALLEGRO_BIT
 	bola->y = y;
 	bola->ancho = ancho;
 	bola->alto = alto;
-	bola->limiteArriba = y + alto;
-	bola->limiteAbajo = y - alto;
-	bola->limiteDerecha = x + ancho;
-	bola->limiteIzquierda = x - ancho;
+	bola->estadoMovimiento = false;
+	bola->direccionMovimiento = false;
 	bola->imagen = imagen;
 }
 
@@ -177,7 +175,46 @@ void dibujarBola(PtrBola& bola) {
 	);
 }
 
-//eliminar bolar
+//eliminar bola
 void eliminarBola(PtrBola& bola) {
 	delete (bola);
+}
+
+//la bola empezará a moverse en la dirección en el eje X opuesta al de la barra
+void iniciarMovimientoBola(PtrBola& bola, int velocidad, bool direccion) {
+	if (bola->estadoMovimiento == false){ //Si la bola no está en movimiento
+		if (direccion == true) { // bola se mueve a izquierda
+			bola->y -= velocidad;
+			bola->x -= velocidad;
+			bola->direccionMovimiento = false;
+		}
+		else if (direccion == false) { // bola se mueve a derecha
+			bola->y -= velocidad;
+			bola->x += velocidad;
+			bola->direccionMovimiento = true;
+		}
+		bola->estadoMovimiento = true; //se declara que la bola está en movimiento
+	}
+}
+
+//mantendrá el movimiento de la bola constante
+void moverBola(PtrBola& bola, int velocidad) {
+	if (bola->estadoMovimiento == true) { //Si la bola si está en movimiento
+		if (bola->direccionMovimiento == false) { //bola se mueve a derecha
+			bola->y -= velocidad;
+			bola->x -= velocidad;
+		}
+		else if (bola->direccionMovimiento == true) { //bola se mueve a izquierda
+			bola->y -= velocidad;
+			bola->x += velocidad;
+		}
+	}
+}
+
+
+void reboteBolaPared(PtrBola& bola, int limDer, int limIzq) {
+		if ((bola->x) > limDer) {
+			bola->direccionMovimiento = !bola->direccionMovimiento;
+		}
+
 }
