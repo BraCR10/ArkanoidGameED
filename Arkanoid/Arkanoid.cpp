@@ -176,9 +176,11 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	  crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin actual");
 
 	  //Vida
-	  x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
+	  int x1ContadorVida = (limiteIzquierdoPared - anchoImagen*7	 );
 	  y1ActualPts = y2MaxPts + altoImagen;
-	  crearSimboloVida(contadorVidas, x1ActualPts, y1ActualPts, anchoImagen, altoImagen);
+	  int altoVida = 200;
+	  int anchoVida = 80;
+	  crearSimboloVida(contadorVidas, x1ContadorVida, y1ActualPts, altoVida, altoVida);
 	  /*
 	  float posicionInicialVidas = (limiteIzquierdoPared - anchoImagen * 7);
 	  int anchoVida = 60;

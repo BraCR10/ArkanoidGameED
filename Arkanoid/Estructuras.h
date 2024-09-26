@@ -34,6 +34,7 @@ typedef struct Marcador {
 
 //Estructura de vida en pantalla
 typedef struct Vida {
+	int cantidad;
 	int x;
 	int y;
 	float ancho;
