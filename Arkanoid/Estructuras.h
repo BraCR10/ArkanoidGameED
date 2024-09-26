@@ -50,11 +50,24 @@ typedef struct Bola {
 	float alto;
 	bool estadoMovimiento;
 	bool direccionMovimientoY; // true si va hacia arriba, false si va hacia abajo
-	bool direccionMovimientoX; // true si va hacia derecha, false si va a izquierda
+	bool direccionMovimientoX; // true si va hacia derecha, false si va hacia izquierda
 	int limiteDerecho;
 	int limiteIzquierdo;
 	int limiteSuperior;
 	ALLEGRO_BITMAP* imagen;
 }*PtrBola;
+
+//Estructura de los bloques
+typedef struct Bloque {
+	int x;
+	int y;
+	int comodin; // 0 si no posee comodin
+	int resistencia; // 0 si se rompee apenas la bola lo toca
+	float ancho;
+	float alto;
+	bool estadoExistencia;
+	Bloque* siguiente;
+	ALLEGRO_BITMAP* imagen;
+}*PtrBloque;
 
 #endif //En caso de que ya se haya definido la estructura

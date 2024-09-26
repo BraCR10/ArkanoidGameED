@@ -268,7 +268,7 @@ void eliminarMarco(PtrMarcador& marcador) {
 
 
 void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote lim superior***
-		if ((bola->x - bola->ancho * 2) >= bola->limiteDerecho) { // si choca con pared derecha
+		if ((bola->x - (bola->ancho) * 2) >= bola->limiteDerecho) { // si choca con pared derecha
 			bola->direccionMovimientoX = false;
 		}else if ((bola->y - (bola->alto)*2) <= bola->limiteSuperior) { // si choca con pared de arriba
 			bola->direccionMovimientoY = false;
@@ -278,11 +278,11 @@ void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote
 }
 
 void reboteBolaBarra(PtrBola& bola, PtrBarra& barra) {
-	if (((bola->y + bola->alto) > barra->y) && (bola->y + bola->alto) < (barra->y + barra->alto)){ //verfica que la bola esté en puntos en Y similares al de barra
-		if ((bola->x ) > (barra->x - barra->ancho/2) && (bola->x ) < barra->x) { //si cae en mitad izquierda de la barra
+	if (((bola->y + bola->alto) > barra->y) && (bola->y + bola->alto) < (barra->y + barra->alto)){ //verifica que la bola esté en puntos en Y similares al de barra
+		if (bola->x > (barra->x - barra->ancho/2) && bola->x < barra->x) { //si cae en mitad izquierda de la barra
 			bola->direccionMovimientoY = true;
 			bola->direccionMovimientoX = false;
-		} else if ((bola->x ) < (barra->x + barra->ancho) && (bola->x) > barra->x) { //si cae en mitad derecha de la barra
+		} else if (bola->x < (barra->x + barra->ancho) && bola->x > barra->x) { //si cae en mitad derecha de la barra
 			bola->direccionMovimientoY = true;
 			bola->direccionMovimientoX = true;
 		}

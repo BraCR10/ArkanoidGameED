@@ -29,7 +29,11 @@ using namespace std;
 ALLEGRO_BITMAP* imagenParedHorizontal = NULL;
 ALLEGRO_BITMAP* imagenParedVertical = NULL;
 ALLEGRO_BITMAP* imagenBola = NULL;
-
+ALLEGRO_BITMAP* imagenBloqueRojo = NULL;
+ALLEGRO_BITMAP* imagenBloqueVerde = NULL;
+ALLEGRO_BITMAP* imagenBloqueCeleste = NULL;
+ALLEGRO_BITMAP* imagenBloqueNaranja = NULL;
+ALLEGRO_BITMAP* imagenBloqueAmarillo = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
