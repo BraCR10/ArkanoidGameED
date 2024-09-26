@@ -30,8 +30,11 @@ ALLEGRO_BITMAP* imagenParedHorizontal = NULL;
 ALLEGRO_BITMAP* imagenParedVertical = NULL;
 ALLEGRO_BITMAP* imagenBola = NULL;
 
+
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
+
+
 //Creacion de la barra
 PtrBarra barra = NULL;
 
@@ -41,6 +44,11 @@ PtrMarcador marcoMaxPts = NULL;
 //Creacion de maracador para puntaje actual
 PtrMarcador marcoActualPts = NULL;
 
+//Creacion de maracador para cuadro de comodines
+PtrMarcador marcoCuadroComodines = NULL;
+
+//Creacion  de vidas
+PtrVida contadorVidas = NULL;
 //creacion de bola
 PtrBola bola = NULL;
 
@@ -51,7 +59,28 @@ ALLEGRO_FONT* fuenteMarcadores = NULL;
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
 ALLEGRO_COLOR colorTitulosMarcos = al_map_rgb(0, 0, 0);
 
+//Objetos generales
+//Creacion de barra
+const int anchoBarra = 120;
+const int altoBarra = 20;
+//Marcador de putaje maximo
+float x1MaxPts;
+float y1MaxPts ;
+float x2MaxPts;
+float y2MaxPts;
 
+//Marcador de putaje actual
+float x1ActualPts ;
+float y1ActualPts ;
+float x2ActualPts;
+float y2ActualPts ;
+
+
+//Cuadro de comodin 
+float x1CuadroComodines;
+float y1CuadroComodines;
+float x2CuadroComodines ;
+float y2CuadroComodines;
 
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
@@ -116,30 +145,51 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	
 
 	//Creacion de barra
-	const int anchoBarra = 120;
-	const int altoBarra = 20;
 	crearBarra(barra, limiteIzquierdoPared + anchoBarra*2.5, AltoMonitor - margenY, anchoBarra, altoBarra,limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY)-altoBarra, imagenParedHorizontal);
 	// Barra se mueve de limiteDerechoPared a limiteIzquierdoPared
 
-	//Creacion de marcadores
+	//Creacion de marcadores y otros
 	colorTitulosMarcos = al_map_rgb(0, 0, 0);
 	colorFondoMarcos = al_map_rgb(0, 0, 0);
+
 	//Marcador de putaje maximo
-	const float x1MaxPts = limiteDerechoPared + anchoBarra+ anchoImagen*2;
-	const float y1MaxPts = AltoMonitor/4;
-	const float x2MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*6 ;
-	const float y2MaxPts = AltoMonitor / 4+ altoImagen;
-	crearMarco(marcoMaxPts,50, x1MaxPts, y1MaxPts, x2MaxPts, y2MaxPts);
+	  x1MaxPts = limiteDerechoPared + anchoBarra+ anchoImagen*2;
+	  y1MaxPts = AltoMonitor/4;
+	  x2MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*6 ;
+	  y2MaxPts = AltoMonitor / 4+ altoImagen;
+	crearMarco(marcoMaxPts,50, x1MaxPts, y1MaxPts, x2MaxPts, y2MaxPts, "Mejor puntaje");
 	
 	
 
 	//Marcador de putaje actual
-	const float x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
-	const float y1ActualPts = y2MaxPts+ altoImagen;
-	const float x2ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 6;
-	const float y2ActualPts = y2MaxPts + altoImagen*2;
-	crearMarco(marcoActualPts, 50, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts);
+	  x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
+	  y1ActualPts = y2MaxPts+ altoImagen;
+	  x2ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 6;
+	  y2ActualPts = y2MaxPts + altoImagen*2;
+	crearMarco(marcoActualPts, 50, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
 
+	//Cuadro de comodin 
+	  x1CuadroComodines = limiteIzquierdoPared- anchoImagen*6;
+	  y1CuadroComodines = AltoMonitor / 4;
+	  x2CuadroComodines = limiteIzquierdoPared - anchoImagen*2;
+	  y2CuadroComodines = AltoMonitor / 4 + altoImagen;
+	  crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin actual");
+
+	  //Vida
+	  x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
+	  y1ActualPts = y2MaxPts + altoImagen;
+	  crearSimboloVida(contadorVidas, x1ActualPts, y1ActualPts, anchoImagen, altoImagen);
+	  /*
+	  float posicionInicialVidas = (limiteIzquierdoPared - anchoImagen * 7);
+	  int anchoVida = 60;
+	  int altoVida = 90;
+	  int yVidas = y1CuadroComodines + altoImagen*3;
+	  for (int i = posicionInicialVidas; i < posicionInicialVidas+anchoVida*3; i+= anchoVida+10)
+	  {
+		  crearVida(listaVidas, i, yVidas, anchoVida, altoVida,true,imagenVida);
+
+	  }
+	  */
 	//crea bola
 	const int anchoBola = 40;
 	const int altoBola = 40;
@@ -232,15 +282,22 @@ void main()
 		}
 
 		if (evento.type == ALLEGRO_EVENT_TIMER) {
+			//TODO: definir mas timers
 			al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
 			moverBola(bola, 5);
 			dibujarParedes(listaEnlazadaParedes);
 			dibujarBarra(barra);
-			dibujarMarco(marcoMaxPts,fuenteMarcadores,"Mejor puntaje", colorFondoMarcos, colorTitulosMarcos);
-			dibujarMarco(marcoActualPts,fuenteMarcadores,"Puntaje Actual", colorFondoMarcos, colorTitulosMarcos);
+			dibujarMarco(marcoMaxPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
+			dibujarMarco(marcoActualPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
+<<<<<<< HEAD
 			//reboteBolaPared(bola, limiteDerechoPared,limiteIzquierdoPared);
+=======
+			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
+			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
+			
+>>>>>>> 506157729863969da9ae223be015b15a91d68265
 			al_flip_display(); // Actualizar la pantalla
 		}
 
@@ -253,11 +310,19 @@ void main()
 	eliminarListaParedes(listaEnlazadaParedes);
 	eliminarBarra(barra);
 	eliminarBola(bola);
+	eliminarMarco(marcoMaxPts);
+	eliminarMarco(marcoActualPts);
+	eliminarMarco(marcoCuadroComodines);
+	//eliminarListaVidas(listaVidas);
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
 	al_destroy_bitmap(imagenParedHorizontal);
 	al_destroy_bitmap(imagenParedVertical);
 	al_destroy_bitmap(imagenBola);
+	al_destroy_event_queue(colaEventos);
+	al_destroy_timer(timerBarra);
+	al_destroy_font(fuenteMarcadores);
+
 }
 
 
