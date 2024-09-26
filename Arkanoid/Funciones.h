@@ -188,7 +188,7 @@ void eliminarMarco(PtrMarcador& marcador) {
 }
 
 
-void crearSimboloVida(PtrVida& vida,int x,int y,int alto,int ancho) {
+void crearSimboloVida(PtrVida& vida,float x, float y, float alto, float ancho) {
 	vida = new Vida;
 	vida->cantidad = 3;
 	vida->imagen = al_load_bitmap("Imagenes/vida.png");
@@ -230,86 +230,14 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 	}
 }
 
-
-
-
-
-
-/*
-void insertarVida(PtrVida& lista, PtrVida& Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
-	Nuevo->siguiente = lista;
-	lista = Nuevo;
+void eliminarVida(PtrVida& vida) {
+	delete (vida);
+}
+void aumentarVida(PtrVida& vida) {
+	vida->cantidad++;
+}
+void disminuirVida(PtrVida& vida) {
+	vida->cantidad--;
 }
 
-void crearVida(PtrVida& lista, int x, int y,float ancho,float alto,bool activa, ALLEGRO_BITMAP* imagen)
-{
-	PtrVida vida;
-	vida = new Vida;
-	vida->x = x;
-	vida->y = y;
-	vida->ancho = ancho;
-	vida->alto = alto;
-	vida->activa = activa;
-	vida->imagen = imagen;
-	vida->siguiente = NULL;
-	insertarVida(lista, vida);
-}
 
-void vidaExtra(PtrVida& lista, ALLEGRO_BITMAP* imagen) {
-	PtrVida aux = lista;
-	while (aux->siguiente != NULL) {
-		aux = aux->siguiente;
-	}
-	crearVida(lista, aux->x- aux->ancho - 10, aux->y, aux->ancho, aux->alto,true,imagen);
-	
-}*/
-/*
-void dibujarVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
-	
-	 // Coordenadas del t�tulo basadas en la primera vida
-
-	float tituloX = aux->x - aux->ancho; // Centrar el t�tulo horizontalmente
-	float tituloY = aux->y - 30; // Ajustar la posici�n del t�tulo encima de la primera vida
-
-	/ Dibujar el t�tulo
-	al_draw_text(fuente, colorTitulo, tituloX, tituloY, ALLEGRO_ALIGN_LEFT, "Vidas");
-	if (vidas != NULL) {
-		PtrVida vida = vidas;
-		while (vida != NULL) {
-			al_draw_scaled_bitmap(
-				vida->imagen,
-				0, 0, // Coordenadas de origen en el bitmap fuente
-				al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
-				al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
-				vida->x, vida->y, // Coordenadas de destino en la pantalla
-				vidas->ancho, vidas->alto, // Nuevo ancho y alto
-				0 // Flags
-			);
-			vida = vida->siguiente;
-		}
-	}
-}
-
-void eliminarUnaVida(PtrVida& vida) {
-	if (vida != NULL)
-	{
-		PtrVida aux = vida;
-		while (aux->activa==false && aux->siguiente != NULL)
-		{
-			aux=aux->siguiente;
-		}
-		//Usar una imagen de cancelacion de vida
-		aux->imagen = al_load_bitmap("Imagenes/noVida.png");
-		aux->activa = false;
-		Sleep(120);//Se pretende quitar
-	}
-}
-
-void eliminarListaVidas(PtrVida& lista) {
-	PtrVida aux;
-	while (lista != NULL) {
-		aux = lista;
-		lista = lista->siguiente;
-		delete (aux);
-	}
-}*/
