@@ -38,7 +38,6 @@ ALLEGRO_BITMAP* imagenBloqueAmarillo = NULL;
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
 
-
 //Creacion de la barra
 PtrBarra barra = NULL;
 
@@ -53,6 +52,10 @@ PtrMarcador marcoCuadroComodines = NULL;
 
 //Creacion  de vidas
 PtrVida contadorVidas = NULL;
+
+//Creacion lista enlazada bloques
+PtrBloque listaEnlazadaBloques = NULL;
+ 
 //creacion de bola
 PtrBola bola = NULL;
 
@@ -175,13 +178,18 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 	const int limiteDerechoPared = (AnchoMonitor - AnchoMonitor / 4)-120 ;
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, limiteIzquierdoPared, limiteDerechoPared);
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 30) / 100, 40, 40, limiteDerechoPared, limiteIzquierdoPared,50, imagenBola);
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 40, 40, limiteDerechoPared, limiteIzquierdoPared,50, imagenBola);
 }
 
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
+	imagenBloqueAmarillo = al_load_bitmap("Imagenes/bloqueAmarillo.png");
+	imagenBloqueCeleste = al_load_bitmap("Imagenes/bloqueCeleste.png");
+	imagenBloqueRojo = al_load_bitmap("Imagenes/bloqueRojo.png");
+	imagenBloqueVerde = al_load_bitmap("Imagenes/bloqueVerde.png");
+	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -190,6 +198,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	}
 
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, listaEnlazadaBloques);
 
 }
 
@@ -289,7 +298,7 @@ void main()
 			dibujarBola(bola);
 			setDatoMarco(marcoActualPts, temp++);
 			reboteBolaPared(bola);
-			reboteBolaBarra(bola, barra);
+			reboteBolaBarra(bola, barra, AnchoMonitor, AltoMonitor);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
 			al_flip_display(); // Actualizar la pantalla
@@ -314,6 +323,11 @@ void main()
 	al_destroy_bitmap(imagenParedHorizontal);
 	al_destroy_bitmap(imagenParedVertical);
 	al_destroy_bitmap(imagenBola);
+	al_destroy_bitmap(imagenBloqueAmarillo);
+	al_destroy_bitmap(imagenBloqueCeleste);
+	al_destroy_bitmap(imagenBloqueRojo);
+	al_destroy_bitmap(imagenBloqueVerde);
+	al_destroy_bitmap(imagenBloqueNaranja);
 	al_destroy_event_queue(colaEventos);
 	al_destroy_timer(timerBarra);
 	al_destroy_font(fuenteMarcadores);

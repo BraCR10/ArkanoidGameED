@@ -277,16 +277,30 @@ void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote
 		}
 }
 
-void reboteBolaBarra(PtrBola& bola, PtrBarra& barra) {
-	if (((bola->y + bola->alto) > barra->y) && (bola->y + bola->alto) < (barra->y + barra->alto)){ //verifica que la bola esté en puntos en Y similares al de barra
-		if (bola->x > (barra->x - barra->ancho/2) && bola->x < barra->x) { //si cae en mitad izquierda de la barra
-			bola->direccionMovimientoY = true;
-			bola->direccionMovimientoX = false;
-		} else if (bola->x < (barra->x + barra->ancho) && bola->x > barra->x) { //si cae en mitad derecha de la barra
-			bola->direccionMovimientoY = true;
-			bola->direccionMovimientoX = true;
+void reboteBolaBarra(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor) {
+	if ((bola->y + bola->alto) > barra->y){ //verifica que la bola esté en puntos de Y similares al de barra
+		if ((bola->y + bola->alto) < (barra->y + barra->alto)){ //revisa que bola no se haya ido más abajo de barra
+			if (bola->x > (barra->x - barra->ancho/2) && bola->x < barra->x) { //si cae en mitad izquierda de la barra
+				bola->direccionMovimientoY = true;
+				bola->direccionMovimientoX = false;
+			}
+			else if (bola->x < (barra->x + barra->ancho) && bola->x > barra->x) { //si cae en mitad derecha de la barra
+				bola->direccionMovimientoY = true;
+				bola->direccionMovimientoX = true;
+			}
+		}
+		else if (bola->y >= AltoMonitor){// si la bola se va más abajo de la barra
+			bola->estadoMovimiento = false;
+			bola->x = AnchoMonitor / 2;
+			bola->y = AltoMonitor / 2 + (AltoMonitor * 34) / 100;
+			barra->x = AnchoMonitor / 2 - barra->ancho / 2;
+			barra->y = AltoMonitor - AltoMonitor/8;//****************************añadir que se pierda vida****************
 		}
 	}
+}
+
+void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, PtrBloque lista) {
+
 }
 
 void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
