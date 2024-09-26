@@ -261,6 +261,7 @@ void moverBola(PtrBola& bola, int velocidad) {
 		}
 	}
 }
+
 void eliminarMarco(PtrMarcador& marcador) {
 	delete (marcador);
 }
@@ -274,6 +275,18 @@ void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote
 		} else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de abajo
 			bola->direccionMovimientoX = true;
 		}
+}
+
+void reboteBolaBarra(PtrBola& bola, PtrBarra& barra) {
+	if (((bola->y + bola->alto) > barra->y) && (bola->y + bola->alto) < (barra->y + barra->alto)){ //verfica que la bola esté en puntos en Y similares al de barra
+		if ((bola->x ) > (barra->x - barra->ancho/2) && (bola->x ) < barra->x) { //si cae en mitad izquierda de la barra
+			bola->direccionMovimientoY = true;
+			bola->direccionMovimientoX = false;
+		} else if ((bola->x ) < (barra->x + barra->ancho) && (bola->x) > barra->x) { //si cae en mitad derecha de la barra
+			bola->direccionMovimientoY = true;
+			bola->direccionMovimientoX = true;
+		}
+	}
 }
 
 void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
