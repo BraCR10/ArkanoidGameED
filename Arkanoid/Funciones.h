@@ -266,8 +266,7 @@ void eliminarMarco(PtrMarcador& marcador) {
 	delete (marcador);
 }
 
-
-void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote lim superior***
+void reboteBolaPared(PtrBola& bola) {
 		if ((bola->x - (bola->ancho) * 2) >= bola->limiteDerecho) { // si choca con pared derecha
 			bola->direccionMovimientoX = false;
 		}else if ((bola->y - (bola->alto)*2) <= bola->limiteSuperior) { // si choca con pared de arriba
@@ -278,14 +277,22 @@ void reboteBolaPared(PtrBola& bola) {//**********************perfeccionar rebote
 }
 
 void reboteBolaBarra(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor) {
-	if ((bola->y + bola->alto) > barra->y){ //verifica que la bola esté en puntos de Y similares al de barra
-		if ((bola->y + bola->alto) < (barra->y + barra->alto)){ //revisa que bola no se haya ido más abajo de barra
-			if (bola->x > (barra->x - barra->ancho/2) && bola->x < barra->x) { //si cae en mitad izquierda de la barra
+	if ((bola->y + bola->alto) >= barra->y){ //verifica que la bola esté en puntos de Y similares al de barra
+		if ((bola->y + bola->alto) <= (barra->y + barra->alto)){ //revisa que bola no se haya ido más abajo de barra
+			if ((bola->x + bola->ancho)>= (barra->x) && (bola->x+ bola->ancho/2) <= (barra->x+barra->ancho/2)) { //si cae en mitad izquierda de la barra
 				bola->direccionMovimientoY = true;
 				bola->direccionMovimientoX = false;
 			}
-			else if (bola->x < (barra->x + barra->ancho) && bola->x > barra->x) { //si cae en mitad derecha de la barra
+			else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho/2) >= (barra->x+barra->ancho/2)) { //si cae en mitad derecha de la barra
 				bola->direccionMovimientoY = true;
+				bola->direccionMovimientoX = true;
+			}
+		}
+		else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se irá hacia arriba
+			if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
+				bola->direccionMovimientoX = false;
+			}
+			else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho / 2) >= (barra->x + barra->ancho / 2)) { //si cae en mitad derecha de la barra
 				bola->direccionMovimientoX = true;
 			}
 		}
@@ -322,7 +329,7 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int ubicadorX = anchoMonitor/4;
 	int ubicadorY = altoMonitor / 6.14;
 	int n = 0;
-	while(n<84) {
+	while(n<84) { //va creando los bloques en filas de 12 bloques
 		while (n < 12) {
 			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
@@ -401,6 +408,36 @@ void dibujarBloques(PtrBloque& lista) {
 	}
 }
 
+void reboteBolaBloque(PtrBola& bola, PtrBloque& lista) {
+    PtrBloque aux = lista;
+    while (aux != NULL) {
+        if (aux->estadoExistencia) { // se verifica que el bloque aún exista
+            // Verificar colisión con la parte superior del bloque
+            if ((bola->y + bola->alto) >= aux->y && bola->y <= (aux->y + aux->alto)) {
+                // Verificar colisión en el eje X
+                if ((bola->x + bola->ancho) > aux->x && bola->x < (aux->x + aux->ancho)) {
+                    aux->estadoExistencia = false;
+                    bola->direccionMovimientoY = !(bola->direccionMovimientoY); // Invertir dirección en Y
+                    return;
+                }
+            }
+        }
+        aux = aux->siguiente; // Mover al siguiente bloque
+    }
+}
+
+//verifica que haya bloques aún existiendo, sino significa que el jugador ganó el nivel
+bool revisarExistenciaBloques(PtrBloque& lista) {
+	PtrBloque aux = lista;
+	while (aux != NULL) {
+		if (aux->estadoExistencia) {
+			return false;
+		}
+		aux = aux->siguiente;
+	} 
+	return true;
+}
+
 void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
 	vida = new Vida;
 	vida->cantidad = 3;
@@ -411,7 +448,6 @@ void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) 
 	vida->ancho = ancho;
 
 }
-
 
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {

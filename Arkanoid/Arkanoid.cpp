@@ -98,9 +98,6 @@ float  y1ContadorVida ;
 float altoVida ;
 float anchoVida ;
 
-//Bloques
-float anchoBloque = 80;
-float altoBloque = 55;
 
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
 	int margenX = AnchoMonitor / 4;
@@ -184,7 +181,7 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 	const int limiteDerechoPared = (AnchoMonitor - AnchoMonitor / 4)-120 ;
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, limiteIzquierdoPared, limiteDerechoPared);
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 40, 40, limiteDerechoPared, limiteIzquierdoPared,50, imagenBola);
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 40, 40, limiteDerechoPared, limiteIzquierdoPared,AltoMonitor/11.5, imagenBola);
 }
 
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
@@ -204,6 +201,9 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		al_destroy_display(pantalla);
 		return;
 	}
+	//Bloques
+	const float anchoBloque = AnchoMonitor / 24;
+	const float altoBloque = AltoMonitor/19;
 
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, anchoBloque, altoBloque);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
@@ -298,7 +298,7 @@ void main()
 		if (evento.type == ALLEGRO_EVENT_TIMER) {
 			//TODO: definir mas timers
 			al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
-			moverBola(bola, 5);
+			moverBola(bola,4 );
 			dibujarParedes(listaEnlazadaParedes);
 			dibujarBarra(barra);
 			dibujarMarco(marcoMaxPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
@@ -308,8 +308,12 @@ void main()
 			setDatoMarco(marcoActualPts, temp++);
 			reboteBolaPared(bola);
 			reboteBolaBarra(bola, barra, AnchoMonitor, AltoMonitor);
+			reboteBolaBloque(bola, listaEnlazadaBloques);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
+			if (revisarExistenciaBloques(listaEnlazadaBloques)) {
+				juego = false;
+			};
 			al_flip_display(); // Actualizar la pantalla
 		}
 
