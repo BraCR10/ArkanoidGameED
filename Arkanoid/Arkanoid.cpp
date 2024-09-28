@@ -238,6 +238,13 @@ void main()
 	al_init_primitives_addon();
 	al_init_ttf_addon();
 
+	//inicialización de efecto sonidos
+	al_install_audio();
+	al_init_acodec_addon();
+	ALLEGRO_SAMPLE* sonidoReboteBarra = al_load_sample("Sonidos/sonidoReboteBarra.mp3");
+	ALLEGRO_SAMPLE* sonidoReboteBloque = al_load_sample("Sonidos/sonidoReboteBloque.mp3");
+	al_reserve_samples(2);
+
 	//TODO: PANTALLA DE INICIO
 	//Se pretende aqui crear un bucle para la pantalla de inicio donde se presentan diversas funciones del juego
 
@@ -306,9 +313,9 @@ void main()
 			dibujarBola(bola);
 			dibujarBloques(listaEnlazadaBloques);
 			setDatoMarco(marcoActualPts, temp++);
-			reboteBolaPared(bola);
-			reboteBolaBarra(bola, barra, AnchoMonitor, AltoMonitor);
-			reboteBolaBloque(bola, listaEnlazadaBloques);
+			reboteBolaPared(bola, sonidoReboteBarra);
+			reboteBolaBarra(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra);
+			reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
 			if (revisarExistenciaBloques(listaEnlazadaBloques)) {
@@ -344,6 +351,8 @@ void main()
 	al_destroy_bitmap(imagenBloqueNaranja);
 	al_destroy_bitmap(imagenBloqueCafe);
 	al_destroy_bitmap(imagenBloqueRosado);
+	al_destroy_sample(sonidoReboteBloque);
+	al_destroy_sample(sonidoReboteBarra);
 	al_destroy_event_queue(colaEventos);
 	al_destroy_timer(timerBarra);
 	al_destroy_font(fuenteMarcadores);

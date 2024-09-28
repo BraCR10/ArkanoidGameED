@@ -266,34 +266,43 @@ void eliminarMarco(PtrMarcador& marcador) {
 	delete (marcador);
 }
 
-void reboteBolaPared(PtrBola& bola) {
+void reboteBolaPared(PtrBola& bola, ALLEGRO_SAMPLE* efectoSonido) {
 		if ((bola->x - (bola->ancho) * 2) >= bola->limiteDerecho) { // si choca con pared derecha
 			bola->direccionMovimientoX = false;
+			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		}else if ((bola->y - (bola->alto)*2) <= bola->limiteSuperior) { // si choca con pared de arriba
 			bola->direccionMovimientoY = false;
-		} else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de abajo
+			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		} else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de izquierda
 			bola->direccionMovimientoX = true;
+			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		}
 }
 
-void reboteBolaBarra(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor) {
+void reboteBolaBarra(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido) {
 	if ((bola->y + bola->alto) >= barra->y){ //verifica que la bola esté en puntos de Y similares al de barra
 		if ((bola->y + bola->alto) <= (barra->y + barra->alto)){ //revisa que bola no se haya ido más abajo de barra
 			if ((bola->x + bola->ancho)>= (barra->x) && (bola->x+ bola->ancho/2) <= (barra->x+barra->ancho/2)) { //si cae en mitad izquierda de la barra
 				bola->direccionMovimientoY = true;
 				bola->direccionMovimientoX = false;
+				al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 			else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho/2) >= (barra->x+barra->ancho/2)) { //si cae en mitad derecha de la barra
 				bola->direccionMovimientoY = true;
 				bola->direccionMovimientoX = true;
+				if(bola->estadoMovimiento){
+					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				}
 			}
 		}
 		else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se irá hacia arriba
 			if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
 				bola->direccionMovimientoX = false;
+				al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 			else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho / 2) >= (barra->x + barra->ancho / 2)) { //si cae en mitad derecha de la barra
 				bola->direccionMovimientoX = true;
+				al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			}
 		}
 		else if (bola->y >= AltoMonitor){// si la bola se va más abajo de la barra
@@ -408,7 +417,7 @@ void dibujarBloques(PtrBloque& lista) {
 	}
 }
 
-void reboteBolaBloque(PtrBola& bola, PtrBloque& lista) {
+void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido) {
     PtrBloque aux = lista;
     while (aux != NULL) {
         if (aux->estadoExistencia) { // se verifica que el bloque aún exista
@@ -418,6 +427,7 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista) {
                 if ((bola->x + bola->ancho) > aux->x && bola->x < (aux->x + aux->ancho)) {
                     aux->estadoExistencia = false;
                     bola->direccionMovimientoY = !(bola->direccionMovimientoY); // Invertir dirección en Y
+					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     return;
                 }
             }
