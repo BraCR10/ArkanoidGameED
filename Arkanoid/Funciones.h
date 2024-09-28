@@ -421,15 +421,21 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSon
     PtrBloque aux = lista;
     while (aux != NULL) {
         if (aux->estadoExistencia) { // se verifica que el bloque aún exista
-            // Verificar colisión con la parte superior del bloque
-            if ((bola->y + bola->alto) >= aux->y && bola->y <= (aux->y + aux->alto)) {
-                // Verificar colisión en el eje X
-                if ((bola->x + bola->ancho) > aux->x && bola->x < (aux->x + aux->ancho)) {
-                    aux->estadoExistencia = false;
-                    bola->direccionMovimientoY = !(bola->direccionMovimientoY); // Invertir dirección en Y
+            if ((bola->y + bola->alto) >= aux->y && bola->y <= (aux->y + aux->alto)) { //verifica colision en el eje y
+				if ((bola->x + bola->ancho) >= (aux->x) && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) { //si cae en mitad izquierda del bloque
+					bola->direccionMovimientoY = !bola->direccionMovimientoY;
+					bola->direccionMovimientoX = false;
+					aux->estadoExistencia = false;
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-                    return;
-                }
+					return;
+				}
+				else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) { //si cae en mitad derecha del bloque
+					bola->direccionMovimientoY = !bola->direccionMovimientoY;
+					bola->direccionMovimientoX = true;
+					aux->estadoExistencia = false;
+					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					return;
+				}
             }
         }
         aux = aux->siguiente; // Mover al siguiente bloque
@@ -445,7 +451,7 @@ bool revisarExistenciaBloques(PtrBloque& lista) {
 		}
 		aux = aux->siguiente;
 	} 
-	return true;
+	return true; //si logra salir del while significa que no hay bloques existentes
 }
 
 void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
