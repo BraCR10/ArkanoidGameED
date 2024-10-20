@@ -123,7 +123,7 @@ void GuardarPuntajes(PtrMarcador& marcador) {
 	if (NULL == archivo) 
 		printf("No se pudo abrir el archivo.");
 	else 
-		fprintf(archivo, "%i\n", marcador->dato);
+		fprintf_s(archivo, "%i\n", marcador->dato);
 	fclose(archivo);
 }
 
@@ -434,6 +434,7 @@ void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) 
 
 }
 
+
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {
 		PtrVida vida = vidas;
@@ -474,12 +475,9 @@ void disminuirVida(PtrVida& vida) {
 	vida->cantidad--;
 }
 
-void verificadorGameOver(PtrVida& vida) {
-	if (vida->cantidad<=0) {
-		//TODO:Activar pantalla  game over	
-		exit(0);
-	}
-
+void iniciarMarcadores(int& marcadorPts, PtrVida& vida) {
+	marcadorPts = 0;
+	vida->cantidad = 3;
 }
 
 void reboteBolaBarra_Fuera(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, PtrVida& vida) {

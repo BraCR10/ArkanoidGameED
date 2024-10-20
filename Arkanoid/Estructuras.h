@@ -70,4 +70,6 @@ typedef struct Bloque {
 	ALLEGRO_BITMAP* imagen;
 }*PtrBloque;
 
+
+
 #endif //En caso de que ya se haya definido la estructura
