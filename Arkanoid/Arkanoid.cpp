@@ -300,6 +300,8 @@ void destruirElementosGenerales() {
 }
 void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
 	if (vida->cantidad <= 0) {
+		GuardarPuntajes(marcoActualPts);
+
 		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
 		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 50, 0);
 		if (!imagenGameOver) {
@@ -307,8 +309,11 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 			al_destroy_display(pantalla);
 			return;
 		}
+
 		destruirElementosGenerales();
 		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+
+		
 
 	}
 

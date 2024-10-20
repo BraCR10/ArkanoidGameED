@@ -123,7 +123,7 @@ void GuardarPuntajes(PtrMarcador& marcador) {
 	if (NULL == archivo) 
 		printf("No se pudo abrir el archivo.");
 	else 
-		fprintf(archivo, "%i\n", marcador->dato);
+		fprintf_s(archivo, "%i\n", marcador->dato);
 	fclose(archivo);
 }
 
