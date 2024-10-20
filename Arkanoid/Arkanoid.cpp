@@ -55,6 +55,9 @@ PtrMarcador marcoCuadroComodines = NULL;
 //Creacion  de vidas
 PtrVida contadorVidas = NULL;
 
+//Creacion de contador de puntos
+int contadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
+
 //Creacion lista enlazada bloques
 PtrBloque listaEnlazadaBloques = NULL;
  
@@ -267,17 +270,20 @@ void main()
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
 
 	//FPS de cada timer
-	 int FPS_Barra = 80;
+	 int FPS_AccionesEntorno = 50;
+	 int FPS_Bola_Colision = 70;
 
 	//timers
-	ALLEGRO_TIMER* timerBarra = al_create_timer(1.0 / FPS_Barra);
-	al_register_event_source(colaEventos, al_get_timer_event_source(timerBarra));
+	ALLEGRO_TIMER* timerBarra_Entorno = al_create_timer(1.0 / FPS_AccionesEntorno);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerBarra_Entorno));
+
+	ALLEGRO_TIMER* timerBola_Colision = al_create_timer(1.0 / FPS_Bola_Colision);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerBola_Colision));
 
 	//Inicio de timers
-	al_start_timer(timerBarra);
+	al_start_timer(timerBarra_Entorno);
+	al_start_timer(timerBola_Colision);
 
-	//Varible temporal para ver que el marco se dibuje en un timer, se eliminara
-	int temp = 0;
 
 	//Bucle principal
 	bool juego = true;
@@ -305,23 +311,36 @@ void main()
 		if (evento.type == ALLEGRO_EVENT_TIMER) {
 			//TODO: definir mas timers
 			al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
-			moverBola(bola,4 );
-			dibujarParedes(listaEnlazadaParedes);
 			dibujarBarra(barra);
-			dibujarMarco(marcoMaxPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-			dibujarMarco(marcoActualPts,fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-			dibujarBola(bola);
-			dibujarBloques(listaEnlazadaBloques);
-			setDatoMarco(marcoActualPts, temp++);
-			reboteBolaPared(bola, sonidoReboteBarra);
-			reboteBolaBarra(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra);
-			reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque);
+			dibujarParedes(listaEnlazadaParedes);
+			dibujarMarco(marcoMaxPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
+			dibujarMarco(marcoActualPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 			dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-			dibujarContadorVidas(contadorVidas, fuenteMarcadores,colorTitulosMarcos);
-			if (revisarExistenciaBloques(listaEnlazadaBloques)) {
-				juego = false;
-			};
+			dibujarBloques(listaEnlazadaBloques);
+			dibujarBola(bola);
+			dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
+				
+		
+			 if (evento.timer.source == timerBola_Colision) {
+				moverBola(bola, 4);
+				reboteBolaPared(bola, sonidoReboteBarra);
+				reboteBolaBarra_Fuera(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
+				reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
+			 }
+
+			 if (evento.timer.source == timerBarra_Entorno) {
+				 setDatoMarco(marcoActualPts, contadorPts);
+				 verificadorGameOver(contadorVidas);
+				 if (revisarExistenciaBloques(listaEnlazadaBloques)) {
+					 juego = false;
+				 };
+			 }
+			
+
+
+
 			al_flip_display(); // Actualizar la pantalla
+			
 		}
 
 	}
@@ -354,7 +373,7 @@ void main()
 	al_destroy_sample(sonidoReboteBloque);
 	al_destroy_sample(sonidoReboteBarra);
 	al_destroy_event_queue(colaEventos);
-	al_destroy_timer(timerBarra);
+	al_destroy_timer(timerBarra_Entorno);
 	al_destroy_font(fuenteMarcadores);
 
 
