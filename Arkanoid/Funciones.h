@@ -474,12 +474,9 @@ void disminuirVida(PtrVida& vida) {
 	vida->cantidad--;
 }
 
-void verificadorGameOver(PtrVida& vida) {
-	if (vida->cantidad<=0) {
-		//TODO:Activar pantalla  game over	
-		exit(0);
-	}
-
+void iniciarMarcadores(int& marcadorPts, PtrVida& vida) {
+	marcadorPts = 0;
+	vida->cantidad = 3;
 }
 
 void reboteBolaBarra_Fuera(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, PtrVida& vida) {
