@@ -434,6 +434,7 @@ void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) 
 
 }
 
+
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {
 		PtrVida vida = vidas;

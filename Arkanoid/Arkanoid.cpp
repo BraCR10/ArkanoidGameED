@@ -58,7 +58,8 @@ PtrMarcador marcoCuadroComodines = NULL;
 //Creacion  de vidas
 PtrVida contadorVidas = NULL;
 
-
+//Creacion de nivel
+PtrMarcador NivelLabel = NULL;
 
 //Creacion lista enlazada bloques
 PtrBloque listaEnlazadaBloques = NULL;
@@ -72,6 +73,7 @@ ALLEGRO_FONT* fuenteGameOver = NULL;
 
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
+ALLEGRO_COLOR colorFondoLabelNivel = al_map_rgb(150, 255, 1);
 ALLEGRO_COLOR colorTitulosMarcos = al_map_rgb(0, 0, 0);
 ALLEGRO_COLOR colorLetrasGameOver = al_map_rgb(255, 255, 255);
 
@@ -105,9 +107,18 @@ float  y1ContadorVida ;
 float altoVida ;
 float anchoVida ;
 
+//Level label
+float x1LabelNivel;
+float  y1LabelNivel;
+float x2LabelNivel;
+float y2LabelNivel;
+
 //Verificador de game over
 bool flagGameOverMsg = false;
+bool flagGameOverCleanMemory = false;
 
+//Nivel
+int nivel=0;
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
 	int margenX = AnchoMonitor / 4;
 	int margenY = AltoMonitor / 8;
@@ -144,43 +155,50 @@ void crearParedesVerticalesDerecha(int AnchoMonitor, int AltoMonitor) {
 void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierdoPared, int limiteDerechoPared) {
 	int margenX = AnchoMonitor / 4;
 	int margenY = AltoMonitor / 8;
-	const int anchoImagen = 40;
-	const int altoImagen = 120;
+	const int x_Imagen_Ancho = 40;
+	const int y_Imagen_Alto = 120;
 	// Crear barra
 	crearBarra(barra, limiteIzquierdoPared + anchoBarra * 2.5, AltoMonitor - margenY, anchoBarra, altoBarra, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - altoBarra, imagenParedHorizontal);
 
 	// Crear marcadores
 	int y1MaxPts = AltoMonitor / 4;
-	x1MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*2;
-	x2MaxPts = limiteDerechoPared + anchoBarra + anchoImagen*6;
-	y2MaxPts = y1MaxPts + altoImagen;
+	x1MaxPts = limiteDerechoPared + anchoBarra + x_Imagen_Ancho*2;
+	x2MaxPts = limiteDerechoPared + anchoBarra + x_Imagen_Ancho*6;
+	y2MaxPts = y1MaxPts + y_Imagen_Alto;
 	crearMarco(marcoMaxPts, mejorPuntaje, x1MaxPts, y1MaxPts,x2MaxPts ,y2MaxPts, "Mejor puntaje");
 
-	int y1ActualPts = y1MaxPts + altoImagen*2;
-	x1ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 2;
-	x2ActualPts = limiteDerechoPared + anchoBarra + anchoImagen * 6;
-	y2ActualPts = y1ActualPts + altoImagen;
+	int y1ActualPts = AltoMonitor / 4 + y_Imagen_Alto*2;
+	x1ActualPts = limiteDerechoPared + anchoBarra + x_Imagen_Ancho * 2;
+	x2ActualPts = limiteDerechoPared + anchoBarra + x_Imagen_Ancho * 6;
+	y2ActualPts = y1ActualPts + y_Imagen_Alto;
 	crearMarco(marcoActualPts, 0, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
 
 	// Cuadro de comod�n
-	x1CuadroComodines = limiteIzquierdoPared - anchoImagen * 6;
-	y1CuadroComodines = y1MaxPts;
-	x2CuadroComodines = limiteIzquierdoPared - anchoImagen * 2;
-	y2CuadroComodines = y1MaxPts + altoImagen;
+	x1CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 6;
+	y1CuadroComodines = AltoMonitor / 4;
+	x2CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 2;
+	y2CuadroComodines = AltoMonitor / 4 + y_Imagen_Alto;
 	crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin Actual");
 
 	//Contador de vidas
-	x1ContadorVida = limiteIzquierdoPared - anchoImagen * 6;
-	y1ContadorVida = y1CuadroComodines + altoImagen * 2;
-	altoVida = y2CuadroComodines-y1CuadroComodines+50;
+	x1ContadorVida = limiteIzquierdoPared - x_Imagen_Ancho * 6;
+	y1ContadorVida = AltoMonitor / 4 + y_Imagen_Alto * 2;
+	altoVida = y2CuadroComodines- (AltoMonitor / 4) +50;
 	anchoVida = x2CuadroComodines- x1CuadroComodines;
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida,  altoVida, anchoVida);
+
+	//Label nivel
+	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 6;
+	y1LabelNivel = AltoMonitor / 4 - 110;
+	x2LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 2;
+	y2LabelNivel = AltoMonitor / 4 - 85;
+	crearMarco(NivelLabel,nivel,x1LabelNivel,y1LabelNivel,x2LabelNivel,y2LabelNivel,"Nivel");
 }
 
 
-
-
 void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+
+	
 	crearParedesHorizontales(AnchoMonitor, AltoMonitor);
 	crearParedesVerticalesIzquierda(AnchoMonitor, AltoMonitor);
 	crearParedesVerticalesDerecha(AnchoMonitor, AltoMonitor);
@@ -191,9 +209,11 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, limiteIzquierdoPared, limiteDerechoPared);
 	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 40, 40, limiteDerechoPared, limiteIzquierdoPared,AltoMonitor/11.5, imagenBola);
+	
 }
 
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+	nivel= 9;
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -211,8 +231,8 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		return;
 	}
 	//Bloques
-	const float anchoBloque = AnchoMonitor / 24;
-	const float altoBloque = AltoMonitor/19;
+	 const float anchoBloque = AnchoMonitor / 24;
+	 const float altoBloque = AltoMonitor/19;
 
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, anchoBloque, altoBloque);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
@@ -220,18 +240,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 }
 
 
-void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla) {
-	if (vida->cantidad <= 0) {
-		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
-		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 50, 0);
-		if (!imagenGameOver) {
-			al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-			al_destroy_display(pantalla);
-			return;
-		}
-	}
 
-}
 
 void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
 	// Dibujar la imagen de "Game Over" en pantalla completa
@@ -258,6 +267,7 @@ void dibujarPantallaNivel() {
 	dibujarBloques(listaEnlazadaBloques);
 	dibujarBola(bola);
 	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
+	dibujarMarco(NivelLabel, fuenteMarcadores, colorFondoLabelNivel, colorTitulosMarcos);
 
 }
 
@@ -287,6 +297,21 @@ void destruirElementosGenerales() {
 
 	eliminarListaBloque(listaEnlazadaBloques);
 	listaEnlazadaBloques = NULL;
+}
+void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
+	if (vida->cantidad <= 0) {
+		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
+		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 50, 0);
+		if (!imagenGameOver) {
+			al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+			al_destroy_display(pantalla);
+			return;
+		}
+		destruirElementosGenerales();
+		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+
+	}
+
 }
 void dibujarLobby() {}
 void main()
@@ -322,7 +347,8 @@ void main()
 	al_init_acodec_addon();
 	ALLEGRO_SAMPLE* sonidoReboteBarra = al_load_sample("Sonidos/sonidoReboteBarra.mp3");
 	ALLEGRO_SAMPLE* sonidoReboteBloque = al_load_sample("Sonidos/sonidoReboteBloque.mp3");
-	al_reserve_samples(2);
+	ALLEGRO_SAMPLE* sonidoGameOver = al_load_sample("Sonidos/sonidoGameOver.mp3");
+	al_reserve_samples(3);
 
 	//TODO: PANTALLA DE INICIO
 	//Se pretende aqui crear un bucle para la pantalla de inicio donde se presentan diversas funciones del juego
@@ -394,9 +420,10 @@ void main()
 			iniciarMovimientoBola(bola, 5, false);
 		}
 		else if (al_key_down(&teclado, ALLEGRO_KEY_ENTER) && imagenGameOver != NULL) {
-			imagenGameOver = NULL;
-			iniciarMarcadores(contadorPts, contadorVidas);
+
 			nivel1(pantalla, AnchoMonitor, AltoMonitor);
+			iniciarMarcadores(contadorPts, contadorVidas);
+			imagenGameOver = NULL;
 		}
 		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) 
 			juego = false;
@@ -418,28 +445,19 @@ void main()
 
 				if (evento.timer.source == timerBarra_Entorno) {
 					setDatoMarco(marcoActualPts, contadorPts);
-					verificadorGameOver(contadorVidas, pantalla);
+					verificadorGameOver(contadorVidas, pantalla,sonidoGameOver);
 					if (revisarExistenciaBloques(listaEnlazadaBloques)) {
-						juego = false;
+						//TODO:WIN
+					//	juego = false;
 					};
 				}
 			}
 			else
 			{
-
-				//Ahorrar memoria en ejecucion
-				if (imagenGameOver == NULL) {
-					destruirElementosGenerales();
-					
-				}
-
 				if (evento.timer.source == timer_Game_Over_Msg)
 					flagGameOverMsg = !flagGameOverMsg;
 				dibujarGameOver(AnchoMonitor, AltoMonitor);
-
 			}
-
-
 			al_flip_display(); // Actualizar la pantalla
 			
 		}
@@ -469,6 +487,9 @@ void main()
 	al_destroy_event_queue(colaEventos);
 	al_destroy_timer(timerBarra_Entorno);
 	al_destroy_font(fuenteMarcadores);
+	al_destroy_font(fuenteGameOver);
+	al_destroy_sample(sonidoGameOver);
+	al_destroy_bitmap(imagenGameOver);
 
 
 }
