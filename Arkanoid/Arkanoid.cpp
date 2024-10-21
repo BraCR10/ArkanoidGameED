@@ -37,6 +37,7 @@ ALLEGRO_BITMAP* imagenBloqueAmarillo = NULL;
 ALLEGRO_BITMAP* imagenBloqueRosado = NULL;
 ALLEGRO_BITMAP* imagenBloqueCafe = NULL;
 ALLEGRO_BITMAP* imagenGameOver = NULL;
+ALLEGRO_BITMAP* imagenMenu = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -70,6 +71,7 @@ PtrBola bola = NULL;
 //fuente
 ALLEGRO_FONT* fuenteMarcadores = NULL;
 ALLEGRO_FONT* fuenteGameOver = NULL;
+ALLEGRO_FONT* fuenteOpcionesMenu = NULL;
 
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
@@ -116,7 +118,9 @@ float y2LabelNivel;
 //Verificador de game over
 bool flagGameOverMsg = false;
 bool flagGameOverCleanMemory = false;
-
+//Menu principal movimiento Selector
+int y1SelectorMov = 0;
+int y2SelectorMov = 0;
 //Nivel
 int nivel=0;
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
@@ -298,6 +302,7 @@ void destruirElementosGenerales() {
 	eliminarListaBloque(listaEnlazadaBloques);
 	listaEnlazadaBloques = NULL;
 }
+
 void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
 	if (vida->cantidad <= 0) {
 		GuardarPuntajes(marcoActualPts);
@@ -318,7 +323,95 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 	}
 
 }
-void dibujarLobby() {}
+
+
+void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
+
+	al_draw_scaled_bitmap(imagenMenu,
+		0, 0, al_get_bitmap_width(imagenMenu), al_get_bitmap_height(imagenMenu),
+		0, 0, al_get_display_width(pantalla), al_get_display_height(pantalla),
+		0);
+	int posicionY_PrimerElemento= AltoMonitor / 2 - 110;
+	int posicionX = AnchoMonitor / 2 -150;
+
+
+	int x1Selector = posicionX ;
+	int y1Selector = posicionY_PrimerElemento +y1SelectorMov;
+	int x2Selector = posicionX + 420  ;
+	int y2Selector = posicionY_PrimerElemento+50 +y2SelectorMov;
+	al_draw_filled_rectangle(posicionX - 20, posicionY_PrimerElemento - 10, posicionX + 430, posicionY_PrimerElemento + 300, al_map_rgba(0, 0, 0, 100));
+	al_draw_filled_rectangle(x1Selector, y1Selector, x2Selector, y2Selector, al_map_rgb(153, 153, 102));
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), posicionX, posicionY_PrimerElemento, ALLEGRO_ALIGN_LEFT, "1. Jugar");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), posicionX, posicionY_PrimerElemento+50, ALLEGRO_ALIGN_LEFT, "2. Multijugador");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), posicionX, posicionY_PrimerElemento+100, ALLEGRO_ALIGN_LEFT, "3. Maquina vs maquina(DEMO)");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), posicionX, posicionY_PrimerElemento + 150, ALLEGRO_ALIGN_LEFT, "4. Ayuda");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), posicionX, posicionY_PrimerElemento + 200, ALLEGRO_ALIGN_LEFT, "5. Mostrar estadísticas");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), posicionX, posicionY_PrimerElemento + 250, ALLEGRO_ALIGN_LEFT, "6. Salir");
+
+
+
+}
+//This funtion has all the configuration of the menu and desing
+int menuInicial(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor,int AltoMonitor) {
+	int opcion = 0;
+
+	 imagenMenu = al_load_bitmap("Imagenes/pantallaMenu.jpeg");
+	 if (!imagenMenu) {
+		 al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		 al_destroy_display(pantalla);
+		 return 0;
+	 }
+
+	 //Cola  de eventos menu
+	 ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
+	 al_register_event_source(colaEventos, al_get_keyboard_event_source());
+	 //Timers
+	 ALLEGRO_TIMER* timerMenu = al_create_timer(1.0 / 6);
+	 al_register_event_source(colaEventos, al_get_timer_event_source(timerMenu));
+	 al_start_timer(timerMenu);
+	 //Configuracion de teclado
+	 al_install_keyboard();
+	 ALLEGRO_KEYBOARD_STATE teclado;
+	 //Funte
+	 fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf",40, 0);
+	 while (true)
+	 {
+
+		 //Cola de eventos
+		 ALLEGRO_EVENT evento;
+		 al_wait_for_event(colaEventos, &evento);
+		 al_get_keyboard_state(&teclado);
+
+		 dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
+		if (al_key_down(&teclado, ALLEGRO_KEY_1)) {
+			 opcion = 1;
+			 break;
+		}
+		if (al_key_down(&teclado, ALLEGRO_KEY_6)) {
+			opcion = 6;
+			break;
+		}
+		if(al_key_down(&teclado, ALLEGRO_KEY_DOWN)) {
+			if (evento.timer.source == timerMenu) {
+				y1SelectorMov = y1SelectorMov + 50;
+				y2SelectorMov = y2SelectorMov + 50;
+			}
+		}
+		if (al_key_down(&teclado, ALLEGRO_KEY_UP)) {
+			if (evento.timer.source == timerMenu) {
+				y1SelectorMov = y1SelectorMov - 50;
+				y2SelectorMov = y2SelectorMov - 50;
+			}
+		}
+		if (evento.type == ALLEGRO_EVENT_TIMER) {
+			al_flip_display();
+		}
+	 }
+
+
+
+	return opcion;
+}
 void main()
 {
 	//Validacion de inicializacion de Allegro
@@ -326,7 +419,7 @@ void main()
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo inicializar Allegro", NULL, NULL);
 		return;
 	}
-
+	
 	//Informacion del monitor
 	ALLEGRO_MONITOR_INFO monitor;
 	al_get_monitor_info(0, &monitor);
@@ -341,7 +434,7 @@ void main()
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se puede crear la pantalla", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		return;
 	}
-
+	
 	//Inicializacion de addons
 	al_init_image_addon();
 	al_init_primitives_addon();
@@ -354,12 +447,6 @@ void main()
 	ALLEGRO_SAMPLE* sonidoReboteBloque = al_load_sample("Sonidos/sonidoReboteBloque.mp3");
 	ALLEGRO_SAMPLE* sonidoGameOver = al_load_sample("Sonidos/sonidoGameOver.mp3");
 	al_reserve_samples(3);
-
-	//TODO: PANTALLA DE INICIO
-	//Se pretende aqui crear un bucle para la pantalla de inicio donde se presentan diversas funciones del juego
-
-	// NIVEL 1
-	nivel1( pantalla, AnchoMonitor, AltoMonitor);
 
 	//Configuracion de teclado
 	al_install_keyboard();
@@ -389,84 +476,99 @@ void main()
 
 	ALLEGRO_TIMER* timer_Game_Over_Msg = al_create_timer(1.0 / FPS_Game_Over_Msg);
 	al_register_event_source(colaEventos, al_get_timer_event_source(timer_Game_Over_Msg));
-
+	
 	//Inicio de timers
 	al_start_timer(timerBarra_Entorno);
 	al_start_timer(timerBola_Colision);
 	al_start_timer(timer_Game_Over_Msg);
 
-	//iniciar marcadores
-	iniciarMarcadores(contadorPts,contadorVidas);
-
-
 	//Bucle principal
-	bool juego = true;
-	int nivel=0;
+	bool juego = false;
+	bool menu = true;
+	int opcion=0;
 
-	while (juego) {
-
+	while (menu) {
+		
 		ALLEGRO_EVENT evento;
 		al_wait_for_event(colaEventos, &evento);
 		al_get_keyboard_state(&teclado);
 
+		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor);
 
+		switch (opcion)
+		{
+		case 1:
+			nivel1(pantalla, AnchoMonitor, AltoMonitor);
+			iniciarMarcadores(contadorPts, contadorVidas);
+			juego= true;
+			break;
+
+		case 6:
+			menu = false;
+			break;
+		default:
+			break;
+		}
 		if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			juego = false;
 		}
 
 
-		//TODO: definir donde se escoje la velocidad, ahorita solo en 10
-		if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT) && imagenGameOver == NULL) {
-			moverBarra(barra, 10, true);
-			iniciarMovimientoBola(bola, 5, true);
-		}
-		else if (al_key_down(&teclado, ALLEGRO_KEY_LEFT) && imagenGameOver == NULL) {
-			moverBarra(barra, 10, false);
-			iniciarMovimientoBola(bola, 5, false);
-		}
-		else if (al_key_down(&teclado, ALLEGRO_KEY_ENTER) && imagenGameOver != NULL) {
+		while (juego)
+		{
+			ALLEGRO_EVENT evento;
+			al_wait_for_event(colaEventos, &evento);
+			al_get_keyboard_state(&teclado);
 
-			nivel1(pantalla, AnchoMonitor, AltoMonitor);
-			iniciarMarcadores(contadorPts, contadorVidas);
-			imagenGameOver = NULL;
-		}
-		else if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) 
+			//TODO: definir donde se escoje la velocidad, ahorita solo en 10
+			if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT) && imagenGameOver == NULL) {
+				moverBarra(barra, 6, true);
+				iniciarMovimientoBola(bola, 5, true);
+			}
+			if (al_key_down(&teclado, ALLEGRO_KEY_LEFT) && imagenGameOver == NULL) {
+				moverBarra(barra, 10, false);
+				iniciarMovimientoBola(bola, 5, false);
+			}
+			if (al_key_down(&teclado, ALLEGRO_KEY_ENTER) && imagenGameOver != NULL) {
+				juego = false;
+			}
+			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
 			juego = false;
-		
-
-		if (evento.type == ALLEGRO_EVENT_TIMER) {
-			//TODO: definir mas timers
-			if (imagenGameOver == NULL)
-			{
-				al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
-				dibujarPantallaNivel();
-
-				if (evento.timer.source == timerBola_Colision) {
-					moverBola(bola, 10);
-					reboteBolaPared(bola, sonidoReboteBarra);
-					reboteBolaBarra_Fuera(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
-					reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
-				}
-
-				if (evento.timer.source == timerBarra_Entorno) {
-					setDatoMarco(marcoActualPts, contadorPts);
-					verificadorGameOver(contadorVidas, pantalla,sonidoGameOver);
-					if (revisarExistenciaBloques(listaEnlazadaBloques)) {
-						//TODO:WIN
-					//	juego = false;
-					};
-				}
+			menu = false;//TODO:Quitar
 			}
-			else
-			{
-				if (evento.timer.source == timer_Game_Over_Msg)
-					flagGameOverMsg = !flagGameOverMsg;
-				dibujarGameOver(AnchoMonitor, AltoMonitor);
+			if (evento.type == ALLEGRO_EVENT_TIMER) {
+				//TODO: definir mas timers
+				if (imagenGameOver == NULL)
+				{
+					al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
+					dibujarPantallaNivel();
+
+					if (evento.timer.source == timerBola_Colision) {
+						moverBola(bola, 4);
+						reboteBolaPared(bola, sonidoReboteBarra);
+						reboteBolaBarra_Fuera(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
+						reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
+					}
+
+					if (evento.timer.source == timerBarra_Entorno) {
+						setDatoMarco(marcoActualPts, contadorPts);
+						verificadorGameOver(contadorVidas, pantalla,sonidoGameOver);
+						if (revisarExistenciaBloques(listaEnlazadaBloques)) {
+							//TODO:WIN
+						//	juego = false;
+						};
+					}
+
+				}
+				else
+				{
+					if (evento.timer.source == timer_Game_Over_Msg)
+						flagGameOverMsg = !flagGameOverMsg;
+					dibujarGameOver(AnchoMonitor, AltoMonitor);
+				}
+				al_flip_display(); // Actualizar la pantalla
 			}
-			al_flip_display(); // Actualizar la pantalla
-			
 		}
-
 	}
 
 
