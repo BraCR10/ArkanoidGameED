@@ -72,6 +72,7 @@ PtrBola bola = NULL;
 ALLEGRO_FONT* fuenteMarcadores = NULL;
 ALLEGRO_FONT* fuenteGameOver = NULL;
 ALLEGRO_FONT* fuenteOpcionesMenu = NULL;
+ALLEGRO_FONT* fuenteTituloMenu = NULL;
 
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
@@ -362,6 +363,15 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 			opcionesMenu[i]
 		);
 	}
+
+	al_draw_text(
+		fuenteTituloMenu,
+		al_map_rgb(204, 204, 0),
+		posicionX-80,
+		posicionY_PrimerElemento-100,
+		ALLEGRO_ALIGN_LEFT,
+		"ARKANOID IN THE SPACE"
+	);
 }
 
 int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
@@ -383,6 +393,12 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
 	if (!fuenteOpcionesMenu) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return 0;
+	}
+	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", 50, 0);
+	if (!fuenteTituloMenu) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
