@@ -516,3 +516,9 @@ void reboteBolaBarra_Fuera(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int
 		}
 	}
 }
+void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
+	ALLEGRO_EVENT evento;
+	// Mientras haya eventos en la cola, leer y descartar
+	while (al_get_next_event(colaEventos, &evento)) {
+	}
+}
