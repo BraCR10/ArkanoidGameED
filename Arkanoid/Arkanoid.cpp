@@ -560,7 +560,8 @@ void main()
 					if (evento.timer.source == timerBarra_Entorno) {
 						setDatoMarco(marcoActualPts, contadorPts);
 						verificadorGameOver(contadorVidas, pantalla,sonidoGameOver);
-						if (revisarExistenciaBloques(listaEnlazadaBloques)) {
+						//Vañidacion de existencia de bloques y no game over
+						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
 							//TODO:WIN
 							juego = false;
 						};
