@@ -82,10 +82,10 @@ void dibujarBarra(PtrBarra& barra) {
 void moverBarra(PtrBarra& barra, int velocidad,bool dir) {
 	// dir = true -> derecha || dir = false -> izquierda
 	//TODO: Se puede plantear un enum en dir
-	if (dir && barra->x + velocidad < barra->limiteDerecho) 
+	if (dir && barra->x + velocidad < barra->limiteDerecho - barra->ancho)
 			barra->x += velocidad;
 	else if(dir)
-		barra->x = barra->limiteDerecho;
+		barra->x = barra->limiteDerecho-barra->ancho;
 
 	if (!dir && barra->x - velocidad > barra->limiteIzquierdo) 
 			barra->x -= velocidad;
@@ -267,10 +267,10 @@ void eliminarMarco(PtrMarcador& marcador) {
 }
 
 void reboteBolaPared(PtrBola& bola, ALLEGRO_SAMPLE* efectoSonido) {
-		if ((bola->x - (bola->ancho) * 2) >= bola->limiteDerecho) { // si choca con pared derecha
+		if (bola->x+ bola->ancho >= bola->limiteDerecho) { // si choca con pared derecha
 			bola->direccionMovimientoX = false;
 			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-		}else if ((bola->y - (bola->alto)*2) <= bola->limiteSuperior) { // si choca con pared de arriba
+		}else if (bola->y <= bola->limiteSuperior) { // si choca con pared de arriba
 			bola->direccionMovimientoY = false;
 			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		} else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de izquierda
@@ -449,8 +449,8 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 		);
 
 		// Texto a dibujar
-		char texto[20];
-		snprintf(texto, sizeof(texto), "# %d", vida->cantidad);
+		char texto[12];
+		snprintf(texto, sizeof(texto), "%d", vida->cantidad);
 		// Calcular el ancho y alto del texto
 		int anchoTexto = al_get_text_width(fuente, texto);
 		int altoTexto = al_get_font_line_height(fuente);
@@ -460,7 +460,7 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 		float textY = vida->y + (vida->alto - altoTexto) / 2;
 
 		// Dibujar el texto centrado dentro del área de la imagen
-		al_draw_text(fuente, colorTitulo, textX, textY - 40, ALLEGRO_ALIGN_LEFT, "Vidas");
+		//al_draw_text(fuente, colorTitulo, textX, textY - 40, ALLEGRO_ALIGN_LEFT, "Vidas");
 		al_draw_text(fuente, colorTitulo, textX, textY, ALLEGRO_ALIGN_LEFT, texto);
 	}
 }

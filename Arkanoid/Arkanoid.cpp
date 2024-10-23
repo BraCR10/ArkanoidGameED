@@ -161,8 +161,8 @@ void crearParedesVerticalesDerecha(int AnchoMonitor, int AltoMonitor) {
 void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierdoPared, int limiteDerechoPared) {
 	int margenX = AnchoMonitor / 4;
 	int margenY = AltoMonitor / 8;
-	const int x_Imagen_Ancho = 40;
-	const int y_Imagen_Alto = 120;
+	const int x_Imagen_Ancho = 30;
+	const int y_Imagen_Alto = 110;
 	// Crear barra
 	crearBarra(barra, limiteIzquierdoPared + ANCHO_BARRA * 2.5, AltoMonitor - margenY, ANCHO_BARRA, ALTO_BARRA, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - ALTO_BARRA, imagenParedHorizontal);
 
@@ -189,7 +189,7 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	//Contador de vidas
 	x1ContadorVida = limiteIzquierdoPared - x_Imagen_Ancho * 6;
 	y1ContadorVida = AltoMonitor / 4 + y_Imagen_Alto * 2;
-	altoVida = y2CuadroComodines- (AltoMonitor / 4) +50;
+	altoVida = y2CuadroComodines- (AltoMonitor / 4);
 	anchoVida = x2CuadroComodines- x1CuadroComodines;
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida,  altoVida, anchoVida);
 
@@ -210,10 +210,10 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 
 	// Definir l�mites para la barra y marcadores
 	const int LIM_IZQ_PARED = AnchoMonitor / 4  ;
-	const int LIM_DER_PARED = (AnchoMonitor - AnchoMonitor / 4)-120 ;
+	const int LIM_DER_PARED = (AnchoMonitor - AnchoMonitor / 4) ;
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED);
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 40, 40, LIM_DER_PARED, LIM_IZQ_PARED,AltoMonitor/11.5, imagenBola);
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 30, 30, LIM_DER_PARED, LIM_IZQ_PARED,AltoMonitor/6.5, imagenBola);
 	
 }
 
@@ -300,7 +300,7 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 		GuardarPuntajes(marcoActualPts);
 
 		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
-		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 50, 0);
+		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
 		if (!imagenGameOver) {
 			al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 			al_destroy_display(pantalla);
@@ -321,10 +321,10 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	);
 
 	// Cálculo de posiciones
-	int posicionY_PrimerElemento = AltoMonitor / 2 - 110;
-	int posicionX = AnchoMonitor / 2 - 150;
-	int anchoSelector = 420;
-	int altoOpcion = 50;
+	int posicionY_PrimerElemento = AltoMonitor*2/5 ;
+	int posicionX = AnchoMonitor*2.7/ 7 ;
+	int anchoSelector = AnchoMonitor/4;
+	int altoOpcion = AnchoMonitor/35;
 
 	// Posiciones del selector
 	int x1Selector = posicionX;
@@ -335,9 +335,9 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	// Dibujar fondo semitransparente para el menú
 	al_draw_filled_rectangle(
 		posicionX - 20,
-		posicionY_PrimerElemento - 10,
-		posicionX + anchoSelector + 10,
-		posicionY_PrimerElemento + altoOpcion * 6 + 10,
+		posicionY_PrimerElemento/1.1,
+		(posicionX + anchoSelector)*1.01,
+		posicionY_PrimerElemento + altoOpcion * 6 ,
 		al_map_rgba(0, 0, 0, 100)
 	);
 
@@ -346,10 +346,10 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	const char* opcionesMenu[] = {
 		"1. Jugar",
 		"2. Multijugador",
-		"3. Maquina vs maquina (DEMO)",
+		"3. Maquina vs maquina		",
 		"4. Ayuda",
 		"5. Mostrar estadísticas",
-		"6. Salir"
+		"6. Salir",
 	};
 
 	// Dibujar cada opción del menú
@@ -358,7 +358,7 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
 			posicionX,
-			posicionY_PrimerElemento + i * altoOpcion,
+			posicionY_PrimerElemento + (i * altoOpcion)*1.0,
 			ALLEGRO_ALIGN_LEFT,
 			opcionesMenu[i]
 		);
@@ -367,8 +367,8 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	al_draw_text(
 		fuenteTituloMenu,
 		al_map_rgb(204, 204, 0),
-		posicionX-80,
-		posicionY_PrimerElemento-100,
+		posicionX*0.75,
+		posicionY_PrimerElemento*3/5,
 		ALLEGRO_ALIGN_LEFT,
 		"ARKANOID IN THE SPACE"
 	);
@@ -391,13 +391,13 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		return 0;
 	}
 
-	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
+	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", 20, 0);
 	if (!fuenteOpcionesMenu) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
 	}
-	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", 50, 0);
+	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", 75, 0);
 	if (!fuenteTituloMenu) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
@@ -479,7 +479,7 @@ void main()
 	ALLEGRO_KEYBOARD_STATE teclado;
 
 	//Fuente
-	fuenteMarcadores = al_load_ttf_font("Fuentes/ARLETA.ttf", 25, 0);
+	fuenteMarcadores = al_load_ttf_font("Fuentes/ARLETA.ttf", 20, 0);
 	if (!fuenteMarcadores) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
@@ -491,7 +491,7 @@ void main()
 
 	//FPS de cada timer
 	 int FPS_AccionesEntorno = 50;
-	 int FPS_Bola_Colision = 70;
+	 int FPS_Bola_Colision = 80;
 	 int FPS_Game_Over_Msg = 1;
 	//timers
 	ALLEGRO_TIMER* timerBarra_Entorno = al_create_timer(1.0 / FPS_AccionesEntorno);
