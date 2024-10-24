@@ -244,7 +244,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	 const float ANCHO_COMODIN = AnchoMonitor/25;
 	 const float ALTO_COMODIN = AltoMonitor/20;
 	
-	 crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	//crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 	iniciarMarcadores(contadorPts, contadorVidas);
@@ -271,6 +271,7 @@ void dibujarPantallaNivel() {
 	dibujarBola(bola);
 	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
 	dibujarMarco(NivelLabel, fuenteMarcadores, colorFondoLabelNivel, colorTitulosMarcos);
+	dibujarComodines(listaEnlazadaBloques);
 }
 
 void destruirElementosGenerales() {
@@ -574,6 +575,7 @@ void main()
 
 					if (evento.timer.source == timerBola_Colision) {
 						moverBola(bola, 4);
+						moverComodines(listaEnlazadaBloques, 4,AltoMonitor);
 						reboteBolaPared(bola, sonidoReboteBarra);
 						reboteBolaBarra_Fuera(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
 						reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);

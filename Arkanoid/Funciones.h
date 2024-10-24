@@ -284,34 +284,35 @@ void insertarBloque(PtrBloque& lista, PtrBloque Nuevo) {
 	lista = Nuevo;
 }
 
+//inicializan valores de comodin
 Comodin* crearComodin(int x, int y, int habilidad, float ancho, float alto, bool visibilidad) {
-	PtrComodin comodin = new(Comodin);
+
+	PtrComodin comodin = new Comodin;
 	comodin->x = x;
 	comodin->y = y;
 	comodin->habilidad = habilidad;
 	comodin->ancho = ancho;
 	comodin->alto = alto;
 	comodin->visibilidad = visibilidad;
-	comodin->siguiente = NULL;
 	switch (habilidad) {
-	case 0:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
-		break;
-	case 1:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen P
-		break;
-	case 2:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen E
-		break;
-	case 3:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen V
-		break;
-	case 4:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen X
-		break;
-	case 5: //no tiene comodin
-		comodin->imagen = NULL;
-		break;
+		case 0:
+			comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
+			break;
+		case 1:
+			comodin->imagen = al_load_bitmap("Imagenes/bloqueVerde.png"); //cambiar imagen P
+			break;
+		case 2:
+			comodin->imagen = al_load_bitmap("Imagenes/bloqueAmarillo.png"); //cambiar imagen E
+			break;
+		case 3:
+			comodin->imagen = al_load_bitmap("Imagenes/bloqueCeleste.png"); //cambiar imagen V
+			break;
+		case 4:
+			comodin->imagen = al_load_bitmap("Imagenes/bloqueCafe.png"); //cambiar imagen X
+			break;
+		case 5: //no tiene comodin
+			comodin->imagen = NULL;
+			break;
 	}
 	return comodin;
 }
@@ -386,18 +387,43 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	}
 }
 
+// se encargar de generar aleatoriamente las habilidades
+int generarHabilidad(int nivel) {
+	int cont = 1;
+	int a;
+	while (cont != nivel) {
+		a = 1 + rand() % 100;
+		if (a % 11 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por once: 9%
+			return 0; //disparos barra
+		}
+		if (a % 15 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por quince: 6%
+			return 4; //multiplicar bolas
+		}
+		if (a % 10 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por diez: 10%
+			return 3; //quitar vida
+		}
+		if (a % 14 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por catorce: 7%
+			return 1; //bola más pequeña
+		}
+		if (a % 12 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por doce: 8%
+			return 2; // vida extra
+		}
+		cont++;
+	}
+	
+	return 5; //no tiene habilidad
+}
+
 void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista,float anchoBloque, float altoBloque) {
 	int ubicadorX = anchoMonitor / 4;
 	int ubicadorY = altoMonitor / 6.14;
 	int n = 0;
 	int habilidad = 0;
-	/*
-	AQUI INCLUIR CODIGO QUE GENERE VALOR DE HABILIDAD
-	*/
 
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
 		while (n < 12) {
-			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX+anchoBloque/2, ubicadorY, habilidad, anchoBloque/2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -406,7 +432,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 11 && n < 24) {
-			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -414,7 +441,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 23 && n < 36) {
-			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -422,7 +450,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 35 && n < 48) {
-			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -430,7 +459,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 47 && n < 60) {
-			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -438,7 +468,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 59 && n < 72) {
-			Comodin* comodin = crearComodin(ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -446,7 +477,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 71 && n < 84) {
-			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -483,8 +515,32 @@ void dibujarBloques(PtrBloque& lista) {
 }
 
 //revisa si bloque eliminado tiene comodin para desplegarlo
-void revisarComodines(PtrBloque& bloque) {
-	bloque->comodin->visibilidad = true;
+void revisarComodines(PtrComodin& comodin) {
+	if (comodin != nullptr) {
+		comodin->visibilidad = !comodin->visibilidad;
+	}
+}
+
+void dibujarComodines(PtrBloque& lista) {
+	PtrBloque bloque = lista;
+	while (bloque != NULL) {
+		if (bloque->comodin != NULL) {
+			if (bloque->comodin->imagen != NULL || bloque->comodin->habilidad != 5) {
+				if (bloque->comodin->visibilidad) {
+					al_draw_scaled_bitmap(
+						bloque->comodin->imagen,
+						0, 0, // Coordenadas de origen en el bitmap fuente
+						al_get_bitmap_width(bloque->comodin->imagen), // Ancho del bitmap fuente
+						al_get_bitmap_height(bloque->comodin->imagen), // Alto del bitmap fuente
+						bloque->comodin->x, bloque->comodin->y, // Coordenadas de destino en la pantalla
+						bloque->comodin->ancho, bloque->comodin->alto, // Nuevo ancho y alto
+						0 // Flags
+					);
+				}
+			}
+		}
+		bloque = bloque->siguiente;
+	}
 }
 
 void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & contadorPts) {
@@ -497,7 +553,9 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSon
 					bola->direccionMovimientoY = !bola->direccionMovimientoY;
 					bola->direccionMovimientoX = false;
 					aux->estadoExistencia = false;
-					revisarComodines(aux);
+					if (aux->comodin != NULL) {
+						revisarComodines(aux->comodin);
+					}
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					return;
 				}
@@ -506,7 +564,9 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSon
 					bola->direccionMovimientoY = !bola->direccionMovimientoY;
 					bola->direccionMovimientoX = true;
 					aux->estadoExistencia = false;
-					revisarComodines(aux);
+					if (aux->comodin != NULL) {
+						revisarComodines(aux->comodin);
+					}
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					return;
 				}
@@ -515,6 +575,19 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSon
         }
         aux = aux->siguiente; // Mover al siguiente bloque
     }
+}
+
+//se encarga de mantener los comodines activos en movimiento
+void moverComodines(PtrBloque& lista, int velocidad, int altoMonitor) {
+	PtrBloque bloque = lista;
+	while (bloque != NULL) {
+		if (bloque->comodin != NULL) {
+			if (bloque->comodin->visibilidad) { //verificar que el comodin esté activo
+				bloque->comodin->y += velocidad / 2;
+			}
+		}
+		bloque = bloque->siguiente;
+	}
 }
 
 //verifica que haya bloques aún existiendo, sino significa que el jugador ganó el nivel
@@ -539,7 +612,6 @@ void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) 
 	vida->ancho = ancho;
 
 }
-
 
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {

@@ -65,7 +65,6 @@ typedef struct Comodin {
 	float ancho;
 	float alto;
 	bool visibilidad;
-	Comodin* siguiente;
 	ALLEGRO_BITMAP* imagen;
 }*PtrComodin;
 
