@@ -162,43 +162,43 @@ void crearParedesVerticalesDerecha(int AnchoMonitor, int AltoMonitor) {
 void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierdoPared, int limiteDerechoPared) {
 	int margenX = AnchoMonitor / 4;
 	int margenY = AltoMonitor / 8;
-	const int x_Imagen_Ancho = 30;
-	const int y_Imagen_Alto = 110;
+	const int x_Imagen_Ancho = AnchoMonitor / 40;
+	const int y_Imagen_Alto = AltoMonitor / 7;
 	// Crear barra
 	crearBarra(barra, limiteIzquierdoPared + ANCHO_BARRA * 2.5, AltoMonitor - margenY, ANCHO_BARRA, ALTO_BARRA, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - ALTO_BARRA, imagenParedHorizontal);
 
 	// Crear marcadores
 	int y1MaxPts = AltoMonitor / 4;
-	x1MaxPts = limiteDerechoPared + ANCHO_BARRA + x_Imagen_Ancho*2;
-	x2MaxPts = limiteDerechoPared + ANCHO_BARRA + x_Imagen_Ancho*6;
+	x1MaxPts = limiteDerechoPared  + x_Imagen_Ancho*4;
+	x2MaxPts = limiteDerechoPared  + x_Imagen_Ancho*8;
 	y2MaxPts = y1MaxPts + y_Imagen_Alto;
 	crearMarco(marcoMaxPts, mejorPuntaje, x1MaxPts, y1MaxPts,x2MaxPts ,y2MaxPts, "Mejor puntaje");
 
 	int y1ActualPts = AltoMonitor / 4 + y_Imagen_Alto*2;
-	x1ActualPts = limiteDerechoPared + ANCHO_BARRA + x_Imagen_Ancho * 2;
-	x2ActualPts = limiteDerechoPared + ANCHO_BARRA + x_Imagen_Ancho * 6;
+	x1ActualPts = limiteDerechoPared  + x_Imagen_Ancho * 4;
+	x2ActualPts = limiteDerechoPared  + x_Imagen_Ancho * 8;
 	y2ActualPts = y1ActualPts + y_Imagen_Alto;
 	crearMarco(marcoActualPts, 0, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
 
 	// Cuadro de comod�n
-	x1CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 6;
+	x1CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 8;
 	y1CuadroComodines = AltoMonitor / 4;
-	x2CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 2;
+	x2CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 4;
 	y2CuadroComodines = AltoMonitor / 4 + y_Imagen_Alto;
 	crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin Actual");
 
 	//Contador de vidas
-	x1ContadorVida = limiteIzquierdoPared - x_Imagen_Ancho * 6;
+	x1ContadorVida = limiteIzquierdoPared - x_Imagen_Ancho * 8;
 	y1ContadorVida = AltoMonitor / 4 + y_Imagen_Alto * 2;
 	altoVida = y2CuadroComodines- (AltoMonitor / 4);
 	anchoVida = x2CuadroComodines- x1CuadroComodines;
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida,  altoVida, anchoVida);
 
 	//Label nivel
-	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 6;
-	y1LabelNivel = AltoMonitor / 4 - 110;
-	x2LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 2;
-	y2LabelNivel = AltoMonitor / 4 - 85;
+	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 8;
+	y1LabelNivel = AltoMonitor / 8;
+	x2LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 4;
+	y2LabelNivel = AltoMonitor / 6 ;
 	crearMarco(NivelLabel,nivel,x1LabelNivel,y1LabelNivel,x2LabelNivel,y2LabelNivel,"Nivel");
 }
 
@@ -327,29 +327,34 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 		0
 	);
 
-	// Cálculo de posiciones
+	// Cálculo de posiciones de las opciones del menú
 	int posicionY_PrimerElemento = AltoMonitor*2/5 ;
-	int posicionX = AnchoMonitor*2.7/ 7 ;
-	int anchoSelector = AnchoMonitor/4;
-	int altoOpcion = AnchoMonitor/35;
-
-	// Posiciones del selector
-	int x1Selector = posicionX;
-	int y1Selector = posicionY_PrimerElemento + y1SelectorMov;
-	int x2Selector = posicionX + anchoSelector;
-	int y2Selector = posicionY_PrimerElemento + altoOpcion + y2SelectorMov;
+	int posicionX_PrimerElemento = AnchoMonitor*2.7/ 7 ;
+	int altoOpcion = AnchoMonitor / 30;
 
 	// Dibujar fondo semitransparente para el menú
 	al_draw_filled_rectangle(
-		posicionX - 20,
-		posicionY_PrimerElemento/1.1,
-		(posicionX + anchoSelector)*1.01,
-		posicionY_PrimerElemento + altoOpcion * 6 ,
+		posicionX_PrimerElemento- (AnchoMonitor /16) * 1.01,
+		posicionY_PrimerElemento / 1.1,
+		(posicionX_PrimerElemento + (AnchoMonitor / 3) ) * 1.01,
+		posicionY_PrimerElemento + altoOpcion * 6,
 		al_map_rgba(0, 0, 0, 100)
 	);
+	
 
+	// Posiciones del selector
+	int altoSelector = altoOpcion/1.5;
+	int anchoSelector = AnchoMonitor / 4;
+	int x1Selector = posicionX_PrimerElemento;
+	int y1Selector = y1SelectorMov;
+	int x2Selector = posicionX_PrimerElemento + anchoSelector;
+	int y2Selector = altoSelector + y2SelectorMov;
+
+
+	// Dibujar selector
 	al_draw_filled_rectangle(x1Selector, y1Selector, x2Selector, y2Selector, al_map_rgb(153, 153, 102));
 
+	// Opciones del menú
 	const char* opcionesMenu[] = {
 		"1. Jugar",
 		"2. Multijugador",
@@ -364,18 +369,20 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 		al_draw_text(
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
-			posicionX,
+			posicionX_PrimerElemento,
 			posicionY_PrimerElemento + (i * altoOpcion)*1.0,
 			ALLEGRO_ALIGN_LEFT,
 			opcionesMenu[i]
 		);
 	}
-
+	// Dibujar título del menú
+	int posicionTituloMenuX = AltoMonitor / 3;
+	int posicionTituloMenuY = AnchoMonitor / 10;
 	al_draw_text(
 		fuenteTituloMenu,
 		al_map_rgb(204, 204, 0),
-		posicionX*0.75,
-		posicionY_PrimerElemento*3/5,
+		posicionTituloMenuX,
+		posicionTituloMenuY,
 		ALLEGRO_ALIGN_LEFT,
 		"ARKANOID IN THE SPACE"
 	);
@@ -385,7 +392,15 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	int opcion = 0;
 	const int NUM_CASILLAS = 6; 
 	int casillaActual = 0;  // Casilla en la que empieza el selector
-	int posicionesY[NUM_CASILLAS] = { 0, 50, 100, 150, 200, 250 }; 
+	int altoOpciones = AnchoMonitor / 30;
+	int posicionInicialCasillas = AltoMonitor * 2 / 5;
+	int posicionesY[NUM_CASILLAS] = { 
+		(posicionInicialCasillas),
+		(posicionInicialCasillas+altoOpciones),
+		(posicionInicialCasillas + altoOpciones*2),
+		(posicionInicialCasillas+ altoOpciones*3),
+		(posicionInicialCasillas + altoOpciones*4),
+		(posicionInicialCasillas + altoOpciones*5) };
 
 	y1SelectorMov = posicionesY[casillaActual];  // Posición inicial del selector
 	y2SelectorMov = y1SelectorMov;  // Fin del selector basado en su altura
