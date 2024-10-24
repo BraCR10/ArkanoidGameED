@@ -212,9 +212,11 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 	// Definir l�mites para la barra y marcadores
 	const int LIM_IZQ_PARED = AnchoMonitor / 4  ;
 	const int LIM_DER_PARED = (AnchoMonitor - AnchoMonitor / 4) ;
+	const int LIM_SUP_PARED = AltoMonitor / 8 + 40;//40 es el alto de la pared horizontal
+
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED);
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 30, 30, LIM_DER_PARED, LIM_IZQ_PARED,AltoMonitor/6.5, imagenBola);
+	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 30, 30, LIM_DER_PARED, LIM_IZQ_PARED, LIM_SUP_PARED, imagenBola);
 	
 }
 
@@ -347,7 +349,7 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	int anchoSelector = AnchoMonitor / 4;
 	int x1Selector = posicionX_PrimerElemento;
 	int y1Selector = y1SelectorMov;
-	int x2Selector = posicionX_PrimerElemento + anchoSelector;
+	int x2Selector = posicionX_PrimerElemento  + (AnchoMonitor / 3.2)  * 1.01;
 	int y2Selector = altoSelector + y2SelectorMov;
 
 
