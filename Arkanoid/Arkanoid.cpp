@@ -246,8 +246,8 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	 const float ANCHO_COMODIN = AnchoMonitor/25;
 	 const float ALTO_COMODIN = AltoMonitor/20;
 	
-	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
-	//crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	//crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 	iniciarMarcadores(contadorPts, contadorVidas);
 }
