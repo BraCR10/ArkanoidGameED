@@ -50,6 +50,7 @@ PtrMarcador marcoMaxPts = NULL;
 
 //Creacion de maracador para puntaje actual
 PtrMarcador marcoActualPts = NULL;
+
 //Creacion de contador de puntos
 int contadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
 
@@ -239,7 +240,12 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	 const float ANCHO_BLOQUE = AnchoMonitor / 24;
 	 const float ALTO_BLOQUE = AltoMonitor/19;
 
-	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	 //Comodines
+	 const float ANCHO_COMODIN = AnchoMonitor/25;
+	 const float ALTO_COMODIN = AltoMonitor/20;
+	
+	 crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	//crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 	iniciarMarcadores(contadorPts, contadorVidas);
 }

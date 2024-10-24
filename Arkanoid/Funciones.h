@@ -279,14 +279,44 @@ void reboteBolaPared(PtrBola& bola, ALLEGRO_SAMPLE* efectoSonido) {
 		}
 }
 
-
-
 void insertarBloque(PtrBloque& lista, PtrBloque Nuevo) {
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
 }
 
-void crearBloque(PtrBloque& lista, int x, int y, int comodin, int resistencia, ALLEGRO_BITMAP* imagen, float ancho, float alto) {
+Comodin* crearComodin(int x, int y, int habilidad, float ancho, float alto, bool visibilidad) {
+	PtrComodin comodin = new(Comodin);
+	comodin->x = x;
+	comodin->y = y;
+	comodin->habilidad = habilidad;
+	comodin->ancho = ancho;
+	comodin->alto = alto;
+	comodin->visibilidad = visibilidad;
+	comodin->siguiente = NULL;
+	switch (habilidad) {
+	case 0:
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
+		break;
+	case 1:
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen P
+		break;
+	case 2:
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen E
+		break;
+	case 3:
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen V
+		break;
+	case 4:
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen X
+		break;
+	case 5: //no tiene comodin
+		comodin->imagen = NULL;
+		break;
+	}
+	return comodin;
+}
+
+void crearBloque(PtrBloque& lista, int x, int y, Comodin* comodin, int resistencia, ALLEGRO_BITMAP* imagen, float ancho, float alto) {
 	PtrBloque bloque = new(Bloque);
 	bloque->x = x;
 	bloque->y = y;
@@ -306,53 +336,122 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int n = 0;
 	while(n<84) { //va creando los bloques en filas de 12 bloques
 		while (n < 12) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 ;		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n >11 && n < 24) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueRojo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 23 && n < 36) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueRosado, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n> 35 && n < 48) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 47 && n < 60) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 59 && n < 72) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueVerde, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueVerde, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 71 && n < 84) {
-			crearBloque(lista, ubicadorX, ubicadorY, 0, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
+			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		
+	}
+}
+
+void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista,float anchoBloque, float altoBloque) {
+	int ubicadorX = anchoMonitor / 4;
+	int ubicadorY = altoMonitor / 6.14;
+	int n = 0;
+	int habilidad = 0;
+	/*
+	AQUI INCLUIR CODIGO QUE GENERE VALOR DE HABILIDAD
+	*/
+
+	while (n < 84) { //va creando los bloques en filas de 12 bloques
+		while (n < 12) {
+			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+			;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 11 && n < 24) {
+			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 23 && n < 36) {
+			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 35 && n < 48) {
+			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 47 && n < 60) {
+			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 59 && n < 72) {
+			Comodin* comodin = crearComodin(ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 71 && n < 84) {
+			Comodin* comodin = crearComodin( ubicadorX, ubicadorY, habilidad, 12, 12, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+
 	}
 }
 
@@ -383,6 +482,11 @@ void dibujarBloques(PtrBloque& lista) {
 	}
 }
 
+//revisa si bloque eliminado tiene comodin para desplegarlo
+void revisarComodines(PtrBloque& bloque) {
+	bloque->comodin->visibilidad = true;
+}
+
 void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & contadorPts) {
     PtrBloque aux = lista;
     while (aux != NULL) {
@@ -393,6 +497,7 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSon
 					bola->direccionMovimientoY = !bola->direccionMovimientoY;
 					bola->direccionMovimientoX = false;
 					aux->estadoExistencia = false;
+					revisarComodines(aux);
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					return;
 				}
@@ -401,6 +506,7 @@ void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSon
 					bola->direccionMovimientoY = !bola->direccionMovimientoY;
 					bola->direccionMovimientoX = true;
 					aux->estadoExistencia = false;
+					revisarComodines(aux);
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					return;
 				}

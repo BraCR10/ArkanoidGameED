@@ -57,11 +57,23 @@ typedef struct Bola {
 	ALLEGRO_BITMAP* imagen;
 }*PtrBola;
 
+//Estructura de comodin
+typedef struct Comodin {
+	int x;
+	int y;
+	int habilidad; // 0: Disparos de barra | 1: Bola más pequeña | 2: Vida extra | 3: Quitar vida | 4: Multiplicar bolas | 5: No posee comodin
+	float ancho;
+	float alto;
+	bool visibilidad;
+	Comodin* siguiente;
+	ALLEGRO_BITMAP* imagen;
+}*PtrComodin;
+
 //Estructura de los bloques
 typedef struct Bloque {
 	int x;
 	int y;
-	int comodin; // 0 si no posee comodin
+	Comodin* comodin; // 5 si no posee comodin
 	int resistencia; // 1 si se rompe apenas la bola lo toca
 	float ancho;
 	float alto;
