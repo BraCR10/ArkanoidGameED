@@ -445,7 +445,7 @@ int generarHabilidad(int nivel) {
 
 void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista,float anchoBloque, float altoBloque) {
 	int ubicadorX = anchoMonitor / 4;
-	int ubicadorY = altoMonitor / 6.14;
+	int ubicadorY = (altoMonitor / 6.14)+altoBloque; //se le suma alto bloque para dejar un espacio arriba
 	int n = 0;
 	int habilidad = 0;
 
@@ -777,23 +777,19 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 				}
 				else  if (contarBolas(lista) > 1) { //si quedan varias bolas en pantalla
 					aux = bola->siguiente;
-					cout << "hola" << endl;
 					eliminarBolaEspecifica(lista,cont);
-					cout << "hola2" << endl;
 					disminuirVida(vida);
-					cout << "hola3" << endl;
-					if (aux == NULL)
+					if (aux == NULL) //si aux es null retorna para evitar error
 						return;
 					bola = aux;
 				}
 			}
 		}
 		cont++;
-		cout << "hola4" << endl;
 		bola = bola->siguiente;
-		cout << "hola5" << endl;
 	}
 }
+
 void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 	ALLEGRO_EVENT evento;
 	// Mientras haya eventos en la cola, leer y descartar
@@ -802,7 +798,7 @@ void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 }
 
 //revisa si la barra colisiona con un comodin
-void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVida& vida) {
+void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVida& vida, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
 	PtrBola bola = lista2;
 	PtrBloque aux = lista;
 	PtrBola nueva;
@@ -813,6 +809,7 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 					switch (aux->comodin->habilidad) {
 					case 0: //ampliar barra
 						barra->ancho = barra->ancho * 1.5;
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 1: //bola más pequeña
 						while (bola != NULL) {
@@ -820,16 +817,20 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 							bola->ancho = bola->ancho / 1.5;
 							bola = bola->siguiente;
 						}
+						al_play_sample(efectoSonidoNegativo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 2: //vida extra
 						aumentarVida(vida);
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 3: //quitar vida
 						disminuirVida(vida);
+						al_play_sample(efectoSonidoNegativo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 4: //multiplicar bolas
 						nueva = new Bola;
 						crearBola(lista2, bola->x, bola->y, bola->ancho, bola->alto, bola->limiteDerecho, bola->limiteIzquierdo, bola->limiteSuperior,true, !bola->direccionMovimientoX, !bola->direccionMovimientoY,bola->imagen);
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 5: //no tiene comodin
 						break;

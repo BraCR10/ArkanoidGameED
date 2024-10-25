@@ -496,7 +496,9 @@ void main()
 	ALLEGRO_SAMPLE* sonidoReboteBarra = al_load_sample("Sonidos/sonidoReboteBarra.mp3");
 	ALLEGRO_SAMPLE* sonidoReboteBloque = al_load_sample("Sonidos/sonidoReboteBloque.mp3");
 	ALLEGRO_SAMPLE* sonidoGameOver = al_load_sample("Sonidos/sonidoGameOver.mp3");
-	al_reserve_samples(3);
+	ALLEGRO_SAMPLE* sonidoComodin = al_load_sample("Sonidos/sonidoPowerUp.mp3");
+	ALLEGRO_SAMPLE* sonidoComodinMalo = al_load_sample("Sonidos/sonidoNegativo.wav");
+	al_reserve_samples(5);
 
 	//Configuracion de teclado
 	al_install_keyboard();
@@ -596,7 +598,7 @@ void main()
 						reboteBolaPared(listaEnlazadaBolas, sonidoReboteBarra);
 						reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
 						reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
-						aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, contadorVidas);
+						aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, contadorVidas, sonidoComodin, sonidoComodinMalo);
 					}
 
 					if (evento.timer.source == timerBarra_Entorno) {
@@ -647,7 +649,8 @@ void main()
 	al_destroy_font(fuenteGameOver);
 	al_destroy_sample(sonidoGameOver);
 	al_destroy_bitmap(imagenGameOver);
-
+	al_destroy_sample(sonidoComodin);
+	al_destroy_sample(sonidoComodinMalo);
 
 }
 
