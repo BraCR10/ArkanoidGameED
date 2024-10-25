@@ -38,6 +38,7 @@ ALLEGRO_BITMAP* imagenBloqueRosado = NULL;
 ALLEGRO_BITMAP* imagenBloqueCafe = NULL;
 ALLEGRO_BITMAP* imagenGameOver = NULL;
 ALLEGRO_BITMAP* imagenMenu = NULL;
+ALLEGRO_BITMAP* imagenFondoPartida = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -78,7 +79,7 @@ ALLEGRO_FONT* fuenteTituloMenu = NULL;
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
 ALLEGRO_COLOR colorFondoLabelNivel = al_map_rgb(150, 255, 1);
-ALLEGRO_COLOR colorTitulosMarcos = al_map_rgb(0, 0, 0);
+ALLEGRO_COLOR colorTitulosMarcos = al_map_rgb(250, 250,250);
 ALLEGRO_COLOR colorLetrasGameOver = al_map_rgb(255, 255, 255);
 
 //Objetos generales
@@ -202,9 +203,17 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	crearMarco(NivelLabel,nivel,x1LabelNivel,y1LabelNivel,x2LabelNivel,y2LabelNivel,"Nivel");
 }
 
+void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor)
+{
+	imagenFondoPartida = al_load_bitmap("Imagenes/imagenFondoPartida.jpg");
+	al_draw_scaled_bitmap(imagenFondoPartida,
+		0, 0, al_get_bitmap_width(imagenFondoPartida), al_get_bitmap_height(imagenFondoPartida),
+		0, 0, AnchoMonitor, AltoMonitor,
+		0);
+}
+
 void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
-	
 	crearParedesHorizontales(AnchoMonitor, AltoMonitor);
 	crearParedesVerticalesIzquierda(AnchoMonitor, AltoMonitor);
 	crearParedesVerticalesDerecha(AnchoMonitor, AltoMonitor);
@@ -264,6 +273,7 @@ void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
 
 //Funcion para dibujar todo
 void dibujarPantallaNivel() {
+
 	dibujarBarra(barra);
 	dibujarParedes(listaEnlazadaParedes);
 	dibujarMarco(marcoMaxPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
@@ -322,13 +332,7 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 }
 
 void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
-	al_draw_scaled_bitmap(
-		imagenMenu,
-		0, 0, al_get_bitmap_width(imagenMenu), al_get_bitmap_height(imagenMenu),
-		0, 0, al_get_display_width(pantalla), al_get_display_height(pantalla),
-		0
-	);
-
+	dibujarFondoPartida(AnchoMonitor, AltoMonitor);
 	// Cálculo de posiciones de las opciones del menú
 	int posicionY_PrimerElemento = AltoMonitor*2/5 ;
 	int posicionX_PrimerElemento = AnchoMonitor*2.7/ 7 ;
@@ -589,7 +593,7 @@ void main()
 				//TODO: definir mas timers
 				if (imagenGameOver == NULL )
 				{
-					al_clear_to_color(al_map_rgb(255, 255, 255)); // Limpiar la pantalla con color blanco TODO: definir fondo
+					al_clear_to_color(al_map_rgb(0, 48, 78)); // Limpiar la pantalla con color blanco TODO: definir fondo
 					dibujarPantallaNivel();
 
 					if (evento.timer.source == timerBola_Colision) {
@@ -651,7 +655,7 @@ void main()
 	al_destroy_bitmap(imagenGameOver);
 	al_destroy_sample(sonidoComodin);
 	al_destroy_sample(sonidoComodinMalo);
-
+	al_destroy_bitmap(imagenFondoPartida);
 }
 
 
