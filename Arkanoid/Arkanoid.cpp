@@ -66,8 +66,8 @@ PtrMarcador NivelLabel = NULL;
 //Creacion lista enlazada bloques
 PtrBloque listaEnlazadaBloques = NULL;
  
-//creacion de bola
-PtrBola bola = NULL;
+//creacion lista enlazada de bola
+PtrBola listaEnlazadaBolas = NULL;
 
 //fuente
 ALLEGRO_FONT* fuenteMarcadores = NULL;
@@ -216,7 +216,7 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 
 
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED);
-	crearBola(bola, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 30, 30, LIM_DER_PARED, LIM_IZQ_PARED, LIM_SUP_PARED, imagenBola);
+	crearBola(listaEnlazadaBolas, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 30, 30, LIM_DER_PARED, LIM_IZQ_PARED, LIM_SUP_PARED, false,false, false, imagenBola);
 	
 }
 
@@ -246,8 +246,8 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	 const float ANCHO_COMODIN = AnchoMonitor/25;
 	 const float ALTO_COMODIN = AltoMonitor/20;
 	
-	//crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
-	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	//crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 	iniciarMarcadores(contadorPts, contadorVidas);
 }
@@ -270,7 +270,7 @@ void dibujarPantallaNivel() {
 	dibujarMarco(marcoActualPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 	dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 	dibujarBloques(listaEnlazadaBloques);
-	dibujarBola(bola);
+	dibujarBola(listaEnlazadaBolas);
 	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
 	dibujarMarco(NivelLabel, fuenteMarcadores, colorFondoLabelNivel, colorTitulosMarcos);
 	dibujarComodines(listaEnlazadaBloques);
@@ -285,8 +285,8 @@ void destruirElementosGenerales() {
 	eliminarBarra(barra);
 	barra = NULL;
 
-	eliminarBola(bola);
-	bola = NULL;
+	eliminarBola(listaEnlazadaBolas);
+	listaEnlazadaBolas = NULL;
 
 	eliminarMarco(marcoMaxPts);
 	marcoMaxPts = NULL;
@@ -570,11 +570,11 @@ void main()
 			//TODO: definir donde se escoje la velocidad, ahorita solo en 10
 			if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT) && imagenGameOver == NULL) {
 				moverBarra(barra, 10, true);
-				iniciarMovimientoBola(bola, 5, true);
+				iniciarMovimientoBola(listaEnlazadaBolas, 5, true);
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_LEFT) && imagenGameOver == NULL) {
 				moverBarra(barra, 10, false);
-				iniciarMovimientoBola(bola, 5, false);
+				iniciarMovimientoBola(listaEnlazadaBolas, 5, false);
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ENTER) && imagenGameOver != NULL) {
 				imagenGameOver = NULL;
@@ -591,11 +591,12 @@ void main()
 					dibujarPantallaNivel();
 
 					if (evento.timer.source == timerBola_Colision) {
-						moverBola(bola, 4);
+						moverBola(listaEnlazadaBolas, 4);
 						moverComodines(listaEnlazadaBloques, 4,AltoMonitor);
-						reboteBolaPared(bola, sonidoReboteBarra);
-						reboteBolaBarra_Fuera(bola, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
-						reboteBolaBloque(bola, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
+						reboteBolaPared(listaEnlazadaBolas, sonidoReboteBarra);
+						reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
+						reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
+						aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, contadorVidas);
 					}
 
 					if (evento.timer.source == timerBarra_Entorno) {

@@ -183,82 +183,106 @@ void setDatoMarco(PtrMarcador& marcador, int dato) {
 	marcador->dato = dato;
 }
 
+void insertarBola(PtrBola& lista, PtrBola nuevo) {
+	nuevo->siguiente = lista;
+	lista = nuevo;
+}
+
 //inicializa valores de la bola
-void crearBola(PtrBola& bola, int x, int y, float ancho, float alto,int limiteDercho,int limiteIzquierdo,int limiteSuperior, ALLEGRO_BITMAP* imagen) {
-	bola = new Bola;
+void crearBola(PtrBola& lista,int x, int y, float ancho, float alto,int limiteDercho,int limiteIzquierdo,int limiteSuperior, bool estado,bool movimientoX, bool movimientoY,ALLEGRO_BITMAP* imagen) {
+	PtrBola bola = new (Bola);
 	bola->x = x;
 	bola->y = y;
 	bola->ancho = ancho;
 	bola->alto = alto;
-	bola->estadoMovimiento = false;
-	bola->direccionMovimientoX = false;
-	bola->direccionMovimientoY = false;
+	bola->estadoMovimiento = estado;
+	bola->direccionMovimientoX = movimientoX;
+	bola->direccionMovimientoY = movimientoY;
 	bola->imagen = imagen; 
 	bola->limiteDerecho = limiteDercho;
 	bola->limiteIzquierdo = limiteIzquierdo;
 	bola->limiteSuperior = limiteSuperior;
+	bola->siguiente = NULL;
+	insertarBola(lista, bola);
 }
 
 //imprime bola en pantalla
-void dibujarBola(PtrBola& bola) {
-	al_draw_scaled_bitmap(
-		bola->imagen,
-		0, 0, // Coordenadas de origen en el bitmap fuente
-		al_get_bitmap_width(bola->imagen), // Ancho del bitmap fuente
-		al_get_bitmap_height(bola->imagen), // Alto del bitmap fuente
-		bola->x, bola->y, // Coordenadas de destino en la pantalla
-		bola->ancho, bola->alto, // Nuevo ancho y alto
-		0 // Flags
-	);
+void dibujarBola(PtrBola& lista) {
+	PtrBola aux = lista;
+	while (aux != NULL) {
+		al_draw_scaled_bitmap(
+			aux->imagen,
+			0, 0, // Coordenadas de origen en el bitmap fuente
+			al_get_bitmap_width(aux->imagen), // Ancho del bitmap fuente
+			al_get_bitmap_height(aux->imagen), // Alto del bitmap fuente
+			aux->x, aux->y, // Coordenadas de destino en la pantalla
+			aux->ancho, aux->alto, // Nuevo ancho y alto
+			0 // Flags
+		);
+		aux = aux->siguiente;
+	}
 }
 
 //eliminar bola
-void eliminarBola(PtrBola& bola) {
-	delete (bola);
+void eliminarBola(PtrBola& lista) {
+	PtrBola& aux = lista;
+	while (aux != lista) {
+		lista = lista->siguiente;
+		delete (aux);
+		aux = lista;
+	}
 }
 
 //la bola empezará a moverse en la dirección en el eje X opuesta al de la barra
-void iniciarMovimientoBola(PtrBola& bola, int velocidad, bool direccion) {
-	if (bola->estadoMovimiento == false){ //Si la bola no está en movimiento
-		if (direccion == true) { // bola se mueve a izquierda y hacia arriba
-			bola->y -= velocidad;
-			bola->x -= velocidad;
-			bola->direccionMovimientoX = false;
-			bola->direccionMovimientoY = true;
+void iniciarMovimientoBola(PtrBola& lista, int velocidad, bool direccion) {
+	PtrBola bola = lista;
+	while (bola != NULL) {
+		if (bola->estadoMovimiento == false) { //Si la bola no está en movimiento
+			if (direccion == true) { // bola se mueve a izquierda y hacia arriba
+				bola->y -= velocidad;
+				bola->x -= velocidad;
+				bola->direccionMovimientoX = false;
+				bola->direccionMovimientoY = true;
+			}
+			else if (direccion == false) { // bola se mueve a derecha y hacia arriba
+				bola->y -= velocidad;
+				bola->x += velocidad;
+				bola->direccionMovimientoX = true;
+				bola->direccionMovimientoY = true;
+			}
+			bola->estadoMovimiento = true; //se declara que la bola está en movimiento
 		}
-		else if (direccion == false) { // bola se mueve a derecha y hacia arriba
-			bola->y -= velocidad;
-			bola->x += velocidad;
-			bola->direccionMovimientoX = true;
-			bola->direccionMovimientoY = true;
-		}
-		bola->estadoMovimiento = true; //se declara que la bola está en movimiento
+		bola = bola->siguiente;
 	}
 }
 
 //mantendrá el movimiento de la bola constante
-void moverBola(PtrBola& bola, int velocidad) {
-	if (bola->estadoMovimiento == true) { //Si la bola si está en movimiento
-		if (bola->direccionMovimientoX) { //bola se mueve a derecha
-			if (bola->direccionMovimientoY) { //bola va hacia arriba
-				bola->y -= velocidad;
-				bola->x += velocidad;
+void moverBola(PtrBola lista, int velocidad) {
+	PtrBola bola = lista;
+	while (bola != NULL) {
+		if (bola->estadoMovimiento == true) { //Si la bola si está en movimiento
+			if (bola->direccionMovimientoX) { //bola se mueve a derecha
+				if (bola->direccionMovimientoY) { //bola va hacia arriba
+					bola->y -= velocidad;
+					bola->x += velocidad;
+				}
+				else { //bola hacia abajo
+					bola->y += velocidad;
+					bola->x += velocidad;
+				}
 			}
-			else { //bola hacia abajo
-				bola->y += velocidad;
-				bola->x += velocidad;
+			else if (bola->direccionMovimientoX == false) { //bola se mueve a izquierda
+				if (bola->direccionMovimientoY) { // bola va hacia arriba
+					bola->y -= velocidad;
+					bola->x -= velocidad;
+				}
+				else { //bola va hacia abajo
+					bola->y += velocidad;
+					bola->x -= velocidad;
+				}
 			}
 		}
-		else if (bola->direccionMovimientoX == false) { //bola se mueve a izquierda
-			if (bola->direccionMovimientoY) { // bola va hacia arriba
-				bola->y -= velocidad;
-				bola->x -= velocidad;
-			}
-			else { //bola va hacia abajo
-				bola->y += velocidad;
-				bola->x -= velocidad;
-			}
-		}
+		bola = bola->siguiente; // Mover a la siguiente bola
 	}
 }
 
@@ -266,17 +290,23 @@ void eliminarMarco(PtrMarcador& marcador) {
 	delete (marcador);
 }
 
-void reboteBolaPared(PtrBola& bola, ALLEGRO_SAMPLE* efectoSonido) {
-		if (bola->x+ bola->ancho >= bola->limiteDerecho) { // si choca con pared derecha
+void reboteBolaPared(PtrBola& lista, ALLEGRO_SAMPLE* efectoSonido) {
+	PtrBola bola = lista;
+	while (bola != NULL) {
+		if (bola->x + bola->ancho >= bola->limiteDerecho) { // si choca con pared derecha
 			bola->direccionMovimientoX = false;
 			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-		}else if (bola->y <= bola->limiteSuperior) { // si choca con pared de arriba
+		}
+		else if (bola->y <= bola->limiteSuperior) { // si choca con pared de arriba
 			bola->direccionMovimientoY = false;
 			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-		} else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de izquierda
+		}
+		else if (bola->x <= bola->limiteIzquierdo) { // si choca con pared de izquierda
 			bola->direccionMovimientoX = true;
 			al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		}
+		bola = bola->siguiente; // Mover a la siguiente bola
+	}
 }
 
 void insertarBloque(PtrBloque& lista, PtrBloque Nuevo) {
@@ -409,8 +439,7 @@ int generarHabilidad(int nivel) {
 			return 2; // vida extra
 		}
 		cont++;
-	}
-	
+	}	
 	return 5; //no tiene habilidad
 }
 
@@ -543,38 +572,43 @@ void dibujarComodines(PtrBloque& lista) {
 	}
 }
 
-void reboteBolaBloque(PtrBola& bola, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & contadorPts) {
-    PtrBloque aux = lista;
-    while (aux != NULL) {
-        if (aux->estadoExistencia) { // se verifica que el bloque aún exista
-            if ((bola->y + bola->alto) >= aux->y && bola->y <= (aux->y + aux->alto)) { //verifica colision en el eje y
-				if ((bola->x + bola->ancho) >= (aux->x) && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) { //si cae en mitad izquierda del bloque
-					contadorPts += 10;
-					bola->direccionMovimientoY = !bola->direccionMovimientoY;
-					bola->direccionMovimientoX = false;
-					aux->estadoExistencia = false;
-					if (aux->comodin != NULL) {
-						revisarComodines(aux->comodin);
+void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & contadorPts) {
+    PtrBloque aux;
+	PtrBola bola = lista2;
+	while (bola != NULL) {
+		aux = lista;
+		while (aux != NULL) {
+			if (aux->estadoExistencia) { // se verifica que el bloque aún exista
+				if ((bola->y + bola->alto) >= aux->y && bola->y <= (aux->y + aux->alto)) { //verifica colision en el eje y
+					if ((bola->x + bola->ancho) >= (aux->x) && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) { //si cae en mitad izquierda del bloque
+						contadorPts += 10;
+						bola->direccionMovimientoY = !bola->direccionMovimientoY;
+						bola->direccionMovimientoX = false;
+						aux->estadoExistencia = false;
+						if (aux->comodin != NULL) {
+							revisarComodines(aux->comodin);
+						}
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+						return;
 					}
-					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-					return;
-				}
-				else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) { //si cae en mitad derecha del bloque
-					contadorPts += 10;
-					bola->direccionMovimientoY = !bola->direccionMovimientoY;
-					bola->direccionMovimientoX = true;
-					aux->estadoExistencia = false;
-					if (aux->comodin != NULL) {
-						revisarComodines(aux->comodin);
+					else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) { //si cae en mitad derecha del bloque
+						contadorPts += 10;
+						bola->direccionMovimientoY = !bola->direccionMovimientoY;
+						bola->direccionMovimientoX = true;
+						aux->estadoExistencia = false;
+						if (aux->comodin != NULL) {
+							revisarComodines(aux->comodin);
+						}
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+						return;
 					}
-					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-					return;
 				}
-            }
-			
-        }
-        aux = aux->siguiente; // Mover al siguiente bloque
-    }
+
+			}
+			aux = aux->siguiente; // Mover al siguiente bloque
+		}
+		bola = bola->siguiente; // Mover a la siguiente bola
+	}
 }
 
 //se encarga de mantener los comodines activos en movimiento
@@ -658,45 +692,152 @@ void iniciarMarcadores(int& marcadorPts, PtrVida& vida) {
 	vida->cantidad = 3;
 }
 
-void reboteBolaBarra_Fuera(PtrBola& bola, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, PtrVida& vida) {
-	if ((bola->y + bola->alto) >= barra->y) { //verifica que la bola esté en puntos de Y similares al de barra
-		if ((bola->y + bola->alto) <= (barra->y + barra->alto)) { //revisa que bola no se haya ido más abajo de barra
-			if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
-				bola->direccionMovimientoY = true;
-				bola->direccionMovimientoX = false;
-				al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+// revisa cantidad de bolas en pantalla
+int contarBolas(PtrBola& lista) {
+	PtrBola aux = lista;
+	int contador = 0;
+	while (aux != NULL) {
+		contador++;
+		aux = aux->siguiente;
+	}
+	return contador;
+}
+
+//elimina bola específica de lista
+void eliminarBolaEspecifica(PtrBola& lista,int n) {
+	if (n < 0) return; // Verifica si la posición es válida
+
+	PtrBola Anterior = NULL;  // Puntero para el nodo anterior
+	PtrBola Aux = lista;      // Puntero auxiliar para recorrer la lista
+	// Caso especial: Si la posición es 0 (eliminar el primer nodo)
+	if (n == 0) {
+		if (lista != NULL) { // Verifica si la lista no está vacía
+			lista = Aux->siguiente; // Actualiza la cabeza de la lista
+			delete Aux;             // Elimina el primer nodo
+		}
+		return;
+	}
+	// Recorrer la lista hasta la posición n
+	for (int i = 0; i < n; ++i) {
+		if (Aux == NULL) return; // Si llegamos al final de la lista antes de la posición deseada
+
+		Anterior = Aux;         // Actualizar el puntero anterior
+		Aux = Aux->siguiente;   // Mover al siguiente nodo
+	}
+	// Si Aux es NULL, significa que n es mayor que la longitud de la lista
+	if (Aux == NULL) return;
+
+	// En este punto, Aux apunta al nodo en la posición n
+	if (Anterior != NULL) { // Verifica que Anterior no sea NULL
+		Anterior->siguiente = Aux->siguiente; // Saltar el nodo a eliminar
+	}
+	delete Aux; // Liberar la memoria del nodo
+}
+
+void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, PtrVida& vida) {
+	PtrBola bola = lista;
+	PtrBola aux = NULL;
+	int cont = 0;
+	while (bola != NULL) {
+		if ((bola->y + bola->alto) >= barra->y) { //verifica que la bola esté en puntos de Y similares al de barra
+			if ((bola->y + bola->alto) <= (barra->y + barra->alto)) { //revisa que bola no se haya ido más abajo de barra
+				if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
+					bola->direccionMovimientoY = true;
+					bola->direccionMovimientoX = false;
+					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				}
+				else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho / 2) >= (barra->x + barra->ancho / 2)) { //si cae en mitad derecha de la barra
+					bola->direccionMovimientoY = true;
+					bola->direccionMovimientoX = true;
+					if (bola->estadoMovimiento) {
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					}
+				}
 			}
-			else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho / 2) >= (barra->x + barra->ancho / 2)) { //si cae en mitad derecha de la barra
-				bola->direccionMovimientoY = true;
-				bola->direccionMovimientoX = true;
-				if (bola->estadoMovimiento) {
+			else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se irá hacia arriba
+				if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
+					bola->direccionMovimientoX = false;
+					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				}
+				else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho / 2) >= (barra->x + barra->ancho / 2)) { //si cae en mitad derecha de la barra
+					bola->direccionMovimientoX = true;
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				}
 			}
-		}
-		else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se irá hacia arriba
-			if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
-				bola->direccionMovimientoX = false;
-				al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			else if (bola->y >= AltoMonitor) {// si la bola se va más abajo de la barra
+				if (contarBolas(lista) == 1) { //si solo queda una bola en pantalla
+					bola->estadoMovimiento = false;
+					bola->ancho = 30;
+					bola->alto = 30;
+					bola->x = AnchoMonitor / 2;
+					bola->y = AltoMonitor / 2 + (AltoMonitor * 34) / 100;
+					barra->x = AnchoMonitor / 2 - barra->ancho / 2;
+					barra->y = AltoMonitor - AltoMonitor / 8;
+					disminuirVida(vida);
+				}
+				else  if (contarBolas(lista) > 1) { //si quedan varias bolas en pantalla
+					aux = bola->siguiente;
+					cout << "hola" << endl;
+					eliminarBolaEspecifica(lista,cont);
+					cout << "hola2" << endl;
+					disminuirVida(vida);
+					cout << "hola3" << endl;
+					if (aux == NULL)
+						return;
+					bola = aux;
+				}
 			}
-			else if (bola->x <= (barra->x + barra->ancho) && (bola->x + bola->ancho / 2) >= (barra->x + barra->ancho / 2)) { //si cae en mitad derecha de la barra
-				bola->direccionMovimientoX = true;
-				al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-			}
 		}
-		else if (bola->y >= AltoMonitor) {// si la bola se va más abajo de la barra
-			bola->estadoMovimiento = false;
-			bola->x = AnchoMonitor / 2;
-			bola->y = AltoMonitor / 2 + (AltoMonitor * 34) / 100;
-			barra->x = AnchoMonitor / 2 - barra->ancho / 2;
-			barra->y = AltoMonitor - AltoMonitor / 8;
-			disminuirVida(vida);
-		}
+		cont++;
+		cout << "hola4" << endl;
+		bola = bola->siguiente;
+		cout << "hola5" << endl;
 	}
 }
 void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 	ALLEGRO_EVENT evento;
 	// Mientras haya eventos en la cola, leer y descartar
 	while (al_get_next_event(colaEventos, &evento)) {
+	}
+}
+
+//revisa si la barra colisiona con un comodin
+void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVida& vida) {
+	PtrBola bola = lista2;
+	PtrBloque aux = lista;
+	PtrBola nueva;
+	while (aux != NULL) {
+		if (!aux->estadoExistencia && aux->comodin != NULL && aux->comodin->visibilidad) { //verificar si el como ya se destruyó, si al menos tiene comodin inicializado y está visible
+			if ((aux->comodin->x <= barra->x + barra->ancho) && (aux->comodin->ancho + aux->comodin->x >= barra->x)) { //verificar que esté adentro de la posición en X de la barra
+				if ((aux->comodin->y <= barra->y + barra->alto) && (aux->comodin->alto + aux->comodin->y >= barra->y)) { //verificar que este adentro de la posicion en Y de la barra
+					switch (aux->comodin->habilidad) {
+					case 0: //ampliar barra
+						barra->ancho = barra->ancho * 1.5;
+						break;
+					case 1: //bola más pequeña
+						while (bola != NULL) {
+							bola->alto = bola->alto / 1.5;
+							bola->ancho = bola->ancho / 1.5;
+							bola = bola->siguiente;
+						}
+						break;
+					case 2: //vida extra
+						aumentarVida(vida);
+						break;
+					case 3: //quitar vida
+						disminuirVida(vida);
+						break;
+					case 4: //multiplicar bolas
+						nueva = new Bola;
+						crearBola(lista2, bola->x, bola->y, bola->ancho, bola->alto, bola->limiteDerecho, bola->limiteIzquierdo, bola->limiteSuperior,true, !bola->direccionMovimientoX, !bola->direccionMovimientoY,bola->imagen);
+						break;
+					case 5: //no tiene comodin
+						break;
+					}
+					aux->comodin->visibilidad = false;
+				}
+			}
+		}
+		aux = aux->siguiente;
 	}
 }

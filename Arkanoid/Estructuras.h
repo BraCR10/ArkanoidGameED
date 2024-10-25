@@ -54,6 +54,7 @@ typedef struct Bola {
 	int limiteDerecho;
 	int limiteIzquierdo;
 	int limiteSuperior;
+	Bola* siguiente;
 	ALLEGRO_BITMAP* imagen;
 }*PtrBola;
 
@@ -61,7 +62,7 @@ typedef struct Bola {
 typedef struct Comodin {
 	int x;
 	int y;
-	int habilidad; // 0: Disparos de barra | 1: Bola más pequeña | 2: Vida extra | 3: Quitar vida | 4: Multiplicar bolas | 5: No posee comodin
+	int habilidad; // 0: Ampliar barra | 1: Bola más pequeña | 2: Vida extra | 3: Quitar vida | 4: Multiplicar bolas | 5: No posee comodin
 	float ancho;
 	float alto;
 	bool visibilidad;
