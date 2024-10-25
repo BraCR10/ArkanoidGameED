@@ -412,12 +412,12 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	y2SelectorMov = y1SelectorMov;  // Fin del selector basado en su altura
 
 	// Cargar imagen de fondo
-	imagenMenu = al_load_bitmap("Imagenes/pantallaMenu.jpeg");
+	/*imagenMenu = al_load_bitmap("Imagenes/pantallaMenu.jpeg");
 	if (!imagenMenu) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
-	}
+	}*/
 
 	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", 20, 0);
 	if (!fuenteOpcionesMenu) {
