@@ -417,63 +417,6 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	}
 }
 
-void crearBloquesPrimerNivelMultijugador(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista, float anchoBloque, float altoBloque) {
-	int ubicadorX = anchoMonitor / 4;
-	int ubicadorY = altoMonitor / 6.14;
-	int n = 0;
-	while (n < 63) { //va creando los bloques en filas de 12 bloques
-		while (n < 9) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCafe, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-			;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 8 && n < 18) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueRojo, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 17 && n < 27) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueRosado, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 26 && n < 36) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 35 && n < 45) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 44 && n < 54) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueVerde, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 53 && n < 63) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-
-	}
-}
-
 // se encargar de generar aleatoriamente las habilidades
 int generarHabilidad(int nivel) {
 	int cont = 1;
@@ -818,10 +761,6 @@ void disminuirVida(PtrVida& vida) {
 
 void iniciarMarcadores(int& marcadorPts, PtrVida& vida) {
 	marcadorPts = 0;
-	vida->cantidad = 3;
-}
-
-void iniciarMarcadoresMultijugador(PtrVida& vida) {
 	vida->cantidad = 3;
 }
 
