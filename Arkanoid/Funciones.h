@@ -423,19 +423,19 @@ int generarHabilidad(int nivel) {
 	int a;
 	while (cont != nivel) {
 		a = 1 + rand() % 100;
-		if (a % 11 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por once: 9%
+		if (a % 26 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por 26: 3%
 			return 0; //disparos barra
 		}
-		if (a % 15 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por quince: 6%
+		if (a % 27 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por 27: 3%
 			return 4; //multiplicar bolas
 		}
-		if (a % 10 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por diez: 10%
+		if (a % 25 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por 26: 4%
 			return 3; //quitar vida
 		}
-		if (a % 14 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por catorce: 7%
+		if (a % 22 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por 22: 4%
 			return 1; //bola más pequeña
 		}
-		if (a % 12 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por doce: 8%
+		if (a % 21 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por 21: 4%
 			return 2; // vida extra
 		}
 		cont++;
@@ -508,6 +508,78 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		while (n > 71 && n < 84) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+
+	}
+}
+
+void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista, float anchoBloque, float altoBloque) {
+	int ubicadorX = anchoMonitor / 4;
+	int ubicadorY = (altoMonitor / 6.14) + altoBloque*3; //se le suma alto bloque para dejar un espacio arriba
+	int n = 0;
+	int habilidad = 0;
+
+	while (n < 84) { //va creando los bloques en filas de 12 bloques
+		while (n < 12) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 11 && n < 24) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 23 && n < 36) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 35 && n < 48) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 47 && n < 60) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 59 && n < 72) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 71 && n < 84) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -767,10 +839,10 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 			else if (bola->y >= AltoMonitor) {// si la bola se va más abajo de la barra
 				if (contarBolas(lista) == 1) { //si solo queda una bola en pantalla
 					bola->estadoMovimiento = false;
-					bola->ancho = 30;
-					bola->alto = 30;
-					bola->x = AnchoMonitor / 2;
-					bola->y = AltoMonitor / 2 + (AltoMonitor * 34) / 100;
+					bola->ancho = AnchoMonitor / 62;
+					bola->alto = AnchoMonitor / 62;
+					bola->x = AnchoMonitor/2 - (bola->ancho)/2;
+					bola->y = (AltoMonitor - AltoMonitor/8) - bola->alto*1.001;
 					barra->x = AnchoMonitor / 2 - barra->ancho / 2;
 					barra->y = AltoMonitor - AltoMonitor / 8;
 					disminuirVida(vida);

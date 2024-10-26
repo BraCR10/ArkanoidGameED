@@ -166,7 +166,7 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	const int x_Imagen_Ancho = AnchoMonitor / 40;
 	const int y_Imagen_Alto = AltoMonitor / 7;
 	// Crear barra
-	crearBarra(barra, limiteIzquierdoPared + ANCHO_BARRA * 2.5, AltoMonitor - margenY, ANCHO_BARRA, ALTO_BARRA, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - ALTO_BARRA, imagenParedHorizontal);
+	crearBarra(barra, AnchoMonitor/2 - (ANCHO_BARRA/2), AltoMonitor - margenY, ANCHO_BARRA, ALTO_BARRA, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - ALTO_BARRA, imagenParedHorizontal);
 
 	// Crear marcadores
 	int y1MaxPts = AltoMonitor / 4;
@@ -188,28 +188,12 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	y2CuadroComodines = AltoMonitor / 4 + y_Imagen_Alto;
 	crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin Actual");
 
-	//Contador de vidas
-	x1ContadorVida = limiteIzquierdoPared - x_Imagen_Ancho * 8;
-	y1ContadorVida = AltoMonitor / 4 + y_Imagen_Alto * 2;
-	altoVida = y2CuadroComodines- (AltoMonitor / 4);
-	anchoVida = x2CuadroComodines- x1CuadroComodines;
-	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida,  altoVida, anchoVida);
-
 	//Label nivel
 	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 8;
 	y1LabelNivel = AltoMonitor / 8;
 	x2LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 4;
 	y2LabelNivel = AltoMonitor / 6 ;
 	crearMarco(NivelLabel,nivel,x1LabelNivel,y1LabelNivel,x2LabelNivel,y2LabelNivel,"Nivel");
-}
-
-void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor)
-{
-	imagenFondoPartida = al_load_bitmap("Imagenes/imagenFondoPartida.jpg");
-	al_draw_scaled_bitmap(imagenFondoPartida,
-		0, 0, al_get_bitmap_width(imagenFondoPartida), al_get_bitmap_height(imagenFondoPartida),
-		0, 0, AnchoMonitor, AltoMonitor,
-		0);
 }
 
 void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
@@ -223,9 +207,8 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 	const int LIM_DER_PARED = (AnchoMonitor - AnchoMonitor / 4) ;
 	const int LIM_SUP_PARED = AltoMonitor / 8 + 40;//40 es el alto de la pared horizontal
 
-
 	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED);
-	crearBola(listaEnlazadaBolas, AnchoMonitor / 2, AltoMonitor / 2 + (AltoMonitor * 34) / 100, 30, 30, LIM_DER_PARED, LIM_IZQ_PARED, LIM_SUP_PARED, false,false, false, imagenBola);
+	crearBola(listaEnlazadaBolas, AnchoMonitor / 2 - (AnchoMonitor / 62)/2, (AltoMonitor - AltoMonitor / 8) - (AnchoMonitor / 62)* 1.001, AnchoMonitor/62, AnchoMonitor / 62, LIM_DER_PARED, LIM_IZQ_PARED, LIM_SUP_PARED, false,false, false, imagenBola);
 	
 }
 
@@ -250,15 +233,76 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	//Bloques
 	 const float ANCHO_BLOQUE = AnchoMonitor / 24;
 	 const float ALTO_BLOQUE = AltoMonitor/19;
-
-	 //Comodines
-	 const float ANCHO_COMODIN = AnchoMonitor/25;
-	 const float ALTO_COMODIN = AltoMonitor/20;
 	
-	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
-	//crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+
+	//Contador de vidas
+	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
+	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
+	altoVida = y2CuadroComodines - (AltoMonitor / 4);
+	anchoVida = x2CuadroComodines - x1CuadroComodines;
+	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+
 	iniciarMarcadores(contadorPts, contadorVidas);
+}
+
+void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVida& vida, int& contadorPts) {
+	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
+	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
+	imagenBola = al_load_bitmap("Imagenes/bola.png");
+	imagenBloqueAmarillo = al_load_bitmap("Imagenes/bloqueAmarillo.png");
+	imagenBloqueCeleste = al_load_bitmap("Imagenes/bloqueCeleste.png");
+	imagenBloqueRojo = al_load_bitmap("Imagenes/bloqueRojo.png");
+	imagenBloqueVerde = al_load_bitmap("Imagenes/bloqueVerde.png");
+	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
+	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
+	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
+
+	if (!imagenParedHorizontal || !imagenParedVertical) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
+	//Bloques
+	const float ANCHO_BLOQUE = AnchoMonitor / 24;
+	const float ALTO_BLOQUE = AltoMonitor / 19;
+
+	//Comodines
+	const float ANCHO_COMODIN = AnchoMonitor / 25;
+	const float ALTO_COMODIN = AltoMonitor / 20;
+
+	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+}
+
+void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVida& vida, int& contadorPts) {
+	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
+	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
+	imagenBola = al_load_bitmap("Imagenes/bola.png");
+	imagenBloqueAmarillo = al_load_bitmap("Imagenes/bloqueAmarillo.png");
+	imagenBloqueCeleste = al_load_bitmap("Imagenes/bloqueCeleste.png");
+	imagenBloqueRojo = al_load_bitmap("Imagenes/bloqueRojo.png");
+	imagenBloqueVerde = al_load_bitmap("Imagenes/bloqueVerde.png");
+	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
+	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
+	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
+
+	if (!imagenParedHorizontal || !imagenParedVertical) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
+	//Bloques
+	const float ANCHO_BLOQUE = AnchoMonitor / 24;
+	const float ALTO_BLOQUE = AltoMonitor / 19;
+
+	//Comodines
+	const float ANCHO_COMODIN = AnchoMonitor / 25;
+	const float ALTO_COMODIN = AltoMonitor / 20;
+
+	crearBloquesTercerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 }
 
 void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
@@ -269,6 +313,14 @@ void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
 		0);
 	string mensaje = "Preciona enter para volver al menu";
 	if(flagGameOverMsg)al_draw_text(fuenteGameOver, colorLetrasGameOver, AnchoMonitor / 2, AltoMonitor -150, ALLEGRO_ALIGN_CENTER, mensaje.c_str());	
+}
+
+void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor)
+{
+	al_draw_scaled_bitmap(imagenFondoPartida,
+		0, 0, al_get_bitmap_width(imagenFondoPartida), al_get_bitmap_height(imagenFondoPartida),
+		0, 0, AnchoMonitor, AltoMonitor,
+		0);
 }
 
 //Funcion para dibujar todo
@@ -306,9 +358,6 @@ void destruirElementosGenerales() {
 
 	eliminarMarco(marcoCuadroComodines);
 	marcoCuadroComodines = NULL;
-
-	eliminarVida(contadorVidas);
-	contadorVidas = NULL;
 
 	eliminarListaBloque(listaEnlazadaBloques);
 	listaEnlazadaBloques = NULL;
@@ -412,12 +461,12 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	y2SelectorMov = y1SelectorMov;  // Fin del selector basado en su altura
 
 	// Cargar imagen de fondo
-	/*imagenMenu = al_load_bitmap("Imagenes/pantallaMenu.jpeg");
-	if (!imagenMenu) {
+	imagenFondoPartida = al_load_bitmap("Imagenes/imagenFondoPartida.jpg");
+	if (!imagenFondoPartida) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
-	}*/
+	}
 
 	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", 20, 0);
 	if (!fuenteOpcionesMenu) {
@@ -542,6 +591,7 @@ void main()
 	bool juego = false;
 	bool menu = true;
 	int opcion=0;
+	int nivel = 1;
 
 	while (menu) {
 		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor);
@@ -549,6 +599,7 @@ void main()
 		switch (opcion)
 		{
 		case 1:
+			nivel = 1;
 			nivel1(pantalla, AnchoMonitor, AltoMonitor);
 			juego= true;
 			break;
@@ -587,13 +638,14 @@ void main()
 				juego = false;
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
-			juego = false;
+				juego = false;
+				destruirElementosGenerales(); //reiniciar todo del nivel actual
 			}
 			if (evento.type == ALLEGRO_EVENT_TIMER) {
 				//TODO: definir mas timers
 				if (imagenGameOver == NULL )
 				{
-					al_clear_to_color(al_map_rgb(0, 48, 78)); // Limpiar la pantalla con color blanco TODO: definir fondo
+					dibujarFondoPartida(AnchoMonitor, AltoMonitor);
 					dibujarPantallaNivel();
 
 					if (evento.timer.source == timerBola_Colision) {
@@ -610,8 +662,19 @@ void main()
 						verificadorGameOver(contadorVidas, pantalla,sonidoGameOver);
 						//Vañidacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
-							//TODO:WIN
-							juego = false;
+							destruirElementosGenerales();
+							//falta pantalla win entre nivls
+							if (nivel == 1) {
+								nivel = 2;
+								nivel2(pantalla, AnchoMonitor, AltoMonitor, contadorVidas, contadorPts);
+							}
+							else if (nivel == 2) {
+								nivel = 3;
+								nivel3(pantalla, AnchoMonitor, AltoMonitor, contadorVidas, contadorPts);
+							}
+							else if (nivel == 3) {
+								juego = false;
+							}
 						};
 					}
 
@@ -632,6 +695,9 @@ void main()
 
 	//Destruccion de elemontos propios del juego
 	destruirElementosGenerales();
+
+	eliminarVida(contadorVidas); //se elimina aparte porque se mantiene durante todo el juego
+	contadorVidas = NULL;
 
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
