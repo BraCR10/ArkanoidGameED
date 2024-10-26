@@ -127,6 +127,10 @@ int y2SelectorMov = 0;
 //Nivel
 int nivel=0;
 
+
+float scroll_x = 0;
+float scrollVelocidad = 10;
+
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
 	int margenX = AnchoMonitor / 4;
 	int margenY = AltoMonitor / 8;
@@ -315,12 +319,40 @@ void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
 	if(flagGameOverMsg)al_draw_text(fuenteGameOver, colorLetrasGameOver, AnchoMonitor / 2, AltoMonitor -150, ALLEGRO_ALIGN_CENTER, mensaje.c_str());	
 }
 
-void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor)
+void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor, float& scroll_x, float& scrollVelocidad)
 {
-	al_draw_scaled_bitmap(imagenFondoPartida,
-		0, 0, al_get_bitmap_width(imagenFondoPartida), al_get_bitmap_height(imagenFondoPartida),
-		0, 0, AnchoMonitor, AltoMonitor,
-		0);
+	// Incrementa scroll_x para lograr el efecto de desplazamiento horizontal
+	scroll_x += scrollVelocidad;
+
+	int fondoAncho = al_get_bitmap_width(imagenFondoPartida);
+	int fondoAlto = al_get_bitmap_height(imagenFondoPartida);
+
+	// Reiniciar la posición de scroll si ha recorrido toda la imagen de fondo
+	if (scroll_x >= fondoAncho) {
+		scroll_x = 0;
+	}
+
+	// Limpia la pantalla
+	al_clear_to_color(al_map_rgb(0, 0, 0));
+
+	// Dibuja la parte visible del fondo escalada al tamaño de la pantalla
+	al_draw_scaled_bitmap(
+		imagenFondoPartida,
+		0, 0, fondoAncho, fondoAlto,  // Parte de la imagen de fondo a mostrar
+		-scroll_x, 0, AnchoMonitor, AltoMonitor,  // Escalado al tamaño de la pantalla
+		0
+	);
+
+	// Dibuja la parte extra a la derecha para crear un efecto de bucle
+	if (scroll_x > 0) {
+		al_draw_scaled_bitmap(
+			imagenFondoPartida,
+			0, 0, fondoAncho, fondoAlto,  // Parte de la imagen de fondo a mostrar
+			fondoAncho - scroll_x, 0, AnchoMonitor, AltoMonitor,  // Escalado al tamaño de la pantalla
+			0
+		);
+	}
+
 }
 
 //Funcion para dibujar todo
@@ -380,8 +412,7 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 
 }
 
-void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
-	dibujarFondoPartida(AnchoMonitor, AltoMonitor);
+void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor, float& scroll_x, float& scrollVelocidad) {
 	// Cálculo de posiciones de las opciones del menú
 	int posicionY_PrimerElemento = AltoMonitor*2/5 ;
 	int posicionX_PrimerElemento = AnchoMonitor*2.7/ 7 ;
@@ -431,11 +462,12 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 		);
 	}
 	// Dibujar título del menú
-	int posicionTituloMenuX = AltoMonitor / 3;
+	int ancho = al_get_text_width(fuenteTituloMenu,"ARKANOID IN THE SPACE" );
+	int posicionTituloMenuX = (AnchoMonitor-ancho)/2;
 	int posicionTituloMenuY = AnchoMonitor / 10;
 	al_draw_text(
 		fuenteTituloMenu,
-		al_map_rgb(204, 204, 0),
+		al_map_rgb(0, 170, 228),
 		posicionTituloMenuX,
 		posicionTituloMenuY,
 		ALLEGRO_ALIGN_LEFT,
@@ -443,7 +475,14 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	);
 }
 
-int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+void dibujarFondoPartidaEstatico(int AnchoMonitor, int AltoMonitor) {
+	al_draw_scaled_bitmap(imagenFondoPartida,
+		0, 0, al_get_bitmap_width(imagenFondoPartida), al_get_bitmap_height(imagenFondoPartida),
+		0, 0, AnchoMonitor, AltoMonitor,
+		0);
+}
+
+int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
 	int opcion = 0;
 	const int NUM_CASILLAS = 6; 
 	int casillaActual = 0;  // Casilla en la que empieza el selector
@@ -468,26 +507,33 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		return 0;
 	}
 
-	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", 20, 0);
+	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor/80, 0);
 	if (!fuenteOpcionesMenu) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
 	}
-	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", 75, 0);
+	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", AnchoMonitor/13 , 0);
 	if (!fuenteTituloMenu) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
 	}
 
+	ALLEGRO_SAMPLE_ID sample_id; //declaracion de variable para reproducir musica
+	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id); //reproduce la musica
+
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
 
-	while (true) {
-		dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
-		al_flip_display();
+	ALLEGRO_TIMER* timerFondo = al_create_timer(1.0 / 10);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerFondo));
 
+	al_start_timer(timerFondo);
+
+	while (true) {
+		dibujarMenu(pantalla, AnchoMonitor, AltoMonitor, scroll_x, scrollVelocidad);
+		al_flip_display();
 		ALLEGRO_EVENT evento;
 		al_wait_for_event(colaEventos, &evento);
 
@@ -510,7 +556,14 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 			y1SelectorMov = posicionesY[casillaActual];
 			y2SelectorMov = y1SelectorMov ; 
 		}
+
+		if (evento.type == ALLEGRO_EVENT_TIMER) {
+			if (evento.timer.source == timerFondo)
+				dibujarFondoPartida(AnchoMonitor, AltoMonitor, scroll_x, scrollVelocidad);
+			al_flip_display();
+		}
 	}
+	al_stop_sample(&sample_id); //detiene canción cuando pasa a niveles
 	al_destroy_event_queue(colaEventos);
 	return opcion;
 }
@@ -551,14 +604,19 @@ void main()
 	ALLEGRO_SAMPLE* sonidoGameOver = al_load_sample("Sonidos/sonidoGameOver.mp3");
 	ALLEGRO_SAMPLE* sonidoComodin = al_load_sample("Sonidos/sonidoPowerUp.mp3");
 	ALLEGRO_SAMPLE* sonidoComodinMalo = al_load_sample("Sonidos/sonidoNegativo.wav");
-	al_reserve_samples(5);
+	
+	//inicializacion de canciones
+	
+	ALLEGRO_SAMPLE* musicamenu = al_load_sample("Musica/musicaMenu.mp3");
+
+	al_reserve_samples(6);
 
 	//Configuracion de teclado
 	al_install_keyboard();
 	ALLEGRO_KEYBOARD_STATE teclado;
 
 	//Fuente
-	fuenteMarcadores = al_load_ttf_font("Fuentes/ARLETA.ttf", 20, 0);
+	fuenteMarcadores = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor/90, 0);
 	if (!fuenteMarcadores) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
@@ -594,12 +652,10 @@ void main()
 	int nivel = 1;
 
 	while (menu) {
-		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor);
-
+		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 		switch (opcion)
 		{
 		case 1:
-			nivel = 1;
 			nivel1(pantalla, AnchoMonitor, AltoMonitor);
 			juego= true;
 			break;
@@ -645,7 +701,7 @@ void main()
 				//TODO: definir mas timers
 				if (imagenGameOver == NULL )
 				{
-					dibujarFondoPartida(AnchoMonitor, AltoMonitor);
+					dibujarFondoPartidaEstatico(AnchoMonitor, AltoMonitor);
 					dibujarPantallaNivel();
 
 					if (evento.timer.source == timerBola_Colision) {
@@ -722,6 +778,12 @@ void main()
 	al_destroy_sample(sonidoComodin);
 	al_destroy_sample(sonidoComodinMalo);
 	al_destroy_bitmap(imagenFondoPartida);
+	al_destroy_sample(musicamenu);
+	al_destroy_font(fuenteOpcionesMenu);
+	al_destroy_font(fuenteTituloMenu);
+	al_uninstall_audio();
+	al_uninstall_keyboard();
+
 }
 
 
