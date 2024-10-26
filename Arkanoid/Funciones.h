@@ -914,3 +914,4 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 		aux = aux->siguiente;
 	}
 }
+

@@ -55,9 +55,6 @@ PtrMarcador marcoActualPts = NULL;
 //Creacion de contador de puntos
 int contadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
 
-//Creacion de maracador para cuadro de comodines
-PtrMarcador marcoCuadroComodines = NULL;
-
 //Creacion  de vidas
 PtrVida contadorVidas = NULL;
 
@@ -127,9 +124,9 @@ int y2SelectorMov = 0;
 //Nivel
 int nivel=0;
 
-
+//Variables de scroll para fondo de menu principal
 float scroll_x = 0;
-float scrollVelocidad = 10;
+float scrollVelocidad = 8;
 
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
 	int margenX = AnchoMonitor / 4;
@@ -184,19 +181,12 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	x2ActualPts = limiteDerechoPared  + x_Imagen_Ancho * 8;
 	y2ActualPts = y1ActualPts + y_Imagen_Alto;
 	crearMarco(marcoActualPts, 0, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
-
-	// Cuadro de comod�n
-	x1CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 8;
-	y1CuadroComodines = AltoMonitor / 4;
-	x2CuadroComodines = limiteIzquierdoPared - x_Imagen_Ancho * 4;
-	y2CuadroComodines = AltoMonitor / 4 + y_Imagen_Alto;
-	crearMarco(marcoCuadroComodines, 0, x1CuadroComodines, y1CuadroComodines, x2CuadroComodines, y2CuadroComodines, "Comodin Actual");
-
+	
 	//Label nivel
 	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 8;
-	y1LabelNivel = AltoMonitor / 8;
+	y1LabelNivel = AltoMonitor / 4;
 	x2LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 4;
-	y2LabelNivel = AltoMonitor / 6 ;
+	y2LabelNivel = AltoMonitor / 3.3 ;
 	crearMarco(NivelLabel,nivel,x1LabelNivel,y1LabelNivel,x2LabelNivel,y2LabelNivel,"Nivel");
 }
 
@@ -241,11 +231,11 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 
-	//Contador de vidas
+	//Contador de vidas*****************************************************************************************************
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
-	altoVida = y2CuadroComodines - (AltoMonitor / 4);
-	anchoVida = x2CuadroComodines - x1CuadroComodines;
+	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
+	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40)*4 ) - (AnchoMonitor / 4 - (AnchoMonitor / 40)*8);
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
 	iniciarMarcadores(contadorPts, contadorVidas);
@@ -362,7 +352,6 @@ void dibujarPantallaNivel() {
 	dibujarParedes(listaEnlazadaParedes);
 	dibujarMarco(marcoMaxPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 	dibujarMarco(marcoActualPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-	dibujarMarco(marcoCuadroComodines, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
 	dibujarBloques(listaEnlazadaBloques);
 	dibujarBola(listaEnlazadaBolas);
 	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
@@ -388,9 +377,6 @@ void destruirElementosGenerales() {
 	eliminarMarco(marcoActualPts);
 	marcoActualPts = NULL;
 
-	eliminarMarco(marcoCuadroComodines);
-	marcoCuadroComodines = NULL;
-
 	eliminarListaBloque(listaEnlazadaBloques);
 	listaEnlazadaBloques = NULL;
 }
@@ -412,12 +398,11 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 
 }
 
-void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor, float& scroll_x, float& scrollVelocidad) {
+void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	// Cálculo de posiciones de las opciones del menú
-	int posicionY_PrimerElemento = AltoMonitor*2/5 ;
+	int posicionY_PrimerElemento = AltoMonitor*1.1/3 ;
 	int posicionX_PrimerElemento = AnchoMonitor*2.7/ 7 ;
-	int altoOpcion = AnchoMonitor / 30;
-
+	int altoOpcion = al_get_font_line_height(fuenteOpcionesMenu)*2.5;
 	// Dibujar fondo semitransparente para el menú
 	al_draw_filled_rectangle(
 		posicionX_PrimerElemento- (AnchoMonitor /16) * 1.01,
@@ -426,10 +411,9 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor, fl
 		posicionY_PrimerElemento + altoOpcion * 6,
 		al_map_rgba(0, 0, 0, 100)
 	);
-	
 
 	// Posiciones del selector
-	int altoSelector = altoOpcion/1.5;
+	int altoSelector = altoOpcion;
 	int anchoSelector = AnchoMonitor / 4;
 	int x1Selector = posicionX_PrimerElemento;
 	int y1Selector = y1SelectorMov;
@@ -438,20 +422,21 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor, fl
 
 
 	// Dibujar selector
-	al_draw_filled_rectangle(x1Selector, y1Selector, x2Selector, y2Selector, al_map_rgb(153, 153, 102));
+	al_draw_filled_rectangle(x1Selector, y1Selector/1.11, x2Selector, y2Selector/1.11, al_map_rgb(153, 153, 102));
 
 	// Opciones del menú
 	const char* opcionesMenu[] = {
 		"1. Jugar",
-		"2. Multijugador",
-		"3. Maquina vs maquina		",
-		"4. Ayuda",
-		"5. Mostrar estadísticas",
-		"6. Salir",
+		"2. Jugador vs Jugador",
+		"3. Jugador vs Máquina",
+		"4. Máquina vs Máquina",
+		"5. Ayuda",
+		"6. Mostrar estadísticas",
+		"7. Salir",
 	};
 
 	// Dibujar cada opción del menú
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		al_draw_text(
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
@@ -482,9 +467,10 @@ void dibujarFondoPartidaEstatico(int AnchoMonitor, int AltoMonitor) {
 		0);
 }
 
+
 int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
 	int opcion = 0;
-	const int NUM_CASILLAS = 6; 
+	const int NUM_CASILLAS = 7; 
 	int casillaActual = 0;  // Casilla en la que empieza el selector
 	int altoOpciones = AnchoMonitor / 30;
 	int posicionInicialCasillas = AltoMonitor * 2 / 5;
@@ -494,7 +480,8 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 		(posicionInicialCasillas + altoOpciones*2),
 		(posicionInicialCasillas+ altoOpciones*3),
 		(posicionInicialCasillas + altoOpciones*4),
-		(posicionInicialCasillas + altoOpciones*5) };
+		(posicionInicialCasillas + altoOpciones*5),
+		(posicionInicialCasillas + altoOpciones * 6) };
 
 	y1SelectorMov = posicionesY[casillaActual];  // Posición inicial del selector
 	y2SelectorMov = y1SelectorMov;  // Fin del selector basado en su altura
@@ -532,7 +519,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	al_start_timer(timerFondo);
 
 	while (true) {
-		dibujarMenu(pantalla, AnchoMonitor, AltoMonitor, scroll_x, scrollVelocidad);
+		dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
 		al_flip_display();
 		ALLEGRO_EVENT evento;
 		al_wait_for_event(colaEventos, &evento);
@@ -551,7 +538,10 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 			}
 			else if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
 				opcion = casillaActual + 1; 
-				break;
+				if (opcion != 2) {
+					break;
+	
+				}
 			}
 			y1SelectorMov = posicionesY[casillaActual];
 			y2SelectorMov = y1SelectorMov ; 
@@ -563,6 +553,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 			al_flip_display();
 		}
 	}
+	al_destroy_timer(timerFondo);
 	al_stop_sample(&sample_id); //detiene canción cuando pasa a niveles
 	al_destroy_event_queue(colaEventos);
 	return opcion;
@@ -668,6 +659,8 @@ void main()
 		case 5:
 			break;
 		case 6:
+			break;
+		case 7:
 			menu = false;
 			break;
 		default:
@@ -783,6 +776,8 @@ void main()
 	al_destroy_font(fuenteTituloMenu);
 	al_uninstall_audio();
 	al_uninstall_keyboard();
+	al_destroy_timer(timerBola_Colision);
+	al_destroy_timer(timer_Game_Over_Msg);
 
 }
 
