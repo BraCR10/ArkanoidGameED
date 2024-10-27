@@ -39,6 +39,10 @@ ALLEGRO_BITMAP* imagenBloqueCafe = NULL;
 ALLEGRO_BITMAP* imagenGameOver = NULL;
 ALLEGRO_BITMAP* imagenMenu = NULL;
 ALLEGRO_BITMAP* imagenFondoPartida = NULL;
+ALLEGRO_BITMAP* imagenFondoNivel1 = NULL;
+ALLEGRO_BITMAP* imagenFondoNivel2 = NULL;
+ALLEGRO_BITMAP* imagenFondoNivel3 = NULL;
+ALLEGRO_BITMAP* imagenFondoGeneral = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -72,6 +76,7 @@ ALLEGRO_FONT* fuenteMarcadores = NULL;
 ALLEGRO_FONT* fuenteGameOver = NULL;
 ALLEGRO_FONT* fuenteOpcionesMenu = NULL;
 ALLEGRO_FONT* fuenteTituloMenu = NULL;
+ALLEGRO_FONT* fuenteTransicion = NULL;
 
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
@@ -122,7 +127,7 @@ bool flagGameOverCleanMemory = false;
 int y1SelectorMov = 0;
 int y2SelectorMov = 0;
 //Nivel
-int nivel=0;
+int nivel=1;
 
 //Variables de scroll para fondo de menu principal
 float scroll_x = 0;
@@ -145,7 +150,7 @@ void crearParedesVerticalesIzquierda(int AnchoMonitor, int AltoMonitor) {
 	const int ANCHO_IMAGEN = 40;
 	const int ALTO_IMAGEN = 120;
 
-	for (int y = margenY; y < AltoMonitor - margenY; y += ALTO_IMAGEN) {
+	for (int y = margenY; y < AltoMonitor; y += ALTO_IMAGEN) {
 		crearPared(listaEnlazadaParedes, margenX, y, ANCHO_IMAGEN, ALTO_IMAGEN, imagenParedVertical);
 	}
 }
@@ -156,7 +161,7 @@ void crearParedesVerticalesDerecha(int AnchoMonitor, int AltoMonitor) {
 	const int ANCHO_IMAGEN = 40;
 	const int ALTO_IMAGEN = 120;
 
-	for (int y = margenY; y < AltoMonitor - margenY; y += ALTO_IMAGEN) {
+	for (int y = margenY; y < AltoMonitor; y += ALTO_IMAGEN) {
 		crearPared(listaEnlazadaParedes, AnchoMonitor - margenX, y, ANCHO_IMAGEN, ALTO_IMAGEN, imagenParedVertical);
 	}
 }
@@ -207,7 +212,6 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 }
 
 void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
-	nivel= 1;
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -218,6 +222,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
 	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
 	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
+	imagenFondoNivel1 = al_load_bitmap("Imagenes/fondoNivel1.png");
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -252,6 +257,7 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVid
 	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
 	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
 	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
+	imagenFondoNivel2 = al_load_bitmap("Imagenes/fondoNivel2.png");
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -283,6 +289,7 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVid
 	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
 	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
 	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
+	imagenFondoNivel3 = al_load_bitmap("Imagenes/fondoNivel3.png");
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -462,13 +469,93 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	);
 }
 
-void dibujarFondoPartidaEstatico(int AnchoMonitor, int AltoMonitor) {
-	al_draw_scaled_bitmap(imagenFondoPartida,
-		0, 0, al_get_bitmap_width(imagenFondoPartida), al_get_bitmap_height(imagenFondoPartida),
-		0, 0, AnchoMonitor, AltoMonitor,
-		0);
+void dibujarFondoGeneral(int AnchoMonitor, int AltoMonitor) {
+	scroll_x += scrollVelocidad/20;
+
+	int fondoAncho = al_get_bitmap_width(imagenFondoGeneral);
+	int fondoAlto = al_get_bitmap_height(imagenFondoGeneral);
+
+	// Reiniciar la posición de scroll si ha recorrido toda la imagen de fondo
+	if (scroll_x >= fondoAncho) {
+		scroll_x = 0;
+	}
+
+	// Limpia la pantalla
+	al_clear_to_color(al_map_rgb(0, 0, 0));
+
+	// Dibuja la parte visible del fondo escalada al tamaño de la pantalla
+	al_draw_scaled_bitmap(
+		imagenFondoGeneral,
+		0, 0, fondoAncho, fondoAlto,  // Parte de la imagen de fondo a mostrar
+		-scroll_x, 0, AnchoMonitor, AltoMonitor,  // Escalado al tamaño de la pantalla
+		0
+	);
+
+	// Dibuja la parte extra a la derecha para crear un efecto de bucle
+	if (scroll_x > 0) {
+		al_draw_scaled_bitmap(
+			imagenFondoGeneral,
+			0, 0, fondoAncho, fondoAlto,  // Parte de la imagen de fondo a mostrar
+			fondoAncho - scroll_x, 0, AnchoMonitor, AltoMonitor,  // Escalado al tamaño de la pantalla
+			0
+		);
+	}
 }
 
+void dibujarFondoNivel1(int AnchoMonitor, int AltoMonitor) {
+
+	int posX = AnchoMonitor / 4;               
+	int posY = AltoMonitor / 8;                
+	int anchoEscalado = AnchoMonitor/2;      
+	int altoEscalado =AltoMonitor/1.1;     
+
+	al_draw_scaled_bitmap(
+		imagenFondoNivel1,                   
+		0, 0,                              
+		al_get_bitmap_width(imagenFondoNivel1),// Ancho completo de la imagen de origen
+		al_get_bitmap_height(imagenFondoNivel1),// Alto completo de la imagen de origen
+		posX, posY,                            
+		anchoEscalado,                          
+		altoEscalado,                           
+		0                            
+	);
+}
+
+void dibujarFondoNivel2(int AnchoMonitor, int AltoMonitor) {
+	int posX = AnchoMonitor / 4;              
+	int posY = AltoMonitor / 8;                
+	int anchoEscalado = AnchoMonitor / 2;      
+	int altoEscalado = AltoMonitor / 1.1;   
+
+	al_draw_scaled_bitmap(
+		imagenFondoNivel2,
+		0, 0,
+		al_get_bitmap_width(imagenFondoNivel2),// Ancho completo de la imagen de origen
+		al_get_bitmap_height(imagenFondoNivel2),// Alto completo de la imagen de origen
+		posX, posY,
+		anchoEscalado,                          
+		altoEscalado,                           
+		0
+	);
+}
+
+void dibujarFondoNivel3(int AnchoMonitor, int AltoMonitor) {
+	int posX = AnchoMonitor / 4;               
+	int posY = AltoMonitor / 8;               
+	int anchoEscalado = AnchoMonitor / 2;      
+	int altoEscalado = AltoMonitor / 1.1;   
+
+	al_draw_scaled_bitmap(
+		imagenFondoNivel3,
+		0, 0,
+		al_get_bitmap_width(imagenFondoNivel3),// Ancho completo de la imagen de origen
+		al_get_bitmap_height(imagenFondoNivel3),// Alto completo de la imagen de origen
+		posX, posY,
+		anchoEscalado,                          
+		altoEscalado,                
+		0
+	);
+}
 
 int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
 	int opcion = 0;
@@ -588,6 +675,9 @@ void main()
 	al_init_image_addon();
 	al_init_primitives_addon();
 	al_init_ttf_addon();
+	
+	//inicializacion fondo general
+	imagenFondoGeneral = al_load_bitmap("Imagenes/fondoGeneralNivel.png");
 
 	//inicialización de efecto sonidos
 	al_install_audio();
@@ -608,9 +698,16 @@ void main()
 	al_install_keyboard();
 	ALLEGRO_KEYBOARD_STATE teclado;
 
-	//Fuente
+	//Fuente Marcadores
 	fuenteMarcadores = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor/90, 0);
 	if (!fuenteMarcadores) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
+	//Fuente Transicion
+	fuenteTransicion = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 50, 0);
+	if (!fuenteTransicion) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return;
@@ -633,6 +730,9 @@ void main()
 	ALLEGRO_TIMER* timer_Game_Over_Msg = al_create_timer(1.0 / FPS_Game_Over_Msg);
 	al_register_event_source(colaEventos, al_get_timer_event_source(timer_Game_Over_Msg));
 	
+	ALLEGRO_TIMER* timerTransicion = al_create_timer(3.0); //temporizador para pantallas de transición
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerTransicion));
+
 	//Inicio de timers
 	al_start_timer(timerBarra_Entorno);
 	al_start_timer(timerBola_Colision);
@@ -641,15 +741,19 @@ void main()
 	//Bucle principal
 	bool juego = false;
 	bool menu = true;
+	bool transicion = false;
 	int opcion=0;
 	int nivel = 1;
+	char textoTransicion[10];
 
 	while (menu) {
 		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 		switch (opcion)
 		{
 		case 1:
-			nivel1(pantalla, AnchoMonitor, AltoMonitor);
+			transicion = true;
+			al_start_timer(timerTransicion);
+			strcpy_s(textoTransicion, "NIVEL 1");
 			juego= true;
 			break;
 		case 2:
@@ -695,10 +799,35 @@ void main()
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
 			}
 			if (evento.type == ALLEGRO_EVENT_TIMER) {
-				//TODO: definir mas timers
-				if (imagenGameOver == NULL )
+				if (evento.timer.source == timerTransicion && transicion) {
+					transicion = false;  // Desactivar la transición al terminar el tiempo
+					if (nivel == 1) {
+						nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
+					}
+					else if (nivel == 2) {
+						nivel2(pantalla, AnchoMonitor, AltoMonitor, contadorVidas, contadorPts);  // Iniciar el segundo nivel
+					}
+					else if (nivel == 3) {
+						nivel3(pantalla, AnchoMonitor, AltoMonitor, contadorVidas, contadorPts);  // Iniciar el tercer nivel
+					}
+				}
+				if (transicion) {
+					al_clear_to_color(al_map_rgb(0, 0, 0));
+					al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 2, ALLEGRO_ALIGN_CENTER, textoTransicion);
+				}	
+				else if (imagenGameOver == NULL )
 				{
-					dibujarFondoPartidaEstatico(AnchoMonitor, AltoMonitor);
+					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
+					if (nivel == 1) {
+						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
+					}
+					else if (nivel == 2) {
+						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
+					}
+					else if (nivel == 3) {
+						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
+					}
+
 					dibujarPantallaNivel();
 
 					if (evento.timer.source == timerBola_Colision) {
@@ -716,14 +845,17 @@ void main()
 						//Vañidacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
 							destruirElementosGenerales();
-							//falta pantalla win entre nivls
 							if (nivel == 1) {
 								nivel = 2;
-								nivel2(pantalla, AnchoMonitor, AltoMonitor, contadorVidas, contadorPts);
+								strcpy_s(textoTransicion, "NIVEL 2");
+								transicion = true;
+								al_start_timer(timerTransicion);
 							}
 							else if (nivel == 2) {
 								nivel = 3;
-								nivel3(pantalla, AnchoMonitor, AltoMonitor, contadorVidas, contadorPts);
+								strcpy_s(textoTransicion, "NIVEL 3");
+								transicion = true;
+								al_start_timer(timerTransicion);
 							}
 							else if (nivel == 3) {
 								juego = false;
@@ -764,6 +896,10 @@ void main()
 	al_destroy_bitmap(imagenBloqueNaranja);
 	al_destroy_bitmap(imagenBloqueCafe);
 	al_destroy_bitmap(imagenBloqueRosado);
+	al_destroy_bitmap(imagenFondoNivel1);
+	al_destroy_bitmap(imagenFondoNivel2);
+	al_destroy_bitmap(imagenFondoNivel3);
+	al_destroy_bitmap(imagenFondoGeneral);
 	al_destroy_sample(sonidoReboteBloque);
 	al_destroy_sample(sonidoReboteBarra);
 	al_destroy_event_queue(colaEventos);
@@ -777,11 +913,13 @@ void main()
 	al_destroy_bitmap(imagenFondoPartida);
 	al_destroy_sample(musicamenu);
 	al_destroy_font(fuenteOpcionesMenu);
+	al_destroy_font(fuenteTransicion);
 	al_destroy_font(fuenteTituloMenu);
 	al_uninstall_audio();
 	al_uninstall_keyboard();
 	al_destroy_timer(timerBola_Colision);
 	al_destroy_timer(timer_Game_Over_Msg);
+	al_destroy_timer(timerTransicion);
 	
 }
 

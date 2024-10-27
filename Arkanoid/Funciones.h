@@ -361,67 +361,9 @@ void crearBloque(PtrBloque& lista, int x, int y, Comodin* comodin, int resistenc
 	insertarBloque(lista, bloque);
 }
 
-void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado,PtrBloque& lista, float anchoBloque, float altoBloque) {
-	int ubicadorX = anchoMonitor/4;
-	int ubicadorY = altoMonitor / 6.14;
-	int n = 0;
-	while(n<84) { //va creando los bloques en filas de 12 bloques
-		while (n < 12) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCafe, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			break;
-			n++;
-;		}
-		break;
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n >11 && n < 24) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueRojo, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 23 && n < 36) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueRosado, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n> 35 && n < 48) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 47 && n < 60) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 59 && n < 72) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueVerde, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 71 && n < 84) {
-			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
-			n++;
-		}
-		
-	}
-}
-
 // se encargar de generar aleatoriamente las habilidades
 int generarHabilidad(int nivel) {
-	int cont = 1;
+	int cont = 0;
 	int a;
 	while (cont != nivel) {
 		a = 1 + rand() % 100;
@@ -441,8 +383,81 @@ int generarHabilidad(int nivel) {
 			return 2; // vida extra
 		}
 		cont++;
-	}	
+	}
 	return 5; //no tiene habilidad
+}
+
+void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado,PtrBloque& lista, float anchoBloque, float altoBloque) {
+	int ubicadorX = anchoMonitor/4;
+	int ubicadorY = altoMonitor / 6.14;
+	int habilidad = 0;
+	int n = 0;
+	while(n<84) { //va creando los bloques en filas de 12 bloques
+		while (n < 12) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			break;
+			n++;
+;		}
+		break;
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n >11 && n < 24) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 23 && n < 36) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n> 35 && n < 48) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 47 && n < 60) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 59 && n < 72) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4;
+		while (n > 71 && n < 84) {
+			habilidad = generarHabilidad(1);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		
+	}
 }
 
 void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista,float anchoBloque, float altoBloque) {
@@ -1052,7 +1067,12 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 				if ((aux->comodin->y <= barra->y + barra->alto) && (aux->comodin->alto + aux->comodin->y >= barra->y)) { //verificar que este adentro de la posicion en Y de la barra
 					switch (aux->comodin->habilidad) {
 					case 0: //ampliar barra
-						barra->ancho = barra->ancho * 1.5;
+						if ((barra->x + barra->ancho * 1.5) >= barra->limiteDerecho) {//verificar que no se pase del límite derecho
+							barra->x = barra->x - (barra->ancho*1.5)/2;
+							barra->ancho = barra->ancho * 1.5;
+						}
+						else
+							barra->ancho = barra->ancho * 1.5;
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 1: //bola más pequeña
