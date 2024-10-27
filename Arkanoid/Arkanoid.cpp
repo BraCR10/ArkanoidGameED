@@ -260,17 +260,17 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		return;
 	}
 	//Bloques
-	 const float ANCHO_BLOQUE = AnchoMonitor / 24;
-	 const float ALTO_BLOQUE = AltoMonitor/19;
-	
-	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	const float ANCHO_BLOQUE = AnchoMonitor / 24;
+	const float ALTO_BLOQUE = AltoMonitor / 19;
+
+	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 
 	//Contador de vidas
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
-	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40)*4 ) - (AnchoMonitor / 4 - (AnchoMonitor / 40)*8);
+	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
 	iniciarMarcadores(contadorPts, contadorVidas);
@@ -288,9 +288,9 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenBloqueNaranja = al_load_bitmap("Imagenes/bloqueNaranja.png");
 	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
 	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
-	imagenEnemigo = al_load_bitmap("Imagenes/enemigo.png");
-	imagenEntradaMarco = al_load_bitmap("Imagenes/entradaMarco.png");
 	imagenFondoNivel2 = al_load_bitmap("Imagenes/fondoNivel2.png");
+	imagenEnemigo = al_load_bitmap("Imagenes/enemigo.png");
+	imagenEntradaMarco = al_load_bitmap("Imagenes/entradaMarco.png");;
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -308,10 +308,14 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+	//Contador de vidas
+	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
+	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
+	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
+	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
+	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
-	crearEnemigo(nuevoEnemigo, ENTRADA_X_ENEMIGO2, ENTRADAS_Y_ENEMIGOS, imagenEnemigo);
-	encolarEnemigo(colaEnemigo, nuevoEnemigo);
-
+	iniciarMarcadores(contadorPts, contadorVidas);
 }
 
 void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
@@ -328,7 +332,8 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
 	imagenFondoNivel3 = al_load_bitmap("Imagenes/fondoNivel3.png");
 	imagenEnemigo = al_load_bitmap("Imagenes/enemigo.png");
-	imagenEntradaMarco = al_load_bitmap("Imagenes/entradaMarco.png");
+	imagenEntradaMarco = al_load_bitmap("Imagenes/entradaMarco.png");;
+
 	if (!imagenParedHorizontal || !imagenParedVertical) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
@@ -344,9 +349,15 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	crearBloquesTercerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+	//Contador de vidas
+	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
+	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
+	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
+	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
+	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
-	crearEnemigo(nuevoEnemigo, ENTRADA_X_ENEMIGO2, ENTRADAS_Y_ENEMIGOS, imagenEnemigo);
-	encolarEnemigo(colaEnemigo, nuevoEnemigo);
+	iniciarMarcadores(contadorPts, contadorVidas);
+	
 }
 
 void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
@@ -820,6 +831,7 @@ void main()
 	int nivel = 1;
 	char textoTransicion[10];
 
+
 	while (menu) {
 		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 		switch (opcion)
@@ -828,7 +840,7 @@ void main()
 			transicion = true;
 			al_start_timer(timerTransicion);
 			strcpy_s(textoTransicion, "NIVEL 1");
-			juego= true;
+			juego = true;
 			break;
 		case 2:
 			break;
@@ -879,24 +891,35 @@ void main()
 						nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
 					}
 					else if (nivel == 2) {
-						nivel2(pantalla, AnchoMonitor, AltoMonitor);//, contadorVidas, contadorPts);  // Iniciar el segundo nivel
+						nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel
 					}
 					else if (nivel == 3) {
-						nivel3(pantalla, AnchoMonitor, AltoMonitor);// , contadorVidas, contadorPts);  // Iniciar el tercer nivel
+						nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel
 					}
 				}
 				if (transicion) {
 					al_clear_to_color(al_map_rgb(0, 0, 0));
 					al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 2, ALLEGRO_ALIGN_CENTER, textoTransicion);
-				}	
-				else if (imagenGameOver == NULL )
+				}
+				else if (imagenGameOver == NULL)
 				{
 					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
 					if (nivel == 1) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
+						PtrBloque bloque = listaEnlazadaBloques;
+						while (bloque != NULL) {
+							bloque->estadoExistencia = false;
+							bloque = bloque->siguiente;
+						}
+
 					}
 					else if (nivel == 2) {
-						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
+						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);/*
+						PtrBloque bloque = listaEnlazadaBloques;
+						while (bloque != NULL) {
+							bloque->estadoExistencia = false;
+							bloque = bloque->siguiente;
+						}*/
 					}
 					else if (nivel == 3) {
 						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
@@ -916,7 +939,6 @@ void main()
 					if (evento.timer.source == timerBarra_Entorno) {
 						setDatoMarco(marcoActualPts, contadorPts);
 						verificadorGameOver(contadorVidas, pantalla, sonidoGameOver);
-
 						//Vañidacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
 							destruirElementosGenerales();
@@ -937,6 +959,7 @@ void main()
 							}
 						};
 					}
+
 				}
 				else
 				{
@@ -944,8 +967,9 @@ void main()
 						flagGameOverMsg = !flagGameOverMsg;
 					dibujarGameOver(AnchoMonitor, AltoMonitor);
 				}
-
 			}
+		
+	
 			ALLEGRO_EVENT eventoEnemigo;
 			if (imagenEnemigo != NULL) {
 				while (al_get_next_event(colaEventosEnemigos, &eventoEnemigo)) {
@@ -986,12 +1010,12 @@ void main()
 				}
 			}
 			
-
-
-
 			al_flip_display(); // Actualizar la pantalla
+
 		}
 	}
+
+	
 
 
 
