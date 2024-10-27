@@ -914,15 +914,20 @@ void main()
 
 					}
 					else if (nivel == 2) {
-						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);/*
+						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
 						PtrBloque bloque = listaEnlazadaBloques;
 						while (bloque != NULL) {
 							bloque->estadoExistencia = false;
 							bloque = bloque->siguiente;
-						}*/
+						}
 					}
 					else if (nivel == 3) {
 						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
+						PtrBloque bloque = listaEnlazadaBloques;
+						while (bloque != NULL) {
+							bloque->estadoExistencia = false;
+							bloque = bloque->siguiente;
+						}
 					}
 
 					dibujarPantallaNivel();
