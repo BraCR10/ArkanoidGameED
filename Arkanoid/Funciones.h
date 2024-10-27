@@ -835,11 +835,11 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 		aux = lista;
 		while (aux != NULL) {
 			if (aux->estadoExistencia) { // se verifica que el bloque aún exista
-				if ((bola->y + bola->alto) >= aux->y && bola->y <= (aux->y + aux->alto)) { //verifica colision en el eje y
-					if ((bola->x + bola->ancho) >= (aux->x) && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) { //si cae en mitad izquierda del bloque
+				if (bola->y + bola->alto <= (aux->y + aux->alto) && (bola->y + bola->alto) >= (aux->y)) {// Si la bola cae en la mitad superior del bloque
+					if ((bola->x + bola->ancho) >= aux->x && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) {// Si cae en la mitad izquierda del bloque
 						contadorPts += 10;
-						bola->direccionMovimientoY = !bola->direccionMovimientoY;
-						bola->direccionMovimientoX = false;
+						bola->direccionMovimientoY = true; // Rebote hacia arriba
+						bola->direccionMovimientoX = false; // Rebote a la izquierda
 						aux->estadoExistencia = false;
 						if (aux->comodin != NULL) {
 							revisarComodines(aux->comodin);
@@ -847,10 +847,34 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						return;
 					}
-					else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) { //si cae en mitad derecha del bloque
+					else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) {// Si cae en la mitad derecha del bloque
 						contadorPts += 10;
-						bola->direccionMovimientoY = !bola->direccionMovimientoY;
-						bola->direccionMovimientoX = true;
+						bola->direccionMovimientoY = true; // Rebote hacia arriba
+						bola->direccionMovimientoX = true; // Rebote a la derecha
+						aux->estadoExistencia = false;
+						if (aux->comodin != NULL) {
+							revisarComodines(aux->comodin);
+						}
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+						return;
+					}
+				}
+				else if ((bola->y) >= (aux->y + aux->alto / 2) && (bola->y) <= (aux->y + aux->alto)) {// Si cae en la mitad inferior del bloque
+					if ((bola->x + bola->ancho) >= aux->x && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) {// Si cae en la mitad izquierda del bloque
+						contadorPts += 10;
+						bola->direccionMovimientoY = false; // Rebote hacia abajo
+						bola->direccionMovimientoX = false; // Rebote a la izquierda
+						aux->estadoExistencia = false;
+						if (aux->comodin != NULL) {
+							revisarComodines(aux->comodin);
+						}
+						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+						return;
+					}
+					else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) {// Si cae en la mitad derecha del bloque
+						contadorPts += 10;
+						bola->direccionMovimientoY = false; // Rebote hacia abajo
+						bola->direccionMovimientoX = true; // Rebote a la derecha
 						aux->estadoExistencia = false;
 						if (aux->comodin != NULL) {
 							revisarComodines(aux->comodin);

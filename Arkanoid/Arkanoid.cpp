@@ -402,6 +402,9 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 			return;
 		}
 		destruirElementosGenerales();
+		eliminarVida(contadorVidas); 
+		contadorVidas = NULL;
+
 		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
 
