@@ -347,7 +347,6 @@ void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor, float& scroll_x, flo
 
 //Funcion para dibujar todo
 void dibujarPantallaNivel() {
-
 	dibujarBarra(barra);
 	dibujarParedes(listaEnlazadaParedes);
 	dibujarMarco(marcoMaxPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
@@ -687,6 +686,7 @@ void main()
 				juego = false;
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
+				nivel = 1;
 				juego = false;
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
 			}
@@ -778,7 +778,7 @@ void main()
 	al_uninstall_keyboard();
 	al_destroy_timer(timerBola_Colision);
 	al_destroy_timer(timer_Game_Over_Msg);
-
+	
 }
 
 

@@ -366,6 +366,7 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int ubicadorY = altoMonitor / 6.14;
 	int n = 0;
 	while(n<84) { //va creando los bloques en filas de 12 bloques
+		break;
 		while (n < 12) {
 			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
@@ -444,147 +445,317 @@ int generarHabilidad(int nivel) {
 }
 
 void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista,float anchoBloque, float altoBloque) {
-	int ubicadorX = anchoMonitor / 4;
-	int ubicadorY = (altoMonitor / 6.14)+altoBloque; //se le suma alto bloque para dejar un espacio arriba
+	int ubicadorX = anchoMonitor / 4 +anchoBloque;
+	int ubicadorY = (altoMonitor / 6.14)+altoBloque;
 	int n = 0;
 	int habilidad = 0;
 
-	while (n < 84) { //va creando los bloques en filas de 12 bloques
-		while (n < 12) {
+	while (n < 89) { 
+		while (n < 4) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX+anchoBloque/2, ubicadorY, habilidad, anchoBloque/2.5, altoBloque / 2.2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 			;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 11 && n < 24) {
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 3 && n<9 ) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+			;
+		}
+		n++;
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 8 && n < 14) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 13 && n < 19) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
 		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 23 && n < 36) {
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 18 && n < 24) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 23 && n < 29) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
 		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 35 && n < 48) {
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 28 && n < 34) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 33 && n < 39) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
 		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 47 && n < 60) {
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 38 && n < 44) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 43 && n < 49) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
 		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 59 && n < 72) {
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 48 && n < 54) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 53 && n < 59) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
 		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 71 && n < 84) {
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 58 && n < 64) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
-
+		n++;
+		ubicadorX += anchoBloque*2;
+		while (n > 63 && n < 69) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 68 && n < 74) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
+		ubicadorX += anchoBloque * 2;
+		while (n > 73 && n < 79) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 78 && n < 84) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
+		ubicadorX += anchoBloque * 2;
+		while (n > 83 && n < 89) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
+		ubicadorY += altoBloque;
+		ubicadorX = anchoMonitor / 4 + anchoBloque;
+		while (n > 88 && n < 94) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
+		n++;
+		ubicadorX += anchoBloque * 2;
+		while (n > 93 && n < 99) {
+			habilidad = generarHabilidad(2);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorX += anchoBloque;
+			n++;
+		}
 	}
 }
 
 void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista, float anchoBloque, float altoBloque) {
 	int ubicadorX = anchoMonitor / 4;
-	int ubicadorY = (altoMonitor / 6.14) + altoBloque*3; //se le suma alto bloque para dejar un espacio arriba
+	int ubicadorY = (altoMonitor / 6.14); 
 	int n = 0;
 	int habilidad = 0;
 
-	while (n < 84) { //va creando los bloques en filas de 12 bloques
-		while (n < 12) {
+	while (n < 67) { 
+		while (n < 11) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 11 && n < 24) {
+		ubicadorY = (altoMonitor / 6.14) + altoBloque;
+		ubicadorX = (anchoMonitor / 4)+ anchoBloque;
+		while (n >= 10 && n < 21) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 23 && n < 36) {
+		ubicadorY = (altoMonitor / 6.14)+ altoBloque*2;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque*2;
+		while (n >= 21 && n < 30) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 35 && n < 48) {
+		ubicadorY = (altoMonitor / 6.14) + altoBloque*3;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque*3;
+		while (n >= 29 && n < 38) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 47 && n < 60) {
+		ubicadorY = (altoMonitor / 6.14) + altoBloque*4;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque*4;
+		while (n >= 37 && n < 45) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 59 && n < 72) {
+		ubicadorY = (altoMonitor / 6.14) + altoBloque*5;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque*5;
+		while (n >= 44 && n < 51) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueVerde, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY += altoBloque;
-		ubicadorX = anchoMonitor / 4;
-		while (n > 71 && n < 84) {
+		ubicadorY = (altoMonitor / 6.14)+altoBloque*6;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque*6;
+		while (n >= 50 && n < 56) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCeleste, anchoBloque, altoBloque);
-			ubicadorX += anchoBloque;
+			ubicadorY += altoBloque;
 			n++;
 		}
-
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 7;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 7;
+		while (n >= 55 && n < 60) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueCafe, anchoBloque, altoBloque);
+			ubicadorY += altoBloque;
+			n++;
+		}
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 8;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 8;
+		while (n >= 59 && n < 63) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRojo, anchoBloque, altoBloque);
+			ubicadorY += altoBloque;
+			n++;
+		}
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 9;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 9;
+		while (n >= 62 && n < 65) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueRosado, anchoBloque, altoBloque);
+			ubicadorY += altoBloque;
+			n++;
+		}
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 10;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 10;
+		while (n >= 64 && n < 66) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueNaranja, anchoBloque, altoBloque);
+			ubicadorY += altoBloque;
+			n++;
+		}
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 10;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 11;
+		while (n >= 65 && n < 67) {
+			habilidad = generarHabilidad(3);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			crearBloque(lista, ubicadorX, ubicadorY, comodin, 1, imagenBloqueAmarillo, anchoBloque, altoBloque);
+			ubicadorY += altoBloque;
+			n++;
+		}
 	}
 }
 
