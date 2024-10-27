@@ -8,7 +8,10 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <time.h>
-
+#include <string>
+#include <limits>
+#include <unordered_map>
+#include <algorithm> 
 //Librerias de Allegro
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_ttf.h>
@@ -100,7 +103,14 @@ float x1MaxPts;
 float y1MaxPts ;
 float x2MaxPts;
 float y2MaxPts;
-int mejorPuntaje= CargarPuntajeMasAlto();
+unordered_map<int, Jugador> puntajes= CargarPuntajes();
+int mejorPuntaje= EncontrarMayorPuntaje(puntajes);
+vector<Jugador> mejores15Puntajes = EncontrarMejoresPuntajes(puntajes,15);
+string nombreJugador ;
+
+//Puntero a jugador
+PtrJugador jugador = NULL;
+
 
 //Marcador de putaje actual
 float x1ActualPts ;
@@ -464,7 +474,8 @@ void destruirElementosGenerales() {
 
 void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
 	if (vida->cantidad <= 0) {
-		GuardarPuntajes(marcoActualPts);
+		if (jugador!=NULL) 
+			GuardarPuntajes(marcoActualPts,jugador->nombre.c_str());
 
 		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
 		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
@@ -476,7 +487,7 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 		destruirElementosGenerales();
 		eliminarVida(contadorVidas); 
 		contadorVidas = NULL;
-
+		destruirJugador(jugador);
 		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
 
@@ -796,7 +807,7 @@ void main()
 	 int FPS_AccionesEntorno = 50;
 	 int FPS_Bola_Colision = 80;
 	 int FPS_Game_Over_Msg = 1;
-	 int FPS_Movimiento_Enemigo = 15;
+	 int FPS_Movimiento_Enemigo = 50;
 	 float Controlador_AparicionEnemigo =5;
 	//timers
 	ALLEGRO_TIMER* timerBarra_Entorno = al_create_timer(1.0 / FPS_AccionesEntorno);
@@ -840,6 +851,9 @@ void main()
 			transicion = true;
 			al_start_timer(timerTransicion);
 			strcpy_s(textoTransicion, "NIVEL 1");
+			//TODO: DEFINIR COMO RECIBIR EL NOMBRE
+			nombreJugador = "Jugador1";
+			CrearJuagador(jugador,nombreJugador);
 			juego = true;
 			break;
 		case 2:
@@ -915,19 +929,19 @@ void main()
 					}
 					else if (nivel == 2) {
 						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
-						PtrBloque bloque = listaEnlazadaBloques;
+						/*PtrBloque bloque = listaEnlazadaBloques;
 						while (bloque != NULL) {
 							bloque->estadoExistencia = false;
 							bloque = bloque->siguiente;
-						}
+						}*/
 					}
 					else if (nivel == 3) {
 						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
-						PtrBloque bloque = listaEnlazadaBloques;
+						/*PtrBloque bloque = listaEnlazadaBloques;
 						while (bloque != NULL) {
 							bloque->estadoExistencia = false;
 							bloque = bloque->siguiente;
-						}
+						}*/
 					}
 
 					dibujarPantallaNivel();
@@ -1009,7 +1023,7 @@ void main()
 								enemigoActual = NULL;
 								flagNuevoEnemigoActor = true;
 							}
-
+							verficarColisionEnemigoBarra(enemigoActual, barra, contadorVidas);
 						}
 					}
 				}
@@ -1067,7 +1081,12 @@ void main()
 	al_destroy_timer(timerBola_Colision);
 	al_destroy_timer(timer_Game_Over_Msg);
 	al_destroy_timer(timerTransicion);
-	
+	al_destroy_event_queue(colaEventosEnemigos);
+	al_destroy_timer(timer_AparicionEnemigo);
+	al_destroy_timer(timer_Movimiento_Enemigo);
+	al_destroy_bitmap(imagenEnemigo);
+	al_destroy_bitmap(imagenEntradaMarco);
+
 }
 
 

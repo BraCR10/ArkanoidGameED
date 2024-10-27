@@ -1,14 +1,15 @@
 //Librerias de Allegro
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
-
-
+#include <allegro5/allegro_audio.h>
 //Librerias propias del juego
 #include "Estructuras.h"
-
 //Librerias de C++
 #include <string>
 #include <iostream>
+#include <limits>
+#include <unordered_map>
+#include <algorithm> 
 using namespace std;
 void insertarPared(PtrPared &lista, PtrPared &Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
 	Nuevo->siguiente = lista;
@@ -133,37 +134,83 @@ ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
 
 	return colorNegativo;
 }
-void GuardarPuntajes(PtrMarcador& marcador) {
+void GuardarPuntajes(PtrMarcador marcador, const char* nombre) {
 	FILE* archivo;
-	fopen_s(&archivo, "Puntaje.txt", "a");
-	if (NULL == archivo) 
-		printf("No se pudo abrir el archivo.");
-	else 
-		fprintf_s(archivo, "%i\n", marcador->dato);
-	fclose(archivo);
-}
+	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
 
-int CargarPuntajeMasAlto() {
-	FILE* archivo;
-	fopen_s(&archivo, "Puntaje.txt", "r");
-	if (NULL == archivo) {
-		printf("No se pudo abrir el archivo");
-		return INT_MIN; // Retorna el valor mínimo de un entero si no se puede abrir el archivo
+	if (archivo == NULL) {
+		printf("No se pudo abrir el archivo.\n");
+		return; // Salir de la función si no se pudo abrir el archivo
 	}
 
-	int puntaje;
-	int mayorPuntaje = INT_MIN; // Inicializar con el valor mínimo de un entero
+	// Guardar el puntaje junto con el nombre
+	fprintf_s(archivo, "%i %s\n", marcador->dato, nombre);
+	fclose(archivo); // Cerrar el archivo después de escribir
+}
 
-	while (fscanf_s(archivo, "%i\n", &puntaje) == 1) {
-		if (puntaje > mayorPuntaje) {
-			mayorPuntaje = puntaje;
+unordered_map<int, Jugador> CargarPuntajes() {
+	FILE* archivo;
+	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "r");
+	unordered_map<int, Jugador> puntajes;
+
+	if (archivo == NULL) {
+		printf("No se pudo abrir el archivo\n");
+		return puntajes; // Retorna un mapa vacío si no se puede abrir el archivo
+	}
+
+	int id, puntaje;
+	char nombreBuffer[100]; // Buffer para almacenar el nombre
+	id = 1;
+	while (fscanf_s(archivo, "%i %s\n", &puntaje, nombreBuffer, sizeof(nombreBuffer)) == 2) {
+		// Almacena el puntaje y el nombre en la estructura Jugador
+		puntajes[id] = { puntaje, nombreBuffer };
+		id++;
+	}
+
+	fclose(archivo);
+	return puntajes; // Retorna el mapa de puntajes
+}
+int EncontrarMayorPuntaje(const unordered_map<int, Jugador>& puntajes) {
+	if (puntajes.empty()) {
+		return -1; // Retorna -1 si el mapa está vacío
+	}
+
+	int mayorPuntaje = numeric_limits<int>::lowest();
+
+	for (const auto& par : puntajes) {
+		if (par.second.puntaje > mayorPuntaje) { // Cambiar par.first por par.second.puntaje
+			mayorPuntaje = par.second.puntaje;
 		}
 	}
 
-	fclose(archivo);
-	return mayorPuntaje; // Retorna el mayor puntaje encontrado
+	return mayorPuntaje;
 }
 
+// Función para encontrar los mejores puntajes
+vector<Jugador> EncontrarMejoresPuntajes(const unordered_map<int, Jugador>& puntajes, int cantidad) {
+	if (puntajes.empty()) {
+		return vector<Jugador>(); // Retorna un vector vacío si está vacío
+	}
+
+	// Convertir el unordered_map a un vector
+	vector<Jugador> puntajesVector;
+	for (const auto& par : puntajes) {
+		puntajesVector.push_back(par.second);
+	}
+
+	// Ordenar el vector en orden descendente basado en los puntajes
+	sort(puntajesVector.begin(), puntajesVector.end(), [](const Jugador& a, const Jugador& b) {
+		return a.puntaje > b.puntaje; // Ordenar por puntaje
+		});
+
+	// Ajustar cantidad si es mayor que el tamaño del vector
+	if (cantidad > puntajesVector.size()) {
+		cantidad = puntajesVector.size();
+	}
+
+	// Retornar los mejores puntajes
+	return vector<Jugador>(puntajesVector.begin(), puntajesVector.begin() + cantidad);
+}
 
 void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGRO_COLOR colorMarco, ALLEGRO_COLOR colorTitulo) {
 	// Dibujar el rect�ngulo
@@ -1232,7 +1279,7 @@ void moverEnemigo(PtrEnemigo& enemigo, int velocidad, PosicionEnemigoSprite posi
 	
 
 }
-;	bool flagMovimientoLateral = true;
+bool flagMovimientoLateral = true;
 void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIzq,int topMargen,int bottonMargen,PtrBloque listaBloque, bool& ingreso) {
 	bool flagBajar = true;
 
@@ -1252,22 +1299,36 @@ void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIz
 						bool moverIzquierda = (enemigo->x > margenIzq);
 
 						if (moverIzquierda && flagMovimientoLateral) {
-							moverEnemigo(enemigo, 10, PosicionEnemigoSprite::IZQ);
+							moverEnemigo(enemigo, 5, PosicionEnemigoSprite::IZQ);//CUIDADO:INFLUYE EN COLISION CON BARRA,
 							flagBajar = false;
 							if (enemigo->x <= margenIzq) {
 								flagMovimientoLateral = false;
 							}
 						}
 						else if (moverDerecha && !flagMovimientoLateral) {
-							moverEnemigo(enemigo, 10, PosicionEnemigoSprite::DER);
+							moverEnemigo(enemigo, 5, PosicionEnemigoSprite::DER);//CUIDADO:INFLUYE EN COLISION CON BARRA, TODO:ARREGLAR RELACION
 							flagBajar = false;
 							if (enemigo->x >= margenDer) {
 								flagMovimientoLateral = true;
 							}
 						}
 					}
-			
 
+					bool estaDer = aux->x > enemigo->x; 
+					bool estaIzq = aux->x < enemigo->x; 
+					bool estaAlineadoHorizontalmente = abs(aux->y - enemigo->y) <= 10;
+					bool estaAlineadoVerticalmenteLateral = abs(aux->x - enemigo->x) <= 10;
+					bool estaALaPar = estaAlineadoHorizontalmente && estaAlineadoVerticalmenteLateral;
+
+					if (estaIzq && estaALaPar && flagMovimientoLateral && aux->estadoExistencia) 
+						flagMovimientoLateral = false;
+					
+					
+					if (estaDer && estaALaPar && flagMovimientoLateral && aux->estadoExistencia)
+						flagMovimientoLateral = true;
+
+
+					
 				
 				aux=aux->siguiente;
 			}
@@ -1276,12 +1337,28 @@ void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIz
 					moverEnemigo(enemigo, 1, PosicionEnemigoSprite::FRENTE);	
 				else
 					moverEnemigo(enemigo, 3, PosicionEnemigoSprite::FRENTE);
-			if(enemigo->y>bottonMargen)
-				enemigo->estadoExistencia=false;
 
 		}
 	}
 }
+
+
+void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, PtrVida& vida) {
+	if (enemigo != NULL) {
+		if (enemigo->estadoExistencia) {
+			if ((enemigo->y + enemigo->alto) == barra->y) { 
+				if (abs((barra->x + barra->ancho / 2) - enemigo->x) <= 80) { // PROBLEMAS
+					disminuirVida(vida);
+					enemigo->estadoExistencia = false;
+				}
+			}
+			else if ((enemigo->y + enemigo->alto) > barra->y+barra->alto+100) {
+				enemigo->estadoExistencia = false;
+			}
+		}
+	}
+}
+
 void agregarAlFinalEnemigo(PtrEnemigo& lista, PtrEnemigo& enemigo) {
 	if (lista == NULL) {
 		lista = enemigo;
@@ -1327,3 +1404,12 @@ void destruirEnemigos(PtrEnemigo& lista) {
 	lista = NULL;
 }
 
+void CrearJuagador(PtrJugador& jugador,string nombre) {
+	jugador = new Jugador;
+	jugador->nombre = nombre;
+	jugador->puntaje = 0;
+}
+
+void destruirJugador(PtrJugador& jugador) {
+	delete (jugador);
+}

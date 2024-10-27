@@ -92,5 +92,8 @@ typedef struct Enemigo {
 	Enemigo* siguiente;
 }*PtrEnemigo;
 
-
+typedef struct Jugador {
+	int puntaje;
+	string nombre;
+}*PtrJugador;
 #endif //En caso de que ya se haya definido la estructura
