@@ -74,7 +74,6 @@ typedef struct Bloque {
 	int x;
 	int y;
 	Comodin* comodin; // 5 si no posee comodin
-	int resistencia; // 1 si se rompe apenas la bola lo toca
 	float ancho;
 	float alto;
 	bool estadoExistencia;
