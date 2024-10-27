@@ -14,7 +14,7 @@ void insertarPared(PtrPared &lista, PtrPared &Nuevo) {//Inserta un nuevo nodo al
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
 }
-void crearPared(PtrPared &lista,int x, int y, float ancho, float alto, ALLEGRO_BITMAP* imagen)
+void crearPared(PtrPared &lista,int x, int y, float ancho, float alto,bool dinamico, ALLEGRO_BITMAP* imagen)
 {
 
 	PtrPared pared;
@@ -25,6 +25,7 @@ void crearPared(PtrPared &lista,int x, int y, float ancho, float alto, ALLEGRO_B
 	pared->alto = alto;
 	pared->imagen = imagen;
 	pared->siguiente = NULL;
+	pared->dinamico = dinamico;
 	insertarPared(lista, pared);
 }
 void eliminarListaParedes(PtrPared& lista) {
@@ -36,20 +37,35 @@ void eliminarListaParedes(PtrPared& lista) {
 	}
 }
 
-void dibujarParedes(PtrPared &paredes) {
+void dibujarParedes(PtrPared &paredes,bool habilitarEntradas,ALLEGRO_BITMAP * imagenEntrada) {
 	PtrPared pared = paredes;
 	while (pared != NULL) {
-		al_draw_scaled_bitmap(
-			pared->imagen, 
-			0, 0, // Coordenadas de origen en el bitmap fuente
-			al_get_bitmap_width(pared->imagen), // Ancho del bitmap fuente
-			al_get_bitmap_height(pared->imagen), // Alto del bitmap fuente
-			pared->x, pared->y, // Coordenadas de destino en la pantalla
-			pared->ancho, pared->alto, // Nuevo ancho y alto
-			0 // Flags
-		);
+		if (pared->dinamico&& habilitarEntradas) {
+			al_draw_scaled_bitmap(
+				imagenEntrada,
+				0, 0, // Coordenadas de origen en el bitmap fuente
+				al_get_bitmap_width(imagenEntrada), // Ancho del bitmap fuente
+				al_get_bitmap_height(imagenEntrada), // Alto del bitmap fuente
+				pared->x, pared->y, // Coordenadas de destino en la pantalla
+				pared->ancho, pared->alto, // Nuevo ancho y alto
+				0 // Flags
+			);
+		}
+		else {
+			al_draw_scaled_bitmap(
+				pared->imagen,
+				0, 0, // Coordenadas de origen en el bitmap fuente
+				al_get_bitmap_width(pared->imagen), // Ancho del bitmap fuente
+				al_get_bitmap_height(pared->imagen), // Alto del bitmap fuente
+				pared->x, pared->y, // Coordenadas de destino en la pantalla
+				pared->ancho, pared->alto, // Nuevo ancho y alto
+				0 // Flags
+			);
+		}
+		
 		pared = pared->siguiente;
 	}
+	
 }
 
 void crearBarra(PtrBarra& barra, int x, int y, float ancho, float alto,int limiteDerecho,int limiteIzquierdo, int superficie, ALLEGRO_BITMAP* imagen)
@@ -233,11 +249,11 @@ void eliminarBola(PtrBola& lista) {
 	}
 }
 
-//la bola empezará a moverse en la dirección en el eje X opuesta al de la barra
+//la bola empezarï¿½ a moverse en la direcciï¿½n en el eje X opuesta al de la barra
 void iniciarMovimientoBola(PtrBola& lista, int velocidad, bool direccion) {
 	PtrBola bola = lista;
 	while (bola != NULL) {
-		if (bola->estadoMovimiento == false) { //Si la bola no está en movimiento
+		if (bola->estadoMovimiento == false) { //Si la bola no estï¿½ en movimiento
 			if (direccion == true) { // bola se mueve a izquierda y hacia arriba
 				bola->y -= velocidad;
 				bola->x -= velocidad;
@@ -250,17 +266,17 @@ void iniciarMovimientoBola(PtrBola& lista, int velocidad, bool direccion) {
 				bola->direccionMovimientoX = true;
 				bola->direccionMovimientoY = true;
 			}
-			bola->estadoMovimiento = true; //se declara que la bola está en movimiento
+			bola->estadoMovimiento = true; //se declara que la bola estï¿½ en movimiento
 		}
 		bola = bola->siguiente;
 	}
 }
 
-//mantendrá el movimiento de la bola constante
+//mantendrï¿½ el movimiento de la bola constante
 void moverBola(PtrBola lista, int velocidad) {
 	PtrBola bola = lista;
 	while (bola != NULL) {
-		if (bola->estadoMovimiento == true) { //Si la bola si está en movimiento
+		if (bola->estadoMovimiento == true) { //Si la bola si estï¿½ en movimiento
 			if (bola->direccionMovimientoX) { //bola se mueve a derecha
 				if (bola->direccionMovimientoY) { //bola va hacia arriba
 					bola->y -= velocidad;
@@ -366,19 +382,19 @@ int generarHabilidad(int nivel) {
 	int a;
 	while (cont != nivel) {
 		a = 1 + rand() % 100;
-		if (a % 26 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por 26: 3%
+		if (a % 26 == 0) {//probabilidad de que un nï¿½m del 1 al 100 sea divisible por 26: 3%
 			return 0; //disparos barra
 		}
-		if (a % 27 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por 27: 3%
+		if (a % 27 == 0) { //probabilidad de que un nï¿½m del 1 al 100 sea divisible por 27: 3%
 			return 4; //multiplicar bolas
 		}
-		if (a % 25 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por 26: 4%
+		if (a % 25 == 0) { //probabilidad de que un nï¿½m del 1 al 100 sea divisible por 26: 4%
 			return 3; //quitar vida
 		}
-		if (a % 22 == 0) { //probabilidad de que un núm del 1 al 100 sea divisible por 22: 4%
-			return 1; //bola más pequeña
+		if (a % 22 == 0) { //probabilidad de que un nï¿½m del 1 al 100 sea divisible por 22: 4%
+			return 1; //bola mï¿½s pequeï¿½a
 		}
-		if (a % 21 == 0) {//probabilidad de que un núm del 1 al 100 sea divisible por 21: 4%
+		if (a % 21 == 0) {//probabilidad de que un nï¿½m del 1 al 100 sea divisible por 21: 4%
 			return 2; // vida extra
 		}
 		cont++;
@@ -834,7 +850,7 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 	while (bola != NULL) {
 		aux = lista;
 		while (aux != NULL) {
-			if (aux->estadoExistencia) { // se verifica que el bloque aún exista
+			if (aux->estadoExistencia) { // se verifica que el bloque aï¿½n exista
 				if (bola->y + bola->alto <= (aux->y + aux->alto) && (bola->y + bola->alto) >= (aux->y)) {// Si la bola cae en la mitad superior del bloque
 					if ((bola->x + bola->ancho) >= aux->x && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) {// Si cae en la mitad izquierda del bloque
 						contadorPts += 10;
@@ -896,7 +912,7 @@ void moverComodines(PtrBloque& lista, int velocidad, int altoMonitor) {
 	PtrBloque bloque = lista;
 	while (bloque != NULL) {
 		if (bloque->comodin != NULL) {
-			if (bloque->comodin->visibilidad) { //verificar que el comodin esté activo
+			if (bloque->comodin->visibilidad) { //verificar que el comodin estï¿½ activo
 				bloque->comodin->y += velocidad / 2;
 			}
 		}
@@ -904,7 +920,7 @@ void moverComodines(PtrBloque& lista, int velocidad, int altoMonitor) {
 	}
 }
 
-//verifica que haya bloques aún existiendo, sino significa que el jugador ganó el nivel
+//verifica que haya bloques aï¿½n existiendo, sino significa que el jugador ganï¿½ el nivel
 bool revisarExistenciaBloques(PtrBloque& lista) {
 	PtrBloque aux = lista;
 	while (aux != NULL) {
@@ -947,11 +963,11 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 		int anchoTexto = al_get_text_width(fuente, texto);
 		int altoTexto = al_get_font_line_height(fuente);
 
-		// Calcular las coordenadas para centrar el texto dentro del área de la imagen
+		// Calcular las coordenadas para centrar el texto dentro del ï¿½rea de la imagen
 		float textX = vida->x + (vida->ancho - anchoTexto) / 2;
 		float textY = vida->y + (vida->alto - altoTexto) / 2;
 
-		// Dibujar el texto centrado dentro del área de la imagen
+		// Dibujar el texto centrado dentro del ï¿½rea de la imagen
 		//al_draw_text(fuente, colorTitulo, textX, textY - 40, ALLEGRO_ALIGN_LEFT, "Vidas");
 		al_draw_text(fuente, colorTitulo, textX, textY, ALLEGRO_ALIGN_LEFT, texto);
 	}
@@ -983,23 +999,23 @@ int contarBolas(PtrBola& lista) {
 	return contador;
 }
 
-//elimina bola específica de lista
+//elimina bola especï¿½fica de lista
 void eliminarBolaEspecifica(PtrBola& lista,int n) {
-	if (n < 0) return; // Verifica si la posición es válida
+	if (n < 0) return; // Verifica si la posiciï¿½n es vï¿½lida
 
 	PtrBola Anterior = NULL;  // Puntero para el nodo anterior
 	PtrBola Aux = lista;      // Puntero auxiliar para recorrer la lista
-	// Caso especial: Si la posición es 0 (eliminar el primer nodo)
+	// Caso especial: Si la posiciï¿½n es 0 (eliminar el primer nodo)
 	if (n == 0) {
-		if (lista != NULL) { // Verifica si la lista no está vacía
+		if (lista != NULL) { // Verifica si la lista no estï¿½ vacï¿½a
 			lista = Aux->siguiente; // Actualiza la cabeza de la lista
 			delete Aux;             // Elimina el primer nodo
 		}
 		return;
 	}
-	// Recorrer la lista hasta la posición n
+	// Recorrer la lista hasta la posiciï¿½n n
 	for (int i = 0; i < n; ++i) {
-		if (Aux == NULL) return; // Si llegamos al final de la lista antes de la posición deseada
+		if (Aux == NULL) return; // Si llegamos al final de la lista antes de la posiciï¿½n deseada
 
 		Anterior = Aux;         // Actualizar el puntero anterior
 		Aux = Aux->siguiente;   // Mover al siguiente nodo
@@ -1007,7 +1023,7 @@ void eliminarBolaEspecifica(PtrBola& lista,int n) {
 	// Si Aux es NULL, significa que n es mayor que la longitud de la lista
 	if (Aux == NULL) return;
 
-	// En este punto, Aux apunta al nodo en la posición n
+	// En este punto, Aux apunta al nodo en la posiciï¿½n n
 	if (Anterior != NULL) { // Verifica que Anterior no sea NULL
 		Anterior->siguiente = Aux->siguiente; // Saltar el nodo a eliminar
 	}
@@ -1019,8 +1035,8 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 	PtrBola aux = NULL;
 	int cont = 0;
 	while (bola != NULL) {
-		if ((bola->y + bola->alto) >= barra->y) { //verifica que la bola esté en puntos de Y similares al de barra
-			if ((bola->y + bola->alto) <= (barra->y + barra->alto)) { //revisa que bola no se haya ido más abajo de barra
+		if ((bola->y + bola->alto) >= barra->y) { //verifica que la bola estï¿½ en puntos de Y similares al de barra
+			if ((bola->y + bola->alto) <= (barra->y + barra->alto)) { //revisa que bola no se haya ido mï¿½s abajo de barra
 				if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
 					bola->direccionMovimientoY = true;
 					bola->direccionMovimientoX = false;
@@ -1034,7 +1050,7 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 					}
 				}
 			}
-			else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se irá hacia arriba
+			else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se irï¿½ hacia arriba
 				if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
 					bola->direccionMovimientoX = false;
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
@@ -1044,7 +1060,7 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 					al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				}
 			}
-			else if (bola->y >= AltoMonitor) {// si la bola se va más abajo de la barra
+			else if (bola->y >= AltoMonitor) {// si la bola se va mï¿½s abajo de la barra
 				if (contarBolas(lista) == 1) { //si solo queda una bola en pantalla
 					bola->estadoMovimiento = false;
 					bola->ancho = AnchoMonitor / 62;
@@ -1083,12 +1099,12 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 	PtrBloque aux = lista;
 	PtrBola nueva;
 	while (aux != NULL) {
-		if (!aux->estadoExistencia && aux->comodin != NULL && aux->comodin->visibilidad) { //verificar si el como ya se destruyó, si al menos tiene comodin inicializado y está visible
-			if ((aux->comodin->x <= barra->x + barra->ancho) && (aux->comodin->ancho + aux->comodin->x >= barra->x)) { //verificar que esté adentro de la posición en X de la barra
+		if (!aux->estadoExistencia && aux->comodin != NULL && aux->comodin->visibilidad) { //verificar si el como ya se destruyï¿½, si al menos tiene comodin inicializado y estï¿½ visible
+			if ((aux->comodin->x <= barra->x + barra->ancho) && (aux->comodin->ancho + aux->comodin->x >= barra->x)) { //verificar que estï¿½ adentro de la posiciï¿½n en X de la barra
 				if ((aux->comodin->y <= barra->y + barra->alto) && (aux->comodin->alto + aux->comodin->y >= barra->y)) { //verificar que este adentro de la posicion en Y de la barra
 					switch (aux->comodin->habilidad) {
 					case 0: //ampliar barra
-						if ((barra->x + barra->ancho * 1.5) >= barra->limiteDerecho) {//verificar que no se pase del límite derecho
+						if ((barra->x + barra->ancho * 1.5) >= barra->limiteDerecho) {//verificar que no se pase del lï¿½mite derecho
 							barra->x = barra->x - (barra->ancho*1.5)/2;
 							barra->ancho = barra->ancho * 1.5;
 						}
@@ -1096,7 +1112,7 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 							barra->ancho = barra->ancho * 1.5;
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
-					case 1: //bola más pequeña
+					case 1: //bola mï¿½s pequeï¿½a
 						while (bola != NULL) {
 							bola->alto = bola->alto / 1.5;
 							bola->ancho = bola->ancho / 1.5;
@@ -1114,7 +1130,7 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 						break;
 					case 4: //multiplicar bolas
 						nueva = new Bola;
-						crearBola(lista2, bola->x, bola->y, bola->ancho, bola->alto, bola->limiteDerecho, bola->limiteIzquierdo, bola->limiteSuperior,true, !bola->direccionMovimientoX, !bola->direccionMovimientoY,bola->imagen);
+						crearBola(lista2, bola->x, bola->y, bola->ancho, bola->alto, bola->limiteDerecho, bola->limiteIzquierdo, bola->limiteSuperior,true, !bola->direccionMovimientoX, !bola->direccionMovimientoY ,bola->imagen);
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 5: //no tiene comodin
@@ -1126,5 +1142,188 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 		}
 		aux = aux->siguiente;
 	}
+}
+enum class PosicionEnemigoSprite {
+	IZQ,
+	DER,
+	FRENTE,
+	ATRAS
+};
+void setSprintPosicionEnemigo(PtrEnemigo& enemigo, PosicionEnemigoSprite posicion) {
+	if (enemigo != NULL) {
+		switch (posicion) {
+		case PosicionEnemigoSprite::IZQ:
+			enemigo->spriteX = 0;
+			enemigo->spriteY = al_get_bitmap_height(enemigo->imagen) / 3; // Segunda fila
+			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 6;
+			enemigo->spriteAlto = al_get_bitmap_height(enemigo->imagen) / 3;
+			break;
+		case PosicionEnemigoSprite::DER:
+			enemigo->spriteX = al_get_bitmap_width(enemigo->imagen) / 6;
+			enemigo->spriteY = 0; // Primera fila
+			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 5;
+			enemigo->spriteAlto = al_get_bitmap_height(enemigo->imagen) / 3;
+			break;
+		case PosicionEnemigoSprite::FRENTE:
+			enemigo->spriteX = 0;
+			enemigo->spriteY = 0; // Primera fila
+			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 6;
+			enemigo->spriteAlto = al_get_bitmap_height(enemigo->imagen) / 3;
+			break;
+		case PosicionEnemigoSprite::ATRAS:
+			enemigo->spriteX = 0;
+			enemigo->spriteY =2* al_get_bitmap_height(enemigo->imagen) / 3; // Tercera fila
+			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 6;
+			enemigo->spriteAlto = al_get_bitmap_height(enemigo->imagen) / 3;
+			break;
+		}
+	}
+}
+void crearEnemigo(PtrEnemigo& enemigo, int x, int y, ALLEGRO_BITMAP* imagen){
+	enemigo = new Enemigo;
+	enemigo->imagen = imagen;
+	enemigo->ancho = 60;
+	enemigo->alto = 60;
+	enemigo->x = x;
+	enemigo->y = y;
+	enemigo->estadoExistencia=true;
+	setSprintPosicionEnemigo(enemigo, PosicionEnemigoSprite::FRENTE);
+	enemigo->siguiente=NULL;
+}
+
+void dibujarEnemigo(PtrEnemigo& enemigo) {
+	if (enemigo != NULL) {
+		if (enemigo->estadoExistencia) {
+			al_draw_scaled_bitmap(
+				enemigo->imagen,
+				enemigo->spriteX, enemigo->spriteY, 
+				enemigo->spriteAncho, enemigo->spriteAlto,
+				enemigo->x, enemigo->y, 
+				enemigo->ancho, enemigo->alto, 
+				0 
+			);
+		}
+	}
+}
+
+void moverEnemigo(PtrEnemigo& enemigo, int velocidad, PosicionEnemigoSprite posicion) {
+	if (enemigo != NULL) {
+	
+		if (enemigo->estadoExistencia) {
+			if (posicion == PosicionEnemigoSprite::IZQ) {
+				enemigo->x -= velocidad;
+				setSprintPosicionEnemigo(enemigo, posicion);
+			}
+			else if (posicion == PosicionEnemigoSprite::DER) {
+				enemigo->x += velocidad;
+				setSprintPosicionEnemigo(enemigo, posicion);
+			}
+			else if (posicion == PosicionEnemigoSprite::FRENTE) {
+				enemigo->y += velocidad;
+				setSprintPosicionEnemigo(enemigo, posicion);
+			}
+			else if (posicion == PosicionEnemigoSprite::ATRAS) {
+				enemigo->y -= velocidad;
+				setSprintPosicionEnemigo(enemigo, posicion);
+			}
+		}
+		
+	}
+	
+
+}
+;	bool flagMovimientoLateral = true;
+void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIzq,int topMargen,int bottonMargen,PtrBloque listaBloque, bool& ingreso) {
+	bool flagBajar = true;
+
+	if (enemigo != NULL) {
+		if (enemigo->estadoExistencia) {
+			if (topMargen-10 < enemigo->y)ingreso = false;
+			PtrBloque aux= listaBloque;
+			while (aux != NULL) {
+	
+					bool estaEncima = (aux->y - aux->alto == enemigo->y + 1);
+					bool estaAlineadoVerticalmente = abs(aux->x - enemigo->x)>=0 && abs(aux->x - enemigo->x) <= 40;
+					if (estaEncima && estaAlineadoVerticalmente) {
+						if (!aux->estadoExistencia) {
+							flagBajar = true;
+							break; }
+						bool moverDerecha = (enemigo->x < margenDer);
+						bool moverIzquierda = (enemigo->x > margenIzq);
+
+						if (moverIzquierda && flagMovimientoLateral) {
+							moverEnemigo(enemigo, 10, PosicionEnemigoSprite::IZQ);
+							flagBajar = false;
+							if (enemigo->x <= margenIzq) {
+								flagMovimientoLateral = false;
+							}
+						}
+						else if (moverDerecha && !flagMovimientoLateral) {
+							moverEnemigo(enemigo, 10, PosicionEnemigoSprite::DER);
+							flagBajar = false;
+							if (enemigo->x >= margenDer) {
+								flagMovimientoLateral = true;
+							}
+						}
+					}
+			
+
+				
+				aux=aux->siguiente;
+			}
+			if (flagBajar)
+				if(!ingreso)
+					moverEnemigo(enemigo, 1, PosicionEnemigoSprite::FRENTE);	
+				else
+					moverEnemigo(enemigo, 3, PosicionEnemigoSprite::FRENTE);
+			if(enemigo->y>bottonMargen)
+				enemigo->estadoExistencia=false;
+
+		}
+	}
+}
+void agregarAlFinalEnemigo(PtrEnemigo& lista, PtrEnemigo& enemigo) {
+	if (lista == NULL) {
+		lista = enemigo;
+	}
+	else {
+		PtrEnemigo aux = lista;
+		while (aux->siguiente != NULL) {
+			aux = aux->siguiente;
+		}
+		aux->siguiente = enemigo;
+	}
+}
+PtrEnemigo DescolarEnemigo(PtrEnemigo& lista) {
+	if (lista!=NULL) {
+		if (lista->siguiente!=NULL) {
+			PtrEnemigo aux = lista;
+			lista = lista->siguiente;
+			return aux;
+		}
+		else {
+			PtrEnemigo aux = lista;
+			lista = NULL;
+			return aux;
+		}
+	}
+	return NULL;
+}
+void encolarEnemigo(PtrEnemigo& lista, PtrEnemigo& enemigo) {
+	agregarAlFinalEnemigo(lista, enemigo);
+}
+
+void eliminarEnemigo(PtrEnemigo& enemigo) {
+	delete (enemigo);
+}
+
+void destruirEnemigos(PtrEnemigo& lista) {
+	PtrEnemigo aux = lista;
+	while (aux != NULL) {
+		PtrEnemigo temp = aux;
+		aux = aux->siguiente;
+		eliminarEnemigo(temp);
+	}
+	lista = NULL;
 }
 

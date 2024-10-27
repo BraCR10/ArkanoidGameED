@@ -10,6 +10,7 @@ typedef struct  Pared{
 	int y;
 	float ancho;
 	float alto;
+	bool dinamico;
 	ALLEGRO_BITMAP* imagen;
 	Pared* siguiente;
 } * PtrPared;
@@ -80,7 +81,16 @@ typedef struct Bloque {
 	Bloque* siguiente;
 	ALLEGRO_BITMAP* imagen;
 }*PtrBloque;
-
+typedef struct Enemigo {
+	int x;
+	int y;
+	float ancho;
+	float alto;
+	bool estadoExistencia;
+	int spriteX,spriteY, spriteAncho, spriteAlto;
+	ALLEGRO_BITMAP* imagen;
+	Enemigo* siguiente;
+}*PtrEnemigo;
 
 
 #endif //En caso de que ya se haya definido la estructura
