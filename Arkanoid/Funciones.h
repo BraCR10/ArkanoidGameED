@@ -366,12 +366,13 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int ubicadorY = altoMonitor / 6.14;
 	int n = 0;
 	while(n<84) { //va creando los bloques en filas de 12 bloques
-		break;
 		while (n < 12) {
 			crearBloque(lista, ubicadorX, ubicadorY, NULL, 1, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
+			break;
 			n++;
 ;		}
+		break;
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n >11 && n < 24) {

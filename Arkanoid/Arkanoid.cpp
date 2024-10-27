@@ -231,7 +231,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado,listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 
-	//Contador de vidas*****************************************************************************************************
+	//Contador de vidas
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
@@ -258,6 +258,7 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVid
 		al_destroy_display(pantalla);
 		return;
 	}
+
 	//Bloques
 	const float ANCHO_BLOQUE = AnchoMonitor / 24;
 	const float ALTO_BLOQUE = AltoMonitor / 19;
@@ -268,6 +269,7 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVid
 
 	crearBloquesSegundoNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+	NivelLabel->dato = 2; //cambio de nivel del marco
 }
 
 void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVida& vida, int& contadorPts) {
@@ -297,6 +299,7 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, PtrVid
 
 	crearBloquesTercerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+	NivelLabel->dato = 3;//cambio de nivel del marco
 }
 
 void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
@@ -687,6 +690,7 @@ void main()
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
 				nivel = 1;
+				NivelLabel->dato = 1;
 				juego = false;
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
 			}
