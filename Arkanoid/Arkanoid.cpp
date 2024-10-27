@@ -873,6 +873,7 @@ void main()
 			break;
 		}
 		vaciarColaEventos(colaEventos);
+		vaciarColaEventos(colaEventosEnemigos);
 		while (juego)
 		{
 			ALLEGRO_EVENT evento;
@@ -905,9 +906,11 @@ void main()
 						nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
 					}
 					else if (nivel == 2) {
+						vaciarColaEventos(colaEventosEnemigos);
 						nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel
 					}
 					else if (nivel == 3) {
+						vaciarColaEventos(colaEventosEnemigos);
 						nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel
 					}
 				}
@@ -920,11 +923,11 @@ void main()
 					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
 					if (nivel == 1) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
-						PtrBloque bloque = listaEnlazadaBloques;
+						/*PtrBloque bloque = listaEnlazadaBloques;
 						while (bloque != NULL) {
 							bloque->estadoExistencia = false;
 							bloque = bloque->siguiente;
-						}
+						}*/
 
 					}
 					else if (nivel == 2) {

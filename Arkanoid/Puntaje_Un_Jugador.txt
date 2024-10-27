@@ -4,3 +4,7 @@
 30 Jugador1
 30 Jugador1
 30 Jugador1
+40 Jugador1
+0 Jugador1
+720 Jugador1
+30 Jugador1
