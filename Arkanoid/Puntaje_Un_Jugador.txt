@@ -1,1 +1,6 @@
 680 Jugador1 2 32 68
+400 Jugador1 2 26 40
+310 Jugador1 3 37 31
+50 Jugador2 3 20 5
+50 Marcos 3 17 5
+50 ghj 3 23 5
