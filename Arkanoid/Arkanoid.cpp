@@ -748,7 +748,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 	// Cálculo de posiciones de las opciones del menú
 	int posicionY_PrimerElemento = AltoMonitor * 1.1 / 10;
 	int posicionX_PrimerElemento = AnchoMonitor / 10;
-	int altoOpcion = al_get_font_line_height(fuenteOpcionesMenu) * 2.5;
+	int altoDatos = al_get_font_line_height(fuenteOpcionesMenu) * 2.5;
 
 	// Cálculo de posiciones de los encabezados
 	int posicionY_Encabeazos = AltoMonitor * 1.1 / 15;
@@ -764,7 +764,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 		posicionX_PrimerElemento - (AnchoMonitor / 16) * 1.01,
 		posicionY_PrimerElemento / 1.1,
 		posicionX_Encabezados + espacioEntreEncabezados * 5,
-		posicionY_PrimerElemento + altoOpcion * 17,
+		posicionY_PrimerElemento + altoDatos * 17,
 		al_map_rgb(0, 0, 1)
 	);
 
@@ -780,10 +780,10 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 	);
 
 	// Ajustar la posición de los elementos para evitar conflictos
-	int offsetY = altoOpcion * 2; // Espacio para el título
+	int offsetY = altoDatos * 2; // Espacio para el título
 
 	// Posiciones del selector
-	int altoSelector = altoOpcion;
+	int altoSelector = altoDatos;
 	int anchoSelector = AnchoMonitor / 4;
 	int y1Selector = AltoMonitor -(AltoMonitor/20);
 	int x1Selector = AnchoMonitor / 2 - 70;
@@ -851,7 +851,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
 			posicionX_PrimerElemento,
-			posicionY_PrimerElemento + altoOpcion * i + offsetY, // Ajustar con offset
+			posicionY_PrimerElemento + altoDatos * i + offsetY, // Ajustar con offset
 			ALLEGRO_ALIGN_LEFT,
 			(to_string(i + 1) + "." + mejores15Puntajes[i].nombre).c_str()
 		);
@@ -860,7 +860,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
 			posicionX_PrimerElemento + espacioEntreEncabezados + centradosDatos,
-			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			posicionY_PrimerElemento + altoDatos * i + offsetY,
 			ALLEGRO_ALIGN_LEFT,
 			to_string(mejores15Puntajes[i].puntaje).c_str()
 		);
@@ -869,7 +869,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
 			posicionX_PrimerElemento + espacioEntreEncabezados * 2 + centradosDatos,
-			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			posicionY_PrimerElemento + altoDatos * i + offsetY,
 			ALLEGRO_ALIGN_LEFT,
 			to_string(mejores15Puntajes[i].bolasPerdidas).c_str()
 		);
@@ -878,7 +878,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
 			posicionX_PrimerElemento + espacioEntreEncabezados * 3 + centradosDatos,
-			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			posicionY_PrimerElemento + altoDatos * i + offsetY,
 			ALLEGRO_ALIGN_LEFT,
 			to_string(mejores15Puntajes[i].bolasRebotadas).c_str()
 		);
@@ -887,7 +887,7 @@ void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMo
 			fuenteOpcionesMenu,
 			al_map_rgb(255, 255, 255),
 			posicionX_PrimerElemento + espacioEntreEncabezados * 4 + centradosDatos,
-			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			posicionY_PrimerElemento + altoDatos * i + offsetY,
 			ALLEGRO_ALIGN_LEFT,
 			to_string(mejores15Puntajes[i].blancosDestruidos).c_str()
 		);
