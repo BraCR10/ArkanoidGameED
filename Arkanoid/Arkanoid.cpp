@@ -514,7 +514,7 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 		posicionY_PrimerElemento / 1.1,
 		(posicionX_PrimerElemento + (AnchoMonitor / 3) ) * 1.01,
 		posicionY_PrimerElemento + altoOpcion * 6,
-		al_map_rgba(0, 0, 0, 100)
+		al_map_rgb(0,0,1)
 	);
 
 	// Posiciones del selector
@@ -530,7 +530,7 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 	al_draw_filled_rectangle(x1Selector, y1Selector/1.11, x2Selector, y2Selector/1.11, al_map_rgb(153, 153, 102));
 
 	// Opciones del menú
-	const char* opcionesMenu[] = {
+	const char* OPCIONES[] = {
 		"1. Jugar",
 		"2. Jugador vs Jugador",
 		"3. Jugador vs Máquina",
@@ -548,7 +548,7 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla,int AnchoMonitor, int AltoMonitor) {
 			posicionX_PrimerElemento,
 			posicionY_PrimerElemento + (i * altoOpcion)*1.0,
 			ALLEGRO_ALIGN_LEFT,
-			opcionesMenu[i]
+			OPCIONES[i]
 		);
 	}
 	// Dibujar título del menú
@@ -743,6 +743,237 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	return opcion;
 }
 
+<<<<<<< HEAD
+=======
+void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+	// Cálculo de posiciones de las opciones del menú
+	int posicionY_PrimerElemento = AltoMonitor * 1.1 / 10;
+	int posicionX_PrimerElemento = AnchoMonitor / 10;
+	int altoOpcion = al_get_font_line_height(fuenteOpcionesMenu) * 2.5;
+
+	// Cálculo de posiciones de los encabezados
+	int posicionY_Encabeazos = AltoMonitor * 1.1 / 15;
+	int posicionX_Encabezados = AnchoMonitor / 10;
+	int espacioEntreEncabezados = AnchoMonitor / 6;
+
+	int posicionY_Encabeazos_Superior = AltoMonitor * 1.1 / 35;
+	int posicionX_Encabezados_Superior = AnchoMonitor / 10 + espacioEntreEncabezados * 2 + espacioEntreEncabezados / 10;
+	int centradosDatos = espacioEntreEncabezados / 3;
+
+	// Dibujar fondo semitransparente para el menú
+	al_draw_filled_rectangle(
+		posicionX_PrimerElemento - (AnchoMonitor / 16) * 1.01,
+		posicionY_PrimerElemento / 1.1,
+		posicionX_Encabezados + espacioEntreEncabezados * 5,
+		posicionY_PrimerElemento + altoOpcion * 17,
+		al_map_rgb(0, 0, 1)
+	);
+
+	// Dibujar el título
+	const char* titulo = "Los Mejores 15 en Solitario";
+	al_draw_text(
+		fuenteOpcionesMenu,
+		al_map_rgb(255, 255, 255),
+		AnchoMonitor / 2, // Centrar en el ancho
+		AltoMonitor / 20, // Ajustar la posición Y
+		ALLEGRO_ALIGN_CENTRE, // Alinear al centro
+		titulo
+	);
+
+	// Ajustar la posición de los elementos para evitar conflictos
+	int offsetY = altoOpcion * 2; // Espacio para el título
+
+	// Posiciones del selector
+	int altoSelector = altoOpcion;
+	int anchoSelector = AnchoMonitor / 4;
+	int y1Selector = AltoMonitor -(AltoMonitor/20);
+	int x1Selector = AnchoMonitor / 2 - 70;
+	int x2Selector = AnchoMonitor / 2 + 70;
+	int y2Selector = AltoMonitor-5;
+
+	// Dibujar selector
+	al_draw_filled_rectangle(x1Selector, y1Selector, x2Selector, y2Selector , al_map_rgb(153, 153, 102));
+
+
+	// Dibujar texto "Volver"
+	const char* texto = "Volver";
+	float centroX = (x1Selector + x2Selector) / 2; // Centrar el texto
+	float centroY = (y1Selector + y2Selector) / 2; // Centrar el texto correctamente
+
+	al_draw_text(
+		fuenteOpcionesMenu,
+		al_map_rgb(255, 255, 255),
+		centroX,
+		centroY,
+		ALLEGRO_ALIGN_CENTRE,
+		texto
+	);
+
+	// Opciones del menú
+	const char* ENCABEZADO[5] = {
+		" NOMBRE ",
+		" PUNTAJE ",
+		" PERDIDAS ",
+		" REBOTADAS ",
+		" DESTRUIDOS"
+	};
+	const char* ENCABEZADO_SUPERIOR[3] = {
+		" BOLAS ",
+		" BOLAS ",
+		" BLANCOS "
+	};
+
+	// Dibujar encabezados
+	for (int i = 0; i < 5; i++) {
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_Encabezados + espacioEntreEncabezados * i,
+			posicionY_Encabeazos + offsetY, // Ajustar con offset
+			ALLEGRO_ALIGN_LEFT,
+			ENCABEZADO[i]
+		);
+	}
+
+	for (int i = 0; i < 3; i++) {
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_Encabezados_Superior + espacioEntreEncabezados * i,
+			posicionY_Encabeazos_Superior + offsetY, // Ajustar con offset
+			ALLEGRO_ALIGN_LEFT,
+			ENCABEZADO_SUPERIOR[i]
+		);
+	}
+
+	// Dibujar cada opción del menú
+	for (int i = 0; i < mejores15Puntajes.size(); i++) {
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento,
+			posicionY_PrimerElemento + altoOpcion * i + offsetY, // Ajustar con offset
+			ALLEGRO_ALIGN_LEFT,
+			(to_string(i + 1) + "." + mejores15Puntajes[i].nombre).c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados + centradosDatos,
+			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			ALLEGRO_ALIGN_LEFT,
+			to_string(mejores15Puntajes[i].puntaje).c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados * 2 + centradosDatos,
+			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			ALLEGRO_ALIGN_LEFT,
+			to_string(mejores15Puntajes[i].bolasPerdidas).c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados * 3 + centradosDatos,
+			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			ALLEGRO_ALIGN_LEFT,
+			to_string(mejores15Puntajes[i].bolasRebotadas).c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados * 4 + centradosDatos,
+			posicionY_PrimerElemento + altoOpcion * i + offsetY,
+			ALLEGRO_ALIGN_LEFT,
+			to_string(mejores15Puntajes[i].blancosDestruidos).c_str()
+		);
+	}
+}
+
+void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
+	int opcion = 0;
+	const int NUM_CASILLAS = 15;
+	int casillaActual = 0;  // Casilla en la que empieza el selector
+	int altoOpciones = AnchoMonitor / 30;
+	int posicionInicialCasillas = AltoMonitor * 2 / 15;
+	int posicionesY[NUM_CASILLAS] = {
+		(posicionInicialCasillas),
+		(posicionInicialCasillas + altoOpciones),
+		(posicionInicialCasillas + altoOpciones * 2),
+		(posicionInicialCasillas + altoOpciones * 3),
+		(posicionInicialCasillas + altoOpciones * 4),
+		(posicionInicialCasillas + altoOpciones * 5),
+		(posicionInicialCasillas + altoOpciones * 6),
+		(posicionInicialCasillas + altoOpciones * 7),
+		(posicionInicialCasillas + altoOpciones * 8),
+		(posicionInicialCasillas + altoOpciones * 9), 
+		(posicionInicialCasillas + altoOpciones * 10), 
+		(posicionInicialCasillas + altoOpciones * 11),
+		(posicionInicialCasillas + altoOpciones *12),
+		(posicionInicialCasillas + altoOpciones * 13),
+		(posicionInicialCasillas + altoOpciones * 14),};
+
+
+	// Cargar imagen de fondo
+	imagenFondoPartida = al_load_bitmap("Imagenes/imagenFondoPartida.jpg");
+	if (!imagenFondoPartida) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+
+	}
+
+	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 80, 0);
+	if (!fuenteOpcionesMenu) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+	}
+	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", AnchoMonitor / 13, 0);
+	if (!fuenteTituloMenu) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+	}
+
+	ALLEGRO_SAMPLE_ID sample_id; //declaracion de variable para reproducir musica
+	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id); //reproduce la musica
+
+	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
+	al_register_event_source(colaEventos, al_get_keyboard_event_source());
+
+
+	ALLEGRO_TIMER* timerFondo = al_create_timer(1.0 / 10);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerFondo));
+
+	al_start_timer(timerFondo);
+
+	while (true) {
+		dibujarEstadisticas(pantalla, AnchoMonitor, AltoMonitor);
+		al_flip_display();
+		ALLEGRO_EVENT evento;
+		al_wait_for_event(colaEventos, &evento);
+		// Movimiento entre casillas
+		if (evento.type == ALLEGRO_EVENT_KEY_DOWN) {
+
+			 if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+					break;
+			}
+		}
+
+		if (evento.type == ALLEGRO_EVENT_TIMER) {
+			if (evento.timer.source == timerFondo)
+				dibujarFondoPartida(AnchoMonitor, AltoMonitor, scroll_x, scrollVelocidad);
+			al_flip_display();
+		}
+	}
+	al_destroy_timer(timerFondo);
+	al_stop_sample(&sample_id); //detiene canción cuando pasa a niveles
+	al_destroy_event_queue(colaEventos);
+
+}
 
 void main()
 {
@@ -880,6 +1111,7 @@ void main()
 		case 5:
 			break;
 		case 6:
+			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 			break;
 		case 7:
 			menu = false;
