@@ -62,7 +62,7 @@ PtrMarcador marcoMaxPts = NULL;
 PtrMarcador marcoActualPts = NULL;
 
 //Creacion de contador de puntos
-int contadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
+int variableContadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
 
 //Creacion  de vidas
 PtrVida contadorVidas = NULL;
@@ -130,7 +130,7 @@ float x1ContadorVida;
 float  y1ContadorVida ;
 float altoVida ;
 float anchoVida ;
-
+int variableVidas=3;
 //Level label
 float x1LabelNivel;
 float  y1LabelNivel;
@@ -222,7 +222,7 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	x1ActualPts = limiteDerechoPared  + x_Imagen_Ancho * 4;
 	x2ActualPts = limiteDerechoPared  + x_Imagen_Ancho * 8;
 	y2ActualPts = y1ActualPts + y_Imagen_Alto;
-	crearMarco(marcoActualPts, 0, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
+	crearMarco(marcoActualPts,variableContadorPts, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
 	
 	//Label nivel
 	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 8;
@@ -283,11 +283,10 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
-	iniciarMarcadores(contadorPts, contadorVidas);
+	iniciarVidas(variableVidas, contadorVidas);
 }
 
 void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
-	nivel = 2;
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -325,11 +324,10 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
-	iniciarMarcadores(contadorPts, contadorVidas);
+	iniciarVidas(variableVidas, contadorVidas);
 }
 
 void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
-	nivel = 3;
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -366,7 +364,7 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
 	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 
-	iniciarMarcadores(contadorPts, contadorVidas);
+	iniciarVidas(variableVidas, contadorVidas);
 	
 }
 
@@ -469,11 +467,12 @@ void destruirElementosGenerales() {
 	enemigoActual = NULL;
 	flagNuevoEnemigoActor = true;
 
-
+	eliminarVida(contadorVidas); //se elimina aparte porque se mantiene durante todo el juego
+	contadorVidas = NULL;
 }
 
-void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
-	if (vida->cantidad <= 0) {
+void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
+	if (marcadorVida->cantidad <= 0) {
 		if (jugador!=NULL) 
 			GuardarPuntajes(marcoActualPts,jugador->nombre.c_str());
 
@@ -487,6 +486,8 @@ void verificadorGameOver(PtrVida& vida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPL
 		destruirElementosGenerales();
 		eliminarVida(contadorVidas); 
 		contadorVidas = NULL;
+		variableVidas = 3;
+		variableContadorPts = 0;
 		destruirJugador(jugador);
 		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
@@ -839,10 +840,7 @@ void main()
 	bool menu = true;
 	bool transicion = false;
 	int opcion=0;
-	int nivel = 1;
 	char textoTransicion[10];
-
-
 	while (menu) {
 		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 		switch (opcion)
@@ -880,7 +878,6 @@ void main()
 			al_wait_for_event(colaEventos, &evento);
 			al_get_keyboard_state(&teclado);
 
-			//TODO: definir donde se escoje la velocidad, ahorita solo en 10
 			if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT) && imagenGameOver == NULL) {
 				moverBarra(barra, 10, true);
 				iniciarMovimientoBola(listaEnlazadaBolas, 5, true);
@@ -894,8 +891,8 @@ void main()
 				juego = false;
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
-				nivel = 1;
-				NivelLabel->dato = 1;
+				variableContadorPts = 0;
+				variableVidas = 3;
 				juego = false;
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
 			}
@@ -904,6 +901,7 @@ void main()
 					transicion = false;  // Desactivar la transición al terminar el tiempo
 					if (nivel == 1) {
 						nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
+						
 					}
 					else if (nivel == 2) {
 						vaciarColaEventos(colaEventosEnemigos);
@@ -911,6 +909,7 @@ void main()
 					}
 					else if (nivel == 3) {
 						vaciarColaEventos(colaEventosEnemigos);
+
 						nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel
 					}
 				}
@@ -923,11 +922,11 @@ void main()
 					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
 					if (nivel == 1) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
-						/*PtrBloque bloque = listaEnlazadaBloques;
+						PtrBloque bloque = listaEnlazadaBloques;
 						while (bloque != NULL) {
 							bloque->estadoExistencia = false;
 							bloque = bloque->siguiente;
-						}*/
+						}
 
 					}
 					else if (nivel == 2) {
@@ -953,15 +952,16 @@ void main()
 						moverBola(listaEnlazadaBolas, 4);
 						moverComodines(listaEnlazadaBloques, 4, AltoMonitor);
 						reboteBolaPared(listaEnlazadaBolas, sonidoReboteBarra);
-						reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, contadorVidas);
-						reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, contadorPts);
-						aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, contadorVidas, sonidoComodin, sonidoComodinMalo);
+						reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas);
+						reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, variableContadorPts);
+						aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, variableVidas, sonidoComodin, sonidoComodinMalo);
 					}
 
 					if (evento.timer.source == timerBarra_Entorno) {
-						setDatoMarco(marcoActualPts, contadorPts);
+						setDatoMarco(marcoActualPts, variableContadorPts);
+						setDatoVidas(contadorVidas, variableVidas);
 						verificadorGameOver(contadorVidas, pantalla, sonidoGameOver);
-						//Vañidacion de existencia de bloques y no game over
+						//Validacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
 							destruirElementosGenerales();
 							if (nivel == 1) {
@@ -1026,7 +1026,7 @@ void main()
 								enemigoActual = NULL;
 								flagNuevoEnemigoActor = true;
 							}
-							verficarColisionEnemigoBarra(enemigoActual, barra, contadorVidas);
+							verficarColisionEnemigoBarra(enemigoActual, barra,variableVidas);
 						}
 					}
 				}
@@ -1044,9 +1044,6 @@ void main()
 
 	//Destruccion de elemontos propios del juego
 	destruirElementosGenerales();
-
-	eliminarVida(contadorVidas); //se elimina aparte porque se mantiene durante todo el juego
-	contadorVidas = NULL;
 
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);

@@ -245,7 +245,9 @@ void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGR
 void setDatoMarco(PtrMarcador& marcador, int dato) {
 	marcador->dato = dato;
 }
-
+void setDatoVidas(PtrVida& marcador, int dato) {
+	marcador->cantidad = dato;
+}
 void insertarBola(PtrBola& lista, PtrBola nuevo) {
 	nuevo->siguiente = lista;
 	lista = nuevo;
@@ -891,7 +893,7 @@ void dibujarComodines(PtrBloque& lista) {
 	}
 }
 
-void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & contadorPts) {
+void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & variableContadorPts) {
     PtrBloque aux;
 	PtrBola bola = lista2;
 	while (bola != NULL) {
@@ -900,7 +902,7 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 			if (aux->estadoExistencia) { // se verifica que el bloque a�n exista
 				if (bola->y + bola->alto <= (aux->y + aux->alto) && (bola->y + bola->alto) >= (aux->y)) {// Si la bola cae en la mitad superior del bloque
 					if ((bola->x + bola->ancho) >= aux->x && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) {// Si cae en la mitad izquierda del bloque
-						contadorPts += 10;
+						variableContadorPts += 10;
 						bola->direccionMovimientoY = true; // Rebote hacia arriba
 						bola->direccionMovimientoX = false; // Rebote a la izquierda
 						aux->estadoExistencia = false;
@@ -911,7 +913,7 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 						return;
 					}
 					else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) {// Si cae en la mitad derecha del bloque
-						contadorPts += 10;
+						variableContadorPts += 10;
 						bola->direccionMovimientoY = true; // Rebote hacia arriba
 						bola->direccionMovimientoX = true; // Rebote a la derecha
 						aux->estadoExistencia = false;
@@ -924,7 +926,7 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 				}
 				else if ((bola->y) >= (aux->y + aux->alto / 2) && (bola->y) <= (aux->y + aux->alto)) {// Si cae en la mitad inferior del bloque
 					if ((bola->x + bola->ancho) >= aux->x && (bola->x + bola->ancho / 2) <= (aux->x + aux->ancho / 2)) {// Si cae en la mitad izquierda del bloque
-						contadorPts += 10;
+						variableContadorPts += 10;
 						bola->direccionMovimientoY = false; // Rebote hacia abajo
 						bola->direccionMovimientoX = false; // Rebote a la izquierda
 						aux->estadoExistencia = false;
@@ -935,7 +937,7 @@ void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoS
 						return;
 					}
 					else if (bola->x <= (aux->x + aux->ancho) && (bola->x + bola->ancho / 2) >= (aux->x + aux->ancho / 2)) {// Si cae en la mitad derecha del bloque
-						contadorPts += 10;
+						variableContadorPts += 10;
 						bola->direccionMovimientoY = false; // Rebote hacia abajo
 						bola->direccionMovimientoX = true; // Rebote a la derecha
 						aux->estadoExistencia = false;
@@ -979,40 +981,40 @@ bool revisarExistenciaBloques(PtrBloque& lista) {
 	return true; //si logra salir del while significa que no hay bloques existentes
 }
 
-void crearSimboloVida(PtrVida& vida, float x, float y, float alto, float ancho) {
-	vida = new Vida;
-	vida->cantidad = 3;
-	vida->imagen = al_load_bitmap("Imagenes/vida.png");
-	vida->x = x;
-	vida->y = y;
-	vida->alto = alto;
-	vida->ancho = ancho;
+void crearSimboloVida(PtrVida& variableVidas, float x, float y, float alto, float ancho) {
+	variableVidas = new Vida;
+	variableVidas->cantidad = 3;
+	variableVidas->imagen = al_load_bitmap("Imagenes/vida.png");
+	variableVidas->x = x;
+	variableVidas->y = y;
+	variableVidas->alto = alto;
+	variableVidas->ancho = ancho;
 
 }
 
 void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR colorTitulo) {
 	if (vidas != NULL) {
-		PtrVida vida = vidas;
+		PtrVida variableVidas = vidas;
 		al_draw_scaled_bitmap(
-			vida->imagen,
+			variableVidas->imagen,
 			0, 0, // Coordenadas de origen en el bitmap fuente
-			al_get_bitmap_width(vida->imagen), // Ancho del bitmap fuente
-			al_get_bitmap_height(vida->imagen), // Alto del bitmap fuente
-			vida->x, vida->y, // Coordenadas de destino en la pantalla
-			vida->ancho, vida->alto, // Nuevo ancho y alto
+			al_get_bitmap_width(variableVidas->imagen), // Ancho del bitmap fuente
+			al_get_bitmap_height(variableVidas->imagen), // Alto del bitmap fuente
+			variableVidas->x, variableVidas->y, // Coordenadas de destino en la pantalla
+			variableVidas->ancho, variableVidas->alto, // Nuevo ancho y alto
 			0 // Flags
 		);
 
 		// Texto a dibujar
 		char texto[12];
-		snprintf(texto, sizeof(texto), "%d", vida->cantidad);
+		snprintf(texto, sizeof(texto), "%d", variableVidas->cantidad);
 		// Calcular el ancho y alto del texto
 		int anchoTexto = al_get_text_width(fuente, texto);
 		int altoTexto = al_get_font_line_height(fuente);
 
 		// Calcular las coordenadas para centrar el texto dentro del �rea de la imagen
-		float textX = vida->x + (vida->ancho - anchoTexto) / 2;
-		float textY = vida->y + (vida->alto - altoTexto) / 2;
+		float textX = variableVidas->x + (variableVidas->ancho - anchoTexto) / 2;
+		float textY = variableVidas->y + (variableVidas->alto - altoTexto) / 2;
 
 		// Dibujar el texto centrado dentro del �rea de la imagen
 		//al_draw_text(fuente, colorTitulo, textX, textY - 40, ALLEGRO_ALIGN_LEFT, "Vidas");
@@ -1020,19 +1022,18 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 	}
 }
 
-void eliminarVida(PtrVida& vida) {
-	delete (vida);
+void eliminarVida(PtrVida& variableVidas) {
+	delete (variableVidas);
 }
-void aumentarVida(PtrVida& vida) {
-	vida->cantidad++;
+void aumentarVida(int& variableVidas) {
+	variableVidas++;
 }
-void disminuirVida(PtrVida& vida) {
-	vida->cantidad--;
+void disminuirVida(int& variableVidas) {
+	variableVidas--;
 }
 
-void iniciarMarcadores(int& marcadorPts, PtrVida& vida) {
-	marcadorPts = 0;
-	vida->cantidad = 3;
+void iniciarVidas(int& variableVidas, PtrVida& vidas) {
+	vidas->cantidad = variableVidas;
 }
 
 // revisa cantidad de bolas en pantalla
@@ -1077,7 +1078,7 @@ void eliminarBolaEspecifica(PtrBola& lista,int n) {
 	delete Aux; // Liberar la memoria del nodo
 }
 
-void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, PtrVida& vida) {
+void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, int& variableVidas) {
 	PtrBola bola = lista;
 	PtrBola aux = NULL;
 	int cont = 0;
@@ -1116,12 +1117,12 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 					bola->y = (AltoMonitor - AltoMonitor/8) - bola->alto*1.001;
 					barra->x = AnchoMonitor / 2 - barra->ancho / 2;
 					barra->y = AltoMonitor - AltoMonitor / 8;
-					disminuirVida(vida);
+					disminuirVida(variableVidas);
 				}
 				else  if (contarBolas(lista) > 1) { //si quedan varias bolas en pantalla
 					aux = bola->siguiente;
 					eliminarBolaEspecifica(lista,cont);
-					disminuirVida(vida);
+					disminuirVida(variableVidas);
 					if (aux == NULL) //si aux es null retorna para evitar error
 						return;
 					bola = aux;
@@ -1141,7 +1142,7 @@ void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 }
 
 //revisa si la barra colisiona con un comodin
-void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVida& vida, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
+void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2,int variableVidas, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
 	PtrBola bola = lista2;
 	PtrBloque aux = lista;
 	PtrBola nueva;
@@ -1168,11 +1169,11 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, PtrVid
 						al_play_sample(efectoSonidoNegativo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 2: //vida extra
-						aumentarVida(vida);
+						aumentarVida(variableVidas);
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 3: //quitar vida
-						disminuirVida(vida);
+						disminuirVida(variableVidas);
 						al_play_sample(efectoSonidoNegativo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 4: //multiplicar bolas
@@ -1343,12 +1344,12 @@ void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIz
 }
 
 
-void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, PtrVida& vida) {
+void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra,int &variableVidas) {
 	if (enemigo != NULL) {
 		if (enemigo->estadoExistencia) {
 			if ((enemigo->y + enemigo->alto) == barra->y) { 
 				if (abs((barra->x + barra->ancho / 2) - enemigo->x) <= 80) { // PROBLEMAS
-					disminuirVida(vida);
+					disminuirVida(variableVidas);
 					enemigo->estadoExistencia = false;
 				}
 			}
