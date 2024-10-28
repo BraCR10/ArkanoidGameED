@@ -1,4 +1,4 @@
-
+#define _CRT_SECURE_NO_WARNINGS // Desactiva las advertencias de seguridad para funciones "inseguras"
 // Librerias de C++
 #include <iostream>
 #include <stdio.h>
@@ -427,6 +427,7 @@ void dibujarPantallaNivel() {
 	dibujarBloques(listaEnlazadaBloques);
 	dibujarBola(listaEnlazadaBolas);
 	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
+	
 	dibujarMarco(NivelLabel, fuenteMarcadores, colorFondoLabelNivel, colorTitulosMarcos);
 	dibujarComodines(listaEnlazadaBloques);
 	if (imagenEnemigo != NULL) {
@@ -481,24 +482,69 @@ void reiniciarContadoresGenerales () {
 	contadorBolasPerdidas = 0;
 	contadorBolasRebotadas = 0;
 }
-void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
-	if (marcadorVida->cantidad <= 0) {
-		if (jugador!=NULL) 
-			GuardarPuntajes(jugador);
+void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver, int opcion, int& nivel, bool& juego, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion) {
 
-		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
-		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
-		if (!imagenGameOver) {
-			al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-			al_destroy_display(pantalla);
-			return;
+	if (marcadorVida->cantidad <= 0) {
+		if (opcion == 1) {
+			if (jugador != NULL)
+				GuardarPuntajes(jugador);
+
+			imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
+			fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
+			if (!imagenGameOver) {
+				al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+				al_destroy_display(pantalla);
+				return;
+			}
+			destruirElementosGenerales();
+			eliminarVida(contadorVidas);
+			contadorVidas = NULL;
+			reiniciarContadoresGenerales();
+			destruirJugador(jugador);
+			al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		}
-		destruirElementosGenerales();
-		eliminarVida(contadorVidas); 
-		contadorVidas = NULL;
-		reiniciarContadoresGenerales();
-		destruirJugador(jugador);
-		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		else if (opcion == 2) {
+			if (nivel == 1) {
+				strcpy(textoTransicion, "READY PLAYER 2");
+				transicion = true;
+				reiniciarContadoresGenerales();
+				nivel = 11;
+				al_start_timer(timerTransicion);
+				return;
+			}
+			else if (nivel == 11) {
+				strcpy(textoTransicion, "READY PLAYER 1");
+				transicion = true;
+				reiniciarContadoresGenerales();
+				nivel = 2;
+				al_start_timer(timerTransicion);
+			}
+			else if (nivel == 2) {
+				strcpy(textoTransicion, "READY PLAYER 2");
+				transicion = true;
+				reiniciarContadoresGenerales();
+				nivel = 22;
+				al_start_timer(timerTransicion);
+			}
+			else if (nivel == 22) {
+				strcpy(textoTransicion, "READY PLAYER 1");
+				transicion = true;
+				reiniciarContadoresGenerales();
+				nivel = 3;
+				al_start_timer(timerTransicion);
+			}
+			else if (nivel == 3) {
+				strcpy(textoTransicion, "READY PLAYER 2");
+				transicion = true;
+				reiniciarContadoresGenerales();
+				nivel = 33;
+				al_start_timer(timerTransicion);
+			}
+			else if (nivel == 33) {
+				juego = false; //falta pantalla win
+				return;
+			}
+		}
 	}
 
 }
@@ -1169,7 +1215,7 @@ void main()
 					else if (opcion == 2) { //modo de juego jugador vs jugador
 						if (nivel == 1) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
+							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel player 1
 
 						}else if (nivel == 11) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1177,7 +1223,7 @@ void main()
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel
+							nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel player 1
 						}
 						else if (nivel == 22) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1185,7 +1231,7 @@ void main()
 						}
 						else if (nivel == 3) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel
+							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel player 1
 						}
 						else if (nivel == 33) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1264,7 +1310,7 @@ void main()
 						setDatoMarco(marcoActualPts, variableContadorPts);
 						setDatoVidas(contadorVidas, variableVidas);
 						setDatosJugador(jugador, variableContadorPts,contadorBolasPerdidas,contadorBolasRebotadas);
-						verificadorGameOver(contadorVidas, pantalla, sonidoGameOver);
+						verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, nivel, juego,textoTransicion,transicion,timerTransicion);
 						//Validacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
 							destruirElementosGenerales();
