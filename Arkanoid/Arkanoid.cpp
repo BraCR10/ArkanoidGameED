@@ -743,8 +743,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	return opcion;
 }
 
-<<<<<<< HEAD
-=======
+
 void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	// Cálculo de posiciones de las opciones del menú
 	int posicionY_PrimerElemento = AltoMonitor * 1.1 / 10;
@@ -974,6 +973,7 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 	al_destroy_event_queue(colaEventos);
 
 }
+
 
 void main()
 {

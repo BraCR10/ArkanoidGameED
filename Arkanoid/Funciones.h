@@ -463,10 +463,8 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
-			break;
 			n++;
 ;		}
-		break;
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n >11 && n < 24) {
@@ -538,9 +536,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
-			break;
 			;
-		}break;
+		}
 		n++;
 		ubicadorX += anchoBloque*2;
 		while (n > 3 && n<9 ) {
@@ -738,9 +735,7 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorY += altoBloque;
 			n++;
-			break;
 		}
-		break;
 		ubicadorY = (altoMonitor / 6.14) + altoBloque;
 		ubicadorX = (anchoMonitor / 4)+ anchoBloque;
 		while (n >= 10 && n < 21) {
