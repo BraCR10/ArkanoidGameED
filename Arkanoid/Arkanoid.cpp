@@ -107,7 +107,8 @@ unordered_map<int, Jugador> puntajes= CargarPuntajes();
 int mejorPuntaje= EncontrarMayorPuntaje(puntajes);
 vector<Jugador> mejores15Puntajes = EncontrarMejoresPuntajes(puntajes,15);
 string nombreJugador ;
-
+int contadorBolasRebotadas = 0;
+int contadorBolasPerdidas = 0;
 //Puntero a jugador
 PtrJugador jugador = NULL;
 
@@ -470,11 +471,17 @@ void destruirElementosGenerales() {
 	eliminarVida(contadorVidas); //se elimina aparte porque se mantiene durante todo el juego
 	contadorVidas = NULL;
 }
-
+void reiniciarContadoresGenerales () {
+	variableContadorPts = 0;
+	variableVidas = 3;
+	nivel = 1;
+	contadorBolasPerdidas = 0;
+	contadorBolasRebotadas = 0;
+}
 void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE * sonidoGameOver) {
 	if (marcadorVida->cantidad <= 0) {
 		if (jugador!=NULL) 
-			GuardarPuntajes(marcoActualPts,jugador->nombre.c_str());
+			GuardarPuntajes(jugador);
 
 		imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
 		fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
@@ -486,8 +493,7 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 		destruirElementosGenerales();
 		eliminarVida(contadorVidas); 
 		contadorVidas = NULL;
-		variableVidas = 3;
-		variableContadorPts = 0;
+		reiniciarContadoresGenerales();
 		destruirJugador(jugador);
 		al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
@@ -891,8 +897,7 @@ void main()
 				juego = false;
 			}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
-				variableContadorPts = 0;
-				variableVidas = 3;
+				reiniciarContadoresGenerales();
 				juego = false;
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
 			}
@@ -952,7 +957,7 @@ void main()
 						moverBola(listaEnlazadaBolas, 4);
 						moverComodines(listaEnlazadaBloques, 4, AltoMonitor);
 						reboteBolaPared(listaEnlazadaBolas, sonidoReboteBarra);
-						reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas);
+						reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas, contadorBolasPerdidas, contadorBolasRebotadas);
 						reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, variableContadorPts);
 						aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, variableVidas, sonidoComodin, sonidoComodinMalo);
 					}
@@ -960,6 +965,7 @@ void main()
 					if (evento.timer.source == timerBarra_Entorno) {
 						setDatoMarco(marcoActualPts, variableContadorPts);
 						setDatoVidas(contadorVidas, variableVidas);
+						setDatosJugador(jugador, variableContadorPts,contadorBolasPerdidas,contadorBolasRebotadas);
 						verificadorGameOver(contadorVidas, pantalla, sonidoGameOver);
 						//Validacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {

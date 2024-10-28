@@ -134,7 +134,7 @@ ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
 
 	return colorNegativo;
 }
-void GuardarPuntajes(PtrMarcador marcador, const char* nombre) {
+void GuardarPuntajes(PtrJugador jugador) {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
 
@@ -144,7 +144,7 @@ void GuardarPuntajes(PtrMarcador marcador, const char* nombre) {
 	}
 
 	// Guardar el puntaje junto con el nombre
-	fprintf_s(archivo, "%i %s\n", marcador->dato, nombre);
+	fprintf_s(archivo, "%i %s %i %i %i\n", jugador->puntaje, jugador->nombre.c_str(),jugador->bolasPerdidas,jugador->bolasRebotadas,jugador->blancosDestruidos);
 	fclose(archivo); // Cerrar el archivo después de escribir
 }
 
@@ -158,12 +158,12 @@ unordered_map<int, Jugador> CargarPuntajes() {
 		return puntajes; // Retorna un mapa vacío si no se puede abrir el archivo
 	}
 
-	int id, puntaje;
+	int id, puntaje,bolasPerdidas,bolasRebotadas, blancosDestruidos;
 	char nombreBuffer[100]; // Buffer para almacenar el nombre
 	id = 1;
-	while (fscanf_s(archivo, "%i %s\n", &puntaje, nombreBuffer, sizeof(nombreBuffer)) == 2) {
+	while (fscanf_s(archivo, "%i %s %i %i %i\n", &puntaje, nombreBuffer, sizeof(nombreBuffer),&bolasPerdidas, &bolasRebotadas, &blancosDestruidos) == 5) {
 		// Almacena el puntaje y el nombre en la estructura Jugador
-		puntajes[id] = { puntaje, nombreBuffer };
+		puntajes[id] = {puntaje, nombreBuffer,bolasPerdidas,bolasRebotadas,blancosDestruidos};
 		id++;
 	}
 
@@ -1078,7 +1078,7 @@ void eliminarBolaEspecifica(PtrBola& lista,int n) {
 	delete Aux; // Liberar la memoria del nodo
 }
 
-void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, int& variableVidas) {
+void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, int& variableVidas,int&contadorBolasPerdidas,int&contadorBolasRebotadas) {
 	PtrBola bola = lista;
 	PtrBola aux = NULL;
 	int cont = 0;
@@ -1097,6 +1097,7 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 					}
 				}
+				contadorBolasRebotadas++;
 			}
 			else if ((bola->y) <= (barra->y + barra->alto)) { //esto es para darle el efecto de que la bola choca con los laterales de la barra pero no se ir� hacia arriba
 				if ((bola->x + bola->ancho) >= (barra->x) && (bola->x + bola->ancho / 2) <= (barra->x + barra->ancho / 2)) { //si cae en mitad izquierda de la barra
@@ -1122,11 +1123,12 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 				else  if (contarBolas(lista) > 1) { //si quedan varias bolas en pantalla
 					aux = bola->siguiente;
 					eliminarBolaEspecifica(lista,cont);
-					disminuirVida(variableVidas);
+					//disminuirVida(variableVidas);
 					if (aux == NULL) //si aux es null retorna para evitar error
 						return;
 					bola = aux;
 				}
+				contadorBolasPerdidas++;
 			}
 		}
 		cont++;
@@ -1409,8 +1411,18 @@ void CrearJuagador(PtrJugador& jugador,string nombre) {
 	jugador = new Jugador;
 	jugador->nombre = nombre;
 	jugador->puntaje = 0;
+	jugador->blancosDestruidos = 1;
+	jugador->bolasPerdidas = 0;
+	jugador->bolasRebotadas = 0;
 }
 
 void destruirJugador(PtrJugador& jugador) {
 	delete (jugador);
+}
+
+void setDatosJugador(PtrJugador& jugador, int puntaje,  int bolasPerdidas, int bolasRebotadas) {
+	jugador->puntaje = puntaje;
+	jugador->blancosDestruidos = puntaje/10;
+	jugador->bolasPerdidas = bolasPerdidas;
+	jugador->bolasRebotadas = bolasRebotadas;
 }

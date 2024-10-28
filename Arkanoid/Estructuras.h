@@ -95,5 +95,9 @@ typedef struct Enemigo {
 typedef struct Jugador {
 	int puntaje;
 	string nombre;
+	int bolasPerdidas;
+	int bolasRebotadas;
+	int blancosDestruidos;
 }*PtrJugador;
+
 #endif //En caso de que ya se haya definido la estructura

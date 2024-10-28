@@ -1,10 +1,1 @@
-20 j
-20 g
-
-30 Jugador1
-30 Jugador1
-30 Jugador1
-40 Jugador1
-0 Jugador1
-720 Jugador1
-30 Jugador1
+680 Jugador1 2 32 68
