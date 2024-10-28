@@ -4,3 +4,8 @@
 50 Jugador2 3 20 5
 50 Marcos 3 17 5
 50 ghj 3 23 5
+30  Jal 3 15 3
+810 Ximena 4 59 81
+30 f 3 15 3
+80  dfg 3 19 8
+30 fsdf 3 15 3

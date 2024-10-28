@@ -103,9 +103,9 @@ float x1MaxPts;
 float y1MaxPts ;
 float x2MaxPts;
 float y2MaxPts;
-unordered_map<int, Jugador> puntajes= CargarPuntajes();
-int mejorPuntaje= EncontrarMayorPuntaje(puntajes);
-vector<Jugador> mejores15Puntajes = EncontrarMejoresPuntajes(puntajes,15);
+unordered_map<int, Jugador> puntajes;
+int mejorPuntaje;
+vector<Jugador> mejores15Puntajes;
 string nombreJugador ;
 string nombreJugador2;
 
@@ -977,6 +977,7 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 
 void main()
 {
+
 	//Validacion de inicializacion de Allegro
 	if (!al_init()) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo inicializar Allegro", NULL, NULL);
@@ -1082,6 +1083,9 @@ void main()
 	int opcion=0;
 	char textoTransicion[30];
 	while (menu) {
+		puntajes = CargarPuntajes();
+		mejorPuntaje = EncontrarMayorPuntaje(puntajes);
+	    mejores15Puntajes = EncontrarMejoresPuntajes(puntajes, 15);
 		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 		switch (opcion)
 		{
