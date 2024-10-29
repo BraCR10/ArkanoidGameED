@@ -243,7 +243,7 @@ unordered_map<int, vector<Jugador>> CargarPuntajesMultijugador() {
 }
 void GuardarPuntajesMultijugador(PtrJugador jugador1, PtrJugador jugador2) {
 	FILE* archivo;
-	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
+	fopen_s(&archivo, "Puntajes_Multijugador.txt", "a");
 
 	if (archivo == NULL) {
 		printf("No se pudo abrir el archivo.\n");
@@ -515,7 +515,6 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
 	
 		while (n < 12) {
-			
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
@@ -1490,7 +1489,7 @@ void setDatosJugador(PtrJugador& jugador1, int puntaje, int bolasPerdidas, int b
 }
 
 //obtiene los nombres de los jugadores del modo 2 jugadores
-void obtenerNombres(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, string& jugador1, string& jugador2, int AnchoMonitor, int AltoMonitor) {
+void obtenerNombresMultijugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, string& jugador1, string& jugador2, int AnchoMonitor, int AltoMonitor) {
 	bool capturandoJugador1 = true;
 	ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -1500,14 +1499,22 @@ void obtenerNombres(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, string& jugad
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
-		if (ev.type == ALLEGRO_EVENT_KEY_CHAR && ev.keyboard.keycode != ALLEGRO_KEY_SPACE) {
+		if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
 			if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) {
 				if (capturandoJugador1) {
-					capturandoJugador1 = false;	// Cambiar a capturar jugador 2
+					if (jugador1.empty() || jugador1.find_first_not_of(' ') == string::npos) {
+						// Si el nombre del jugador 1 es vacío o solo espacios
+						continue; // No avanzar
+					}
+					capturandoJugador1 = false; // Cambiar a capturar jugador 2
 					nombreActual = &jugador2;
 				}
 				else {
-					break;
+					if (jugador2.empty() || jugador2.find_first_not_of(' ') == string::npos) {
+						// Si el nombre del jugador 2 es vacío o solo espacios
+						continue; // No avanzar
+					}
+					break; // Salir del bucle si ambos nombres son válidos
 				}
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && !nombreActual->empty()) {
@@ -1539,8 +1546,13 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
-		if (ev.type == ALLEGRO_EVENT_KEY_CHAR && ev.keyboard.keycode != ALLEGRO_KEY_SPACE) {
+		if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
 			if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+				// Validar que el nombre no sea vacío o solo espacios
+				if (nombre.empty() || nombre.find_first_not_of(' ') == string::npos) {
+					// Reiniciar el nombre si es inválido
+					continue;
+				}
 				break; // Finaliza la captura cuando se presiona ENTER
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && !nombre.empty()) {
@@ -1553,8 +1565,8 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 
 		// Limpia y muestra el texto en pantalla
 		al_clear_to_color(al_map_rgb(0, 0, 0));
-		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, "Ingrese su nombre: ") / 2, AltoMonitor / 2, 0, "Ingrese su nombre:");
-		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 + al_get_text_width(font, "Ingrese su nombre: ") / 2, AltoMonitor / 2, 0, nombre.c_str());
+		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, "Ingrese su nombre: ") / 2, AltoMonitor / 2 - 20, 0, "Ingrese su nombre:");
+		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, nombre.c_str()) / 2, AltoMonitor / 2 + 20, 0, nombre.c_str());
 
 		al_flip_display();
 	}
@@ -1563,13 +1575,20 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 	return nombre;
 }
 
-int tempCordenada=0;
-void moverBarraMaquina(PtrBola primerBola,PtrBarra barra) {
-	tempCordenada=primerBola->x;
-	if(primerBola->x<tempCordenada)
-		moverBarra(barra, 1,false);
-	if (primerBola->x > tempCordenada)
-		moverBarra(barra, 1, true);
 
+int tempCordenada=0;
+void moverBarraMaquina(PtrBola& primerBola,PtrBarra& barra) {
+	if (primerBola != NULL && barra != NULL) {
+		
+		if (primerBola->x < tempCordenada) {
+			iniciarMovimientoBola(primerBola, 5, false);
+			moverBarra(barra, 2, false);
+		}
+		if (primerBola->x > tempCordenada) {
+			iniciarMovimientoBola(primerBola, 5, true);
+			moverBarra(barra, 2, true);
+		}
+		tempCordenada = primerBola->x;
+	}
 
 }

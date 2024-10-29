@@ -528,8 +528,6 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 				return;
 			}
 			destruirElementosGenerales();
-			eliminarVida(contadorVidas);
-			contadorVidas = NULL;
 			reiniciarContadoresGenerales();
 			destruirJugador(jugador1);
 			imagenEnemigo = NULL;
@@ -572,8 +570,15 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 			}
 			else if (nivel == 33) {
 				juego = false; //falta pantalla win
+				if(jugador1!=NULL && jugador2!=NULL)GuardarPuntajesMultijugador(jugador1, jugador2);
+				destruirElementosGenerales();
+				reiniciarContadoresGenerales();
+				destruirJugador(jugador1);
+				destruirJugador(jugador2);
+	            imagenEnemigo = NULL;
 				return;
 			}
+			
 		}
 	}
 
@@ -1394,7 +1399,7 @@ void main()
 			strcpy_s(textoTransicion, "READY PLAYER 1");
 			nombreJugador = " ";
 			nombreJugador2 = " ";
-			obtenerNombres(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
+			obtenerNombresMultijugador(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
 			al_start_timer(timerTransicion);
@@ -1480,7 +1485,7 @@ void main()
 							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel
 						}
 					}
-					else if (opcion == 2) { //modo de juego jugador vs jugador
+					else if (opcion == 2 || opcion==3) { //modo de juego jugador vs jugador
 						if (nivel == 1) {
 							vaciarColaEventos(colaEventosEnemigos);
 							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel player 1
@@ -1506,35 +1511,6 @@ void main()
 							vaciarColaEventos(colaEventosEnemigos);
 							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel player 2
 						}
-
-					}
-					else if (opcion == 3) { //modo de juego jugador vs maquina
-						if (nivel == 1) {
-							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel
-
-						}
-						else if (nivel == 11) {
-							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas2, contadorVidas2);  // Iniciar el primer nivel
-						}
-						else if (nivel == 2) {
-							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel player 1
-						}
-						else if (nivel == 22) {
-							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor);// Iniciar el segundo nivel player 2
-						}
-						else if (nivel == 3) {
-							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel player 1
-						}
-						else if (nivel == 33) {
-							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel player 2
-						}
-
 					}
 				}
 				if (transicion) {
@@ -1585,7 +1561,7 @@ void main()
 						}
 					}
 					if (evento.timer.source == timerBarra_Entorno) {
-						if (opcion == 2 && (nivel == 11 || nivel == 22 || nivel == 33)) {
+						if ((opcion == 2 ||opcion==3) && (nivel == 11 || nivel == 22 || nivel == 33)) {
 							setDatoMarco(marcoActualPts2, variableContadorPts2);
 							setDatoVidas(contadorVidas2, variableVidas2);
 							setDatosJugador(jugador2, variableContadorPts2, contadorBolasPerdidas, contadorBolasRebotadas);
@@ -1651,7 +1627,7 @@ void main()
 								}
 								else if (nivel == 33) {
 									juego = false; //falta pantalla win
-									GuardarPuntajesMultijugador(jugador1,jugador2);
+									if (jugador1 != NULL && jugador2 != NULL)GuardarPuntajesMultijugador(jugador1,jugador2);
 
 								}
 							}
