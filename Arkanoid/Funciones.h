@@ -1414,8 +1414,9 @@ void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, int& var
 				if ((enemigo->y <= barra->y + barra->alto) && (enemigo->alto + enemigo->y >= barra->y)) { //verificar que este adentro de la posicion en Y de la barra
 					disminuirVida(variableVidas);
 					enemigo->estadoExistencia = false;
-				}
+				} 
 			}
+			if ((enemigo->y > barra->y + barra->alto))enemigo->estadoExistencia = false;
 
 		}
 	}
