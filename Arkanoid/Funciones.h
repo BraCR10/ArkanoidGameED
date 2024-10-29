@@ -488,7 +488,7 @@ int generarHabilidad(int nivel) {
 	while (cont != nivel) {
 		a = 1 + rand() % 100;
 		if (a % 26 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 26: 3%
-			return 0; //disparos barra
+			return 0; 
 		}
 		if (a % 27 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 27: 3%
 			return 4; //multiplicar bolas
@@ -1409,15 +1409,14 @@ void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIz
 void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, int& variableVidas) {
 	if (enemigo != NULL) {
 		if (enemigo->estadoExistencia) {
-			if ((enemigo->y + enemigo->alto) == barra->y) {
-				if (abs((barra->x + barra->ancho / 2) - enemigo->x) <= 80) { // PROBLEMAS
+
+			if ((enemigo->x <= barra->x + barra->ancho) && (enemigo->ancho + enemigo->x >= barra->x)) { //verificar que est� adentro de la posici�n en X de la barra
+				if ((enemigo->y <= barra->y + barra->alto) && (enemigo->alto + enemigo->y >= barra->y)) { //verificar que este adentro de la posicion en Y de la barra
 					disminuirVida(variableVidas);
 					enemigo->estadoExistencia = false;
 				}
 			}
-			else if ((enemigo->y + enemigo->alto) > barra->y + barra->alto + 100) {
-				enemigo->estadoExistencia = false;
-			}
+
 		}
 	}
 }
