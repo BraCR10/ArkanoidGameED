@@ -513,7 +513,6 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int habilidad = 0;
 	int n = 0;
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
-		break;
 		while (n < 12) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -525,7 +524,6 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 
 		}
 		ubicadorY += altoBloque;
-		
 		ubicadorX = anchoMonitor / 4;
 		while (n > 11 && n < 24) {
 			habilidad = generarHabilidad(1);
@@ -1564,7 +1562,6 @@ string obtenerNombreJugadorSolitario(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* fo
 			}
 		}
 
-		// Limpia y muestra el texto en pantalla
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, "Ingrese su nombre: ") / 2, AltoMonitor / 2 - 20, 0, "Ingrese su nombre:");
 		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, nombre.c_str()) / 2, AltoMonitor / 2 + 20, 0, nombre.c_str());
