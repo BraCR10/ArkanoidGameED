@@ -49,6 +49,7 @@ ALLEGRO_BITMAP* imagenFondoNivel2 = NULL;
 ALLEGRO_BITMAP* imagenFondoNivel3 = NULL;
 ALLEGRO_BITMAP* imagenFondoGeneral = NULL;
 ALLEGRO_BITMAP* imagenFlechas = NULL;
+ALLEGRO_BITMAP* imagenWin = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -91,6 +92,7 @@ ALLEGRO_FONT* fuenteGameOver = NULL;
 ALLEGRO_FONT* fuenteOpcionesMenu = NULL;
 ALLEGRO_FONT* fuenteTituloMenu = NULL;
 ALLEGRO_FONT* fuenteTransicion = NULL;
+ALLEGRO_FONT* fuenteGane = NULL;
 
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
@@ -426,8 +428,8 @@ void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor, float& scroll_x, flo
 	// Dibuja la parte visible del fondo escalada al tamaño de la pantalla
 	al_draw_scaled_bitmap(
 		imagenFondoPartida,
-		0, 0, fondoAncho, fondoAlto,  // Parte de la imagen de fondo a mostrar
-		-scroll_x, 0, AnchoMonitor, AltoMonitor,  // Escalado al tamaño de la pantalla
+		0, 0, fondoAncho, fondoAlto, 
+		-scroll_x, 0, AnchoMonitor, AltoMonitor, 
 		0
 	);
 
@@ -435,8 +437,8 @@ void dibujarFondoPartida(int AnchoMonitor, int AltoMonitor, float& scroll_x, flo
 	if (scroll_x > 0) {
 		al_draw_scaled_bitmap(
 			imagenFondoPartida,
-			0, 0, fondoAncho, fondoAlto,  // Parte de la imagen de fondo a mostrar
-			fondoAncho - scroll_x, 0, AnchoMonitor, AltoMonitor,  // Escalado al tamaño de la pantalla
+			0, 0, fondoAncho, fondoAlto, 
+			fondoAncho - scroll_x, 0, AnchoMonitor, AltoMonitor, 
 			0
 		);
 	}
@@ -581,6 +583,81 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 			
 		}
 	}
+
+}
+
+void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJugador jugador, ALLEGRO_EVENT_QUEUE* colaEventosWin, ALLEGRO_TIMER* timerWin, ALLEGRO_SAMPLE* sonidoVictoria) {
+
+	bool win = true;
+	int contadorParpadeo = 0;
+	bool mostrarTexto = true;
+
+	al_play_sample(sonidoVictoria, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	al_set_timer_count(timerWin, 0); //reiniciar timer
+	al_start_timer(timerWin);
+
+	while (win) {
+		ALLEGRO_EVENT eventoWin;
+		al_wait_for_event(colaEventosWin, &eventoWin);
+
+		// Dibujar imagen de fondo
+		al_draw_scaled_bitmap(imagenWin, 0, 0, al_get_bitmap_width(imagenWin), al_get_bitmap_height(imagenWin), 0, 0, AnchoMonitor, AltoMonitor, 0);
+
+		// Cambiar color en función del contador
+		ALLEGRO_COLOR colorTexto;
+		ALLEGRO_COLOR colorTexto2;
+		ALLEGRO_COLOR colorTexto3;
+		if (contadorParpadeo % 2 == 0) {
+			colorTexto = al_map_rgb(255, 255, 255);  // Blanco
+			colorTexto2 = al_map_rgb(255, 255, 255);  // Blanco
+			colorTexto3 = al_map_rgb(255, 255, 0);
+		}
+		else {
+			colorTexto = al_map_rgb(140, 140, 140);  // Gris
+			colorTexto2 = al_map_rgb(255, 255, 0);
+			colorTexto3 = al_map_rgb(255, 255, 255);
+		}
+
+		// Mostrar texto si la bandera de parpadeo está activada
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor*2 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor*6 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor*3.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor*4.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 2.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 5.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 3 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 2 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 6 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 3.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 4.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 2.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 5.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 3 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 5 / 8, AltoMonitor / 1.5- al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto, AnchoMonitor / 2, AltoMonitor / 2-al_get_font_line_height(fuenteGane)/2, ALLEGRO_ALIGN_CENTER, "¡Ganaste!");
+
+		al_flip_display();
+
+		// Actualizar el parpadeo y el color cada segundo
+		if (eventoWin.type == ALLEGRO_EVENT_TIMER && eventoWin.timer.source == timerWin) {
+			mostrarTexto = !mostrarTexto;  // Alterna visibilidad para parpadeo
+			contadorParpadeo++;               // Cambia color cada segundo
+		}
+		
+		if (al_get_timer_count(timerWin) >= 8) {
+			win = false;
+		}
+	}
+
+	juego = false;  // Actualiza el estado del juego
+
+	al_stop_timer(timerWin);
+	GuardarPuntajesSolitario(jugador);
+	reiniciarContadoresGenerales();
+	destruirElementosGenerales();
+	cout << "termina" << endl;
 
 }
 
@@ -791,7 +868,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	}
 
 	ALLEGRO_SAMPLE_ID sample_id_menu; //declaracion de variable para reproducir musica
-	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_menu); //reproduce la musica
+	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &sample_id_menu); //reproduce la musica
 
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
@@ -801,7 +878,6 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	al_register_event_source(colaEventos, al_get_timer_event_source(timerFondo));
 
 	al_start_timer(timerFondo);
-
 	while (true) {
 
 		if (opcion != 4)
@@ -1308,7 +1384,9 @@ void main()
 	ALLEGRO_SAMPLE* sonidoComodin = al_load_sample("Sonidos/sonidoPowerUp.mp3");
 	ALLEGRO_SAMPLE* sonidoComodinMalo = al_load_sample("Sonidos/sonidoNegativo.wav");
 	ALLEGRO_SAMPLE* musicamenu = al_load_sample("Musica/musicaMenu.mp3");
-	al_reserve_samples(6);
+	ALLEGRO_SAMPLE* sonidoVictoria = al_load_sample("Sonidos/sonidoVictoria.mp3");
+
+	al_reserve_samples(7);
 
 	//Configuracion de teclado
 	al_install_keyboard();
@@ -1324,6 +1402,18 @@ void main()
 	//Fuente Transicion
 	fuenteTransicion = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 50, 0);
 	if (!fuenteTransicion) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
+	//inicializacion elementos de pantalla de gane. Se inicializan aqui para evitar retardos a la hora de llamar a la funcion
+	ALLEGRO_EVENT_QUEUE* colaEventosWin = al_create_event_queue();
+	al_register_event_source(colaEventosWin, al_get_keyboard_event_source());
+	ALLEGRO_TIMER* timerWin = al_create_timer(1.0); //temporizador para pantallas del gane
+	al_register_event_source(colaEventosWin, al_get_timer_event_source(timerWin));
+	imagenWin = al_load_bitmap("Imagenes/imagenFondoWin.png"); //imagen de fondo de gane
+	fuenteGane = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 20, 0); //fuente gane
+	if (!fuenteGane) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return;
@@ -1375,6 +1465,7 @@ void main()
 	char textoTransicion[30];
 
 	while (menu) {
+		cout << "denueov" << endl;
 		//Cargar estadisticas solitario
 		puntajes = CargarPuntajesSolitario();
 		mejorPuntaje = EncontrarMayorPuntajesSolitario(puntajes);
@@ -1417,7 +1508,7 @@ void main()
 			juego = true;
 			break;
 			/*
-			case 4:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
+		case 4:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
 			break;*/
 		case 5:
 			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
@@ -1590,8 +1681,10 @@ void main()
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
-									juego = false; //falta pantalla win
-									GuardarPuntajesSolitario(jugador1);
+									al_clear_to_color(al_map_rgb(0, 0, 0));
+									dibujarGaneSolitario(AnchoMonitor, AltoMonitor, juego, jugador1,colaEventosWin,timerWin,sonidoVictoria); // se muestra pantalla de win
+									break;
+									
 								}
 							}
 							else if (opcion == 2 || opcion == 3) {
@@ -1741,6 +1834,11 @@ void main()
 	al_destroy_bitmap(imagenEnemigo);
 	al_destroy_bitmap(imagenEntradaMarco);
 	al_destroy_bitmap(imagenFlechas);
+	al_destroy_event_queue(colaEventosWin);
+	al_destroy_timer(timerWin);
+	al_destroy_bitmap(imagenWin);
+	al_destroy_font(fuenteGane);
+	al_destroy_sample(sonidoVictoria);
 
 }
 
