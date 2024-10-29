@@ -1615,6 +1615,7 @@ void main()
 								}
 								else if (nivel == 3) {
 									juego = false; //falta pantalla win
+									GuardarPuntajesSolitario(jugador1);
 								}
 							}
 							else if (opcion == 2 || opcion == 3) {
@@ -1650,8 +1651,7 @@ void main()
 								}
 								else if (nivel == 33) {
 									juego = false; //falta pantalla win
-									GuardarPuntajesSolitario(jugador1);
-									GuardarPuntajesSolitario(jugador2);
+									GuardarPuntajesMultijugador(jugador1,jugador2);
 
 								}
 							}
