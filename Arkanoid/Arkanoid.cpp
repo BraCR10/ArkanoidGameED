@@ -1455,7 +1455,7 @@ void main()
 				}
 				else
 				{
-					moverBarraMaquina(PtrBola);
+					//moverBarraMaquina(listaEnlazadaBolas);
 				}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE) && imagenGameOver == NULL) {
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
@@ -1468,7 +1468,6 @@ void main()
 					transicion = false;  // Desactivar la transición al terminar el tiempo
 					if (opcion == 1) { //modo de juego normal
 						if (nivel == 1) {
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
 							nivel1(pantalla, AnchoMonitor, AltoMonitor,opcion, variableVidas,contadorVidas);  // Iniciar el primer nivel
 
 						}
@@ -1512,12 +1511,12 @@ void main()
 					else if (opcion == 3) { //modo de juego jugador vs maquina
 						if (nivel == 1) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel player 1
+							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel
 
 						}
 						else if (nivel == 11) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel player 2
+							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas2, contadorVidas2);  // Iniciar el primer nivel
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1595,7 +1594,7 @@ void main()
 						else {
 							setDatoMarco(marcoActualPts, variableContadorPts);
 							setDatoVidas(contadorVidas, variableVidas);
-							setDatosJugador(jugador, variableContadorPts, contadorBolasPerdidas, contadorBolasRebotadas);
+							setDatosJugador(jugador1, variableContadorPts, contadorBolasPerdidas, contadorBolasRebotadas);
 							verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, nivel, juego, textoTransicion, transicion, timerTransicion,variableVidas);
 						}
 						//Validacion de existencia de bloques y no game over
