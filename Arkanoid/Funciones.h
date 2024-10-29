@@ -12,11 +12,11 @@
 #include <algorithm> 
 using namespace std;
 
-void insertarPared(PtrPared &lista, PtrPared &Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
+void insertarPared(PtrPared& lista, PtrPared& Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
 }
-void crearPared(PtrPared &lista,int x, int y, float ancho, float alto,bool dinamico, ALLEGRO_BITMAP* imagen)
+void crearPared(PtrPared& lista, int x, int y, float ancho, float alto, bool dinamico, ALLEGRO_BITMAP* imagen)
 {
 
 	PtrPared pared;
@@ -39,10 +39,10 @@ void eliminarListaParedes(PtrPared& lista) {
 	}
 }
 
-void dibujarParedes(PtrPared &paredes,bool habilitarEntradas,ALLEGRO_BITMAP * imagenEntrada) {
+void dibujarParedes(PtrPared& paredes, bool habilitarEntradas, ALLEGRO_BITMAP* imagenEntrada) {
 	PtrPared pared = paredes;
 	while (pared != NULL) {
-		if (pared->dinamico&& habilitarEntradas) {
+		if (pared->dinamico && habilitarEntradas) {
 			al_draw_scaled_bitmap(
 				imagenEntrada,
 				0, 0, // Coordenadas de origen en el bitmap fuente
@@ -64,13 +64,13 @@ void dibujarParedes(PtrPared &paredes,bool habilitarEntradas,ALLEGRO_BITMAP * im
 				0 // Flags
 			);
 		}
-		
+
 		pared = pared->siguiente;
 	}
-	
+
 }
 
-void crearBarra(PtrBarra& barra, int x, int y, float ancho, float alto,int limiteDerecho,int limiteIzquierdo, int superficie, ALLEGRO_BITMAP* imagen)
+void crearBarra(PtrBarra& barra, int x, int y, float ancho, float alto, int limiteDerecho, int limiteIzquierdo, int superficie, ALLEGRO_BITMAP* imagen)
 {
 
 	barra = new Barra;
@@ -86,28 +86,28 @@ void crearBarra(PtrBarra& barra, int x, int y, float ancho, float alto,int limit
 }
 
 void dibujarBarra(PtrBarra& barra) {
-		al_draw_scaled_bitmap(
-			barra->imagen,
-			0, 0, // Coordenadas de origen en el bitmap fuente
-			al_get_bitmap_width(barra->imagen), // Ancho del bitmap fuente
-			al_get_bitmap_height(barra->imagen), // Alto del bitmap fuente
-			barra->x, barra->y, // Coordenadas de destino en la pantalla
-			barra->ancho, barra->alto, // Nuevo ancho y alto
-			0 // Flags
-		);
+	al_draw_scaled_bitmap(
+		barra->imagen,
+		0, 0, // Coordenadas de origen en el bitmap fuente
+		al_get_bitmap_width(barra->imagen), // Ancho del bitmap fuente
+		al_get_bitmap_height(barra->imagen), // Alto del bitmap fuente
+		barra->x, barra->y, // Coordenadas de destino en la pantalla
+		barra->ancho, barra->alto, // Nuevo ancho y alto
+		0 // Flags
+	);
 }
 
-void moverBarra(PtrBarra& barra, int velocidad,bool dir) {
+void moverBarra(PtrBarra& barra, int velocidad, bool dir) {
 	// dir = true -> derecha || dir = false -> izquierda
 	//TODO: Se puede plantear un enum en dir
 	if (dir && barra->x + velocidad < barra->limiteDerecho - barra->ancho)
-			barra->x += velocidad;
-	else if(dir)
-		barra->x = barra->limiteDerecho-barra->ancho;
+		barra->x += velocidad;
+	else if (dir)
+		barra->x = barra->limiteDerecho - barra->ancho;
 
-	if (!dir && barra->x - velocidad > barra->limiteIzquierdo) 
-			barra->x -= velocidad;
-	else if(!dir)
+	if (!dir && barra->x - velocidad > barra->limiteIzquierdo)
+		barra->x -= velocidad;
+	else if (!dir)
 		barra->x = barra->limiteIzquierdo;
 }
 
@@ -115,14 +115,14 @@ void eliminarBarra(PtrBarra& barra) {
 	delete (barra);
 }
 
-void crearMarco(PtrMarcador& marcador, int max, float x1, float y1, float x2, float y2,  const char *titulo) {
+void crearMarco(PtrMarcador& marcador, int max, float x1, float y1, float x2, float y2, const char* titulo) {
 	marcador = new Marcador;
 	marcador->dato = max;
 	marcador->x1 = x1;
 	marcador->y1 = y1;
 	marcador->x2 = x2;
 	marcador->y2 = y2;
-	strcpy_s(marcador->titulo,sizeof(marcador->titulo), titulo);
+	strcpy_s(marcador->titulo, sizeof(marcador->titulo), titulo);
 }
 
 ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
@@ -145,7 +145,7 @@ void GuardarPuntajes(PtrJugador jugador) {
 	}
 
 	// Guardar el puntaje junto con el nombre
-	fprintf_s(archivo, "%i %s %i %i %i\n", jugador->puntaje, jugador->nombre.c_str(),jugador->bolasPerdidas,jugador->bolasRebotadas,jugador->blancosDestruidos);
+	fprintf_s(archivo, "%i %s %i %i %i\n", jugador->puntaje, jugador->nombre.c_str(), jugador->bolasPerdidas, jugador->bolasRebotadas, jugador->blancosDestruidos);
 	fclose(archivo); // Cerrar el archivo después de escribir
 }
 
@@ -159,12 +159,12 @@ unordered_map<int, Jugador> CargarPuntajes() {
 		return puntajes; // Retorna un mapa vacío si no se puede abrir el archivo
 	}
 
-	int id, puntaje,bolasPerdidas,bolasRebotadas, blancosDestruidos;
+	int id, puntaje, bolasPerdidas, bolasRebotadas, blancosDestruidos;
 	char nombreBuffer[100]; // Buffer para almacenar el nombre
 	id = 1;
-	while (fscanf_s(archivo, "%i %s %i %i %i\n", &puntaje, nombreBuffer, sizeof(nombreBuffer),&bolasPerdidas, &bolasRebotadas, &blancosDestruidos) == 5) {
+	while (fscanf_s(archivo, "%i %s %i %i %i\n", &puntaje, nombreBuffer, sizeof(nombreBuffer), &bolasPerdidas, &bolasRebotadas, &blancosDestruidos) == 5) {
 		// Almacena el puntaje y el nombre en la estructura Jugador
-		puntajes[id] = {puntaje, nombreBuffer,bolasPerdidas,bolasRebotadas,blancosDestruidos};
+		puntajes[id] = { puntaje, nombreBuffer,bolasPerdidas,bolasRebotadas,blancosDestruidos };
 		id++;
 	}
 
@@ -240,7 +240,7 @@ void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGR
 	float tituloY = marcador->y1 - altoTexto - 5; // Ajustar la posici�n del t�tulo encima del rect�ngulo
 
 	// Dibujar el t�tulo centrado encima del rect�ngulo
-	al_draw_text(fuenteMarcadores, colorTitulo , tituloX, tituloY, ALLEGRO_ALIGN_LEFT, marcador->titulo);
+	al_draw_text(fuenteMarcadores, colorTitulo, tituloX, tituloY, ALLEGRO_ALIGN_LEFT, marcador->titulo);
 }
 
 void setDatoMarco(PtrMarcador& marcador, int dato) {
@@ -255,7 +255,7 @@ void insertarBola(PtrBola& lista, PtrBola nuevo) {
 }
 
 //inicializa valores de la bola
-void crearBola(PtrBola& lista,int x, int y, float ancho, float alto,int limiteDercho,int limiteIzquierdo,int limiteSuperior, bool estado,bool movimientoX, bool movimientoY,ALLEGRO_BITMAP* imagen) {
+void crearBola(PtrBola& lista, int x, int y, float ancho, float alto, int limiteDercho, int limiteIzquierdo, int limiteSuperior, bool estado, bool movimientoX, bool movimientoY, ALLEGRO_BITMAP* imagen) {
 	PtrBola bola = new (Bola);
 	bola->x = x;
 	bola->y = y;
@@ -264,7 +264,7 @@ void crearBola(PtrBola& lista,int x, int y, float ancho, float alto,int limiteDe
 	bola->estadoMovimiento = estado;
 	bola->direccionMovimientoX = movimientoX;
 	bola->direccionMovimientoY = movimientoY;
-	bola->imagen = imagen; 
+	bola->imagen = imagen;
 	bola->limiteDerecho = limiteDercho;
 	bola->limiteIzquierdo = limiteIzquierdo;
 	bola->limiteSuperior = limiteSuperior;
@@ -391,24 +391,24 @@ Comodin* crearComodin(int x, int y, int habilidad, float ancho, float alto, bool
 	comodin->alto = alto;
 	comodin->visibilidad = visibilidad;
 	switch (habilidad) {
-		case 0:
-			comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
-			break;
-		case 1:
-			comodin->imagen = al_load_bitmap("Imagenes/bloqueVerde.png"); //cambiar imagen P
-			break;
-		case 2:
-			comodin->imagen = al_load_bitmap("Imagenes/bloqueAmarillo.png"); //cambiar imagen E
-			break;
-		case 3:
-			comodin->imagen = al_load_bitmap("Imagenes/bloqueCeleste.png"); //cambiar imagen V
-			break;
-		case 4:
-			comodin->imagen = al_load_bitmap("Imagenes/bloqueCafe.png"); //cambiar imagen X
-			break;
-		case 5: //no tiene comodin
-			comodin->imagen = NULL;
-			break;
+	case 0:
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
+		break;
+	case 1:
+		comodin->imagen = al_load_bitmap("Imagenes/bloqueVerde.png"); //cambiar imagen P
+		break;
+	case 2:
+		comodin->imagen = al_load_bitmap("Imagenes/bloqueAmarillo.png"); //cambiar imagen E
+		break;
+	case 3:
+		comodin->imagen = al_load_bitmap("Imagenes/bloqueCeleste.png"); //cambiar imagen V
+		break;
+	case 4:
+		comodin->imagen = al_load_bitmap("Imagenes/bloqueCafe.png"); //cambiar imagen X
+		break;
+	case 5: //no tiene comodin
+		comodin->imagen = NULL;
+		break;
 	}
 	return comodin;
 }
@@ -452,22 +452,23 @@ int generarHabilidad(int nivel) {
 	return 5; //no tiene habilidad
 }
 
-void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado,PtrBloque& lista, float anchoBloque, float altoBloque) {
-	int ubicadorX = anchoMonitor/4;
+void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista, float anchoBloque, float altoBloque) {
+	int ubicadorX = anchoMonitor / 4;
 	int ubicadorY = altoMonitor / 6.14;
 	int habilidad = 0;
 	int n = 0;
-	while(n<84) { //va creando los bloques en filas de 12 bloques
+	while (n < 84) { //va creando los bloques en filas de 12 bloques
 		while (n < 12) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
-;		}
+			;
+		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
-		while (n >11 && n < 24) {
+		while (n > 11 && n < 24) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueRojo, anchoBloque, altoBloque);
@@ -485,7 +486,7 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
-		while (n> 35 && n < 48) {
+		while (n > 35 && n < 48) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueNaranja, anchoBloque, altoBloque);
@@ -519,17 +520,17 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			ubicadorX += anchoBloque;
 			n++;
 		}
-		
+
 	}
 }
 
-void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista,float anchoBloque, float altoBloque) {
-	int ubicadorX = anchoMonitor / 4 +anchoBloque;
-	int ubicadorY = (altoMonitor / 6.14)+altoBloque;
+void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista, float anchoBloque, float altoBloque) {
+	int ubicadorX = anchoMonitor / 4 + anchoBloque;
+	int ubicadorY = (altoMonitor / 6.14) + altoBloque;
 	int n = 0;
 	int habilidad = 0;
 
-	while (n < 89) { 
+	while (n < 89) {
 		while (n < 4) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -539,8 +540,8 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 			;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
-		while (n > 3 && n<9 ) {
+		ubicadorX += anchoBloque * 2;
+		while (n > 3 && n < 9) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
@@ -559,7 +560,7 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 			n++;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
+		ubicadorX += anchoBloque * 2;
 		while (n > 13 && n < 19) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -572,13 +573,13 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorX = anchoMonitor / 4 + anchoBloque;
 		while (n > 18 && n < 24) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueRosado, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
+		ubicadorX += anchoBloque * 2;
 		while (n > 23 && n < 29) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -591,13 +592,13 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorX = anchoMonitor / 4 + anchoBloque;
 		while (n > 28 && n < 34) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueNaranja, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
+		ubicadorX += anchoBloque * 2;
 		while (n > 33 && n < 39) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -610,13 +611,13 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorX = anchoMonitor / 4 + anchoBloque;
 		while (n > 38 && n < 44) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueAmarillo, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
+		ubicadorX += anchoBloque * 2;
 		while (n > 43 && n < 49) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -635,10 +636,10 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 			n++;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
+		ubicadorX += anchoBloque * 2;
 		while (n > 53 && n < 59) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueVerde, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -648,16 +649,16 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 		ubicadorX = anchoMonitor / 4 + anchoBloque;
 		while (n > 58 && n < 64) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCeleste, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
 		}
 		n++;
-		ubicadorX += anchoBloque*2;
+		ubicadorX += anchoBloque * 2;
 		while (n > 63 && n < 69) {
 			habilidad = generarHabilidad(2);
-			Comodin* comodin = crearComodin( ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
+			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCeleste, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
@@ -724,11 +725,11 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 
 void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* imagenBloqueRojo, ALLEGRO_BITMAP* imagenBloqueAmarillo, ALLEGRO_BITMAP* imagenBloqueCeleste, ALLEGRO_BITMAP* imagenBloqueVerde, ALLEGRO_BITMAP* imagenBloqueNaranja, ALLEGRO_BITMAP* imagenBloqueCafe, ALLEGRO_BITMAP* imagenBloqueRosado, PtrBloque& lista, float anchoBloque, float altoBloque) {
 	int ubicadorX = anchoMonitor / 4;
-	int ubicadorY = (altoMonitor / 6.14); 
+	int ubicadorY = (altoMonitor / 6.14);
 	int n = 0;
 	int habilidad = 0;
 
-	while (n < 67) { 
+	while (n < 67) {
 		while (n < 11) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -737,7 +738,7 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			n++;
 		}
 		ubicadorY = (altoMonitor / 6.14) + altoBloque;
-		ubicadorX = (anchoMonitor / 4)+ anchoBloque;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque;
 		while (n >= 10 && n < 21) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -745,8 +746,8 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY = (altoMonitor / 6.14)+ altoBloque*2;
-		ubicadorX = (anchoMonitor / 4) + anchoBloque*2;
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 2;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 2;
 		while (n >= 21 && n < 30) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -754,8 +755,8 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY = (altoMonitor / 6.14) + altoBloque*3;
-		ubicadorX = (anchoMonitor / 4) + anchoBloque*3;
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 3;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 3;
 		while (n >= 29 && n < 38) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -763,8 +764,8 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY = (altoMonitor / 6.14) + altoBloque*4;
-		ubicadorX = (anchoMonitor / 4) + anchoBloque*4;
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 4;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 4;
 		while (n >= 37 && n < 45) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -772,8 +773,8 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY = (altoMonitor / 6.14) + altoBloque*5;
-		ubicadorX = (anchoMonitor / 4) + anchoBloque*5;
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 5;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 5;
 		while (n >= 44 && n < 51) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -781,8 +782,8 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			ubicadorY += altoBloque;
 			n++;
 		}
-		ubicadorY = (altoMonitor / 6.14)+altoBloque*6;
-		ubicadorX = (anchoMonitor / 4) + anchoBloque*6;
+		ubicadorY = (altoMonitor / 6.14) + altoBloque * 6;
+		ubicadorX = (anchoMonitor / 4) + anchoBloque * 6;
 		while (n >= 50 && n < 56) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2, false);
@@ -894,8 +895,8 @@ void dibujarComodines(PtrBloque& lista) {
 	}
 }
 
-void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido,int & variableContadorPts) {
-    PtrBloque aux;
+void reboteBolaBloque(PtrBola& lista2, PtrBloque& lista, ALLEGRO_SAMPLE* efectoSonido, int& variableContadorPts) {
+	PtrBloque aux;
 	PtrBola bola = lista2;
 	while (bola != NULL) {
 		aux = lista;
@@ -978,7 +979,7 @@ bool revisarExistenciaBloques(PtrBloque& lista) {
 			return false;
 		}
 		aux = aux->siguiente;
-	} 
+	}
 	return true; //si logra salir del while significa que no hay bloques existentes
 }
 
@@ -1049,7 +1050,7 @@ int contarBolas(PtrBola& lista) {
 }
 
 //elimina bola espec�fica de lista
-void eliminarBolaEspecifica(PtrBola& lista,int n) {
+void eliminarBolaEspecifica(PtrBola& lista, int n) {
 	if (n < 0) return; // Verifica si la posici�n es v�lida
 
 	PtrBola Anterior = NULL;  // Puntero para el nodo anterior
@@ -1079,7 +1080,7 @@ void eliminarBolaEspecifica(PtrBola& lista,int n) {
 	delete Aux; // Liberar la memoria del nodo
 }
 
-void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, int& variableVidas,int&contadorBolasPerdidas,int&contadorBolasRebotadas) {
+void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* efectoSonido, int& variableVidas, int& contadorBolasPerdidas, int& contadorBolasRebotadas) {
 	PtrBola bola = lista;
 	PtrBola aux = NULL;
 	int cont = 0;
@@ -1115,15 +1116,15 @@ void reboteBolaBarra_Fuera(PtrBola& lista, PtrBarra& barra, int AnchoMonitor, in
 					bola->estadoMovimiento = false;
 					bola->ancho = AnchoMonitor / 62;
 					bola->alto = AnchoMonitor / 62;
-					bola->x = AnchoMonitor/2 - (bola->ancho)/2;
-					bola->y = (AltoMonitor - AltoMonitor/8) - bola->alto*1.001;
+					bola->x = AnchoMonitor / 2 - (bola->ancho) / 2;
+					bola->y = (AltoMonitor - AltoMonitor / 8) - bola->alto * 1.001;
 					barra->x = AnchoMonitor / 2 - barra->ancho / 2;
 					barra->y = AltoMonitor - AltoMonitor / 8;
 					disminuirVida(variableVidas);
 				}
 				else  if (contarBolas(lista) > 1) { //si quedan varias bolas en pantalla
 					aux = bola->siguiente;
-					eliminarBolaEspecifica(lista,cont);
+					eliminarBolaEspecifica(lista, cont);
 					//disminuirVida(variableVidas);
 					if (aux == NULL) //si aux es null retorna para evitar error
 						return;
@@ -1145,7 +1146,7 @@ void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 }
 
 //revisa si la barra colisiona con un comodin
-void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2,int variableVidas, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
+void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, int variableVidas, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
 	PtrBola bola = lista2;
 	PtrBloque aux = lista;
 	PtrBola nueva;
@@ -1156,7 +1157,7 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2,int var
 					switch (aux->comodin->habilidad) {
 					case 0: //ampliar barra
 						if ((barra->x + barra->ancho * 1.5) >= barra->limiteDerecho) {//verificar que no se pase del l�mite derecho
-							barra->x = barra->x - (barra->ancho*1.5)/2;
+							barra->x = barra->x - (barra->ancho * 1.5) / 2;
 							barra->ancho = barra->ancho * 1.5;
 						}
 						else
@@ -1181,7 +1182,7 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2,int var
 						break;
 					case 4: //multiplicar bolas
 						nueva = new Bola;
-						crearBola(lista2, bola->x, bola->y, bola->ancho, bola->alto, bola->limiteDerecho, bola->limiteIzquierdo, bola->limiteSuperior,true, !bola->direccionMovimientoX, !bola->direccionMovimientoY ,bola->imagen);
+						crearBola(lista2, bola->x, bola->y, bola->ancho, bola->alto, bola->limiteDerecho, bola->limiteIzquierdo, bola->limiteSuperior, true, !bola->direccionMovimientoX, !bola->direccionMovimientoY, bola->imagen);
 						al_play_sample(efectoSonido, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 						break;
 					case 5: //no tiene comodin
@@ -1223,23 +1224,23 @@ void setSprintPosicionEnemigo(PtrEnemigo& enemigo, PosicionEnemigoSprite posicio
 			break;
 		case PosicionEnemigoSprite::ATRAS:
 			enemigo->spriteX = 0;
-			enemigo->spriteY =2* al_get_bitmap_height(enemigo->imagen) / 3; // Tercera fila
+			enemigo->spriteY = 2 * al_get_bitmap_height(enemigo->imagen) / 3; // Tercera fila
 			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 6;
 			enemigo->spriteAlto = al_get_bitmap_height(enemigo->imagen) / 3;
 			break;
 		}
 	}
 }
-void crearEnemigo(PtrEnemigo& enemigo, int x, int y, ALLEGRO_BITMAP* imagen){
+void crearEnemigo(PtrEnemigo& enemigo, int x, int y, ALLEGRO_BITMAP* imagen) {
 	enemigo = new Enemigo;
 	enemigo->imagen = imagen;
 	enemigo->ancho = 60;
 	enemigo->alto = 60;
 	enemigo->x = x;
 	enemigo->y = y;
-	enemigo->estadoExistencia=true;
+	enemigo->estadoExistencia = true;
 	setSprintPosicionEnemigo(enemigo, PosicionEnemigoSprite::FRENTE);
-	enemigo->siguiente=NULL;
+	enemigo->siguiente = NULL;
 }
 
 void dibujarEnemigo(PtrEnemigo& enemigo) {
@@ -1247,11 +1248,11 @@ void dibujarEnemigo(PtrEnemigo& enemigo) {
 		if (enemigo->estadoExistencia) {
 			al_draw_scaled_bitmap(
 				enemigo->imagen,
-				enemigo->spriteX, enemigo->spriteY, 
+				enemigo->spriteX, enemigo->spriteY,
 				enemigo->spriteAncho, enemigo->spriteAlto,
-				enemigo->x, enemigo->y, 
-				enemigo->ancho, enemigo->alto, 
-				0 
+				enemigo->x, enemigo->y,
+				enemigo->ancho, enemigo->alto,
+				0
 			);
 		}
 	}
@@ -1259,7 +1260,7 @@ void dibujarEnemigo(PtrEnemigo& enemigo) {
 
 void moverEnemigo(PtrEnemigo& enemigo, int velocidad, PosicionEnemigoSprite posicion) {
 	if (enemigo != NULL) {
-	
+
 		if (enemigo->estadoExistencia) {
 			if (posicion == PosicionEnemigoSprite::IZQ) {
 				enemigo->x -= velocidad;
@@ -1278,67 +1279,68 @@ void moverEnemigo(PtrEnemigo& enemigo, int velocidad, PosicionEnemigoSprite posi
 				setSprintPosicionEnemigo(enemigo, posicion);
 			}
 		}
-		
+
 	}
-	
+
 
 }
 bool flagMovimientoLateral = true;
-void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIzq,int topMargen,int bottonMargen,PtrBloque listaBloque, bool& ingreso) {
+void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIzq, int topMargen, int bottonMargen, PtrBloque listaBloque, bool& ingreso) {
 	bool flagBajar = true;
 
 	if (enemigo != NULL) {
 		if (enemigo->estadoExistencia) {
-			if (topMargen-10 < enemigo->y)ingreso = false;
-			PtrBloque aux= listaBloque;
+			if (topMargen - 10 < enemigo->y)ingreso = false;
+			PtrBloque aux = listaBloque;
 			while (aux != NULL) {
-	
-					bool estaEncima = (aux->y - aux->alto == enemigo->y + 1);
-					bool estaAlineadoVerticalmente = abs(aux->x - enemigo->x)>=0 && abs(aux->x - enemigo->x) <= 40;
-					if (estaEncima && estaAlineadoVerticalmente) {
-						if (!aux->estadoExistencia) {
-							flagBajar = true;
-							break; }
-						bool moverDerecha = (enemigo->x < margenDer);
-						bool moverIzquierda = (enemigo->x > margenIzq);
 
-						if (moverIzquierda && flagMovimientoLateral) {
-							moverEnemigo(enemigo, 5, PosicionEnemigoSprite::IZQ);//CUIDADO:INFLUYE EN COLISION CON BARRA,
-							flagBajar = false;
-							if (enemigo->x <= margenIzq) {
-								flagMovimientoLateral = false;
-							}
-						}
-						else if (moverDerecha && !flagMovimientoLateral) {
-							moverEnemigo(enemigo, 5, PosicionEnemigoSprite::DER);//CUIDADO:INFLUYE EN COLISION CON BARRA, TODO:ARREGLAR RELACION
-							flagBajar = false;
-							if (enemigo->x >= margenDer) {
-								flagMovimientoLateral = true;
-							}
+				bool estaEncima = (aux->y - aux->alto == enemigo->y + 1);
+				bool estaAlineadoVerticalmente = abs(aux->x - enemigo->x) >= 0 && abs(aux->x - enemigo->x) <= 40;
+				if (estaEncima && estaAlineadoVerticalmente) {
+					if (!aux->estadoExistencia) {
+						flagBajar = true;
+						break;
+					}
+					bool moverDerecha = (enemigo->x < margenDer);
+					bool moverIzquierda = (enemigo->x > margenIzq);
+
+					if (moverIzquierda && flagMovimientoLateral) {
+						moverEnemigo(enemigo, 5, PosicionEnemigoSprite::IZQ);//CUIDADO:INFLUYE EN COLISION CON BARRA,
+						flagBajar = false;
+						if (enemigo->x <= margenIzq) {
+							flagMovimientoLateral = false;
 						}
 					}
+					else if (moverDerecha && !flagMovimientoLateral) {
+						moverEnemigo(enemigo, 5, PosicionEnemigoSprite::DER);//CUIDADO:INFLUYE EN COLISION CON BARRA, TODO:ARREGLAR RELACION
+						flagBajar = false;
+						if (enemigo->x >= margenDer) {
+							flagMovimientoLateral = true;
+						}
+					}
+				}
 
-					bool estaDer = aux->x > enemigo->x; 
-					bool estaIzq = aux->x < enemigo->x; 
-					bool estaAlineadoHorizontalmente = abs(aux->y - enemigo->y) <= 10;
-					bool estaAlineadoVerticalmenteLateral = abs(aux->x - enemigo->x) <= 10;
-					bool estaALaPar = estaAlineadoHorizontalmente && estaAlineadoVerticalmenteLateral;
+				bool estaDer = aux->x > enemigo->x;
+				bool estaIzq = aux->x < enemigo->x;
+				bool estaAlineadoHorizontalmente = abs(aux->y - enemigo->y) <= 10;
+				bool estaAlineadoVerticalmenteLateral = abs(aux->x - enemigo->x) <= 10;
+				bool estaALaPar = estaAlineadoHorizontalmente && estaAlineadoVerticalmenteLateral;
 
-					if (estaIzq && estaALaPar && flagMovimientoLateral && aux->estadoExistencia) 
-						flagMovimientoLateral = false;
-					
-					
-					if (estaDer && estaALaPar && flagMovimientoLateral && aux->estadoExistencia)
-						flagMovimientoLateral = true;
+				if (estaIzq && estaALaPar && flagMovimientoLateral && aux->estadoExistencia)
+					flagMovimientoLateral = false;
 
 
-					
-				
-				aux=aux->siguiente;
+				if (estaDer && estaALaPar && flagMovimientoLateral && aux->estadoExistencia)
+					flagMovimientoLateral = true;
+
+
+
+
+				aux = aux->siguiente;
 			}
 			if (flagBajar)
-				if(!ingreso)
-					moverEnemigo(enemigo, 1, PosicionEnemigoSprite::FRENTE);	
+				if (!ingreso)
+					moverEnemigo(enemigo, 1, PosicionEnemigoSprite::FRENTE);
 				else
 					moverEnemigo(enemigo, 3, PosicionEnemigoSprite::FRENTE);
 
@@ -1347,16 +1349,16 @@ void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIz
 }
 
 
-void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra,int &variableVidas) {
+void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, int& variableVidas) {
 	if (enemigo != NULL) {
 		if (enemigo->estadoExistencia) {
-			if ((enemigo->y + enemigo->alto) == barra->y) { 
+			if ((enemigo->y + enemigo->alto) == barra->y) {
 				if (abs((barra->x + barra->ancho / 2) - enemigo->x) <= 80) { // PROBLEMAS
 					disminuirVida(variableVidas);
 					enemigo->estadoExistencia = false;
 				}
 			}
-			else if ((enemigo->y + enemigo->alto) > barra->y+barra->alto+100) {
+			else if ((enemigo->y + enemigo->alto) > barra->y + barra->alto + 100) {
 				enemigo->estadoExistencia = false;
 			}
 		}
@@ -1376,8 +1378,8 @@ void agregarAlFinalEnemigo(PtrEnemigo& lista, PtrEnemigo& enemigo) {
 	}
 }
 PtrEnemigo DescolarEnemigo(PtrEnemigo& lista) {
-	if (lista!=NULL) {
-		if (lista->siguiente!=NULL) {
+	if (lista != NULL) {
+		if (lista->siguiente != NULL) {
 			PtrEnemigo aux = lista;
 			lista = lista->siguiente;
 			return aux;
@@ -1408,7 +1410,7 @@ void destruirEnemigos(PtrEnemigo& lista) {
 	lista = NULL;
 }
 
-void CrearJuagador(PtrJugador& jugador,string nombre) {
+void CrearJuagador(PtrJugador& jugador, string nombre) {
 	jugador = new Jugador;
 	jugador->nombre = nombre;
 	jugador->puntaje = 0;
@@ -1421,9 +1423,9 @@ void destruirJugador(PtrJugador& jugador) {
 	delete (jugador);
 }
 
-void setDatosJugador(PtrJugador& jugador, int puntaje,  int bolasPerdidas, int bolasRebotadas) {
+void setDatosJugador(PtrJugador& jugador, int puntaje, int bolasPerdidas, int bolasRebotadas) {
 	jugador->puntaje = puntaje;
-	jugador->blancosDestruidos = puntaje/10;
+	jugador->blancosDestruidos = puntaje / 10;
 	jugador->bolasPerdidas = bolasPerdidas;
 	jugador->bolasRebotadas = bolasRebotadas;
 }
