@@ -135,7 +135,7 @@ ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
 
 	return colorNegativo;
 }
-void GuardarPuntajesSolitario(PtrJugador jugador) {
+void GuardarPuntajesSolitario(PtrJugador jugador1) {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
 
@@ -145,7 +145,7 @@ void GuardarPuntajesSolitario(PtrJugador jugador) {
 	}
 
 	// Guardar el puntaje junto con el nombre
-	fprintf_s(archivo, "%i %s %i %i %i\n", jugador->puntaje, jugador->nombre.c_str(), jugador->bolasPerdidas, jugador->bolasRebotadas, jugador->blancosDestruidos);
+	fprintf_s(archivo, "%i %s %i %i %i\n", jugador1->puntaje, jugador1->nombre.c_str(), jugador1->bolasPerdidas, jugador1->bolasRebotadas, jugador1->blancosDestruidos);
 	fclose(archivo); // Cerrar el archivo después de escribir
 }
 
@@ -1262,13 +1262,13 @@ enum class PosicionEnemigoSprite {
 void setSprintPosicionEnemigo(PtrEnemigo& enemigo, PosicionEnemigoSprite posicion) {
 	if (enemigo != NULL) {
 		switch (posicion) {
-		case PosicionEnemigoSprite::IZQ:
+		case PosicionEnemigoSprite::DER:
 			enemigo->spriteX = 0;
 			enemigo->spriteY = al_get_bitmap_height(enemigo->imagen) / 3; // Segunda fila
 			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 6;
 			enemigo->spriteAlto = al_get_bitmap_height(enemigo->imagen) / 3;
 			break;
-		case PosicionEnemigoSprite::DER:
+		case PosicionEnemigoSprite::IZQ:
 			enemigo->spriteX = al_get_bitmap_width(enemigo->imagen) / 6;
 			enemigo->spriteY = 0; // Primera fila
 			enemigo->spriteAncho = al_get_bitmap_width(enemigo->imagen) / 5;
@@ -1467,24 +1467,24 @@ void destruirEnemigos(PtrEnemigo& lista) {
 	lista = NULL;
 }
 
-void CrearJuagador(PtrJugador& jugador, string nombre) {
-	jugador = new Jugador;
-	jugador->nombre = nombre;
-	jugador->puntaje = 0;
-	jugador->blancosDestruidos = 1;
-	jugador->bolasPerdidas = 0;
-	jugador->bolasRebotadas = 0;
+void CrearJugador(PtrJugador& jugador1, string nombre) {
+	jugador1 = new Jugador;
+	jugador1->nombre = nombre;
+	jugador1->puntaje = 0;
+	jugador1->blancosDestruidos = 1;
+	jugador1->bolasPerdidas = 0;
+	jugador1->bolasRebotadas = 0;
 }
 
-void destruirJugador(PtrJugador& jugador) {
-	delete (jugador);
+void destruirJugador(PtrJugador& jugador1) {
+	delete (jugador1);
 }
 
-void setDatosJugador(PtrJugador& jugador, int puntaje, int bolasPerdidas, int bolasRebotadas) {
-	jugador->puntaje = puntaje;
-	jugador->blancosDestruidos = puntaje / 10;
-	jugador->bolasPerdidas = bolasPerdidas;
-	jugador->bolasRebotadas = bolasRebotadas;
+void setDatosJugador(PtrJugador& jugador1, int puntaje, int bolasPerdidas, int bolasRebotadas) {
+	jugador1->puntaje = puntaje;
+	jugador1->blancosDestruidos = puntaje / 10;
+	jugador1->bolasPerdidas = bolasPerdidas;
+	jugador1->bolasRebotadas = bolasRebotadas;
 }
 
 //obtiene los nombres de los jugadores del modo 2 jugadores
@@ -1561,3 +1561,8 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 	return nombre;
 }
 
+void moverBarraMaquina() {
+
+
+
+}
