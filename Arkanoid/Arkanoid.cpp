@@ -347,7 +347,7 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	imagenBloqueCafe = al_load_bitmap("Imagenes/bloqueCafe.png");
 	imagenBloqueRosado = al_load_bitmap("Imagenes/bloqueRosado.png");
 	imagenFondoNivel3 = al_load_bitmap("Imagenes/fondoNivel3.png");
-	imagenEnemigo = al_load_bitmap("Imagenes/enemigo.png");
+	imagenEnemigo = al_load_bitmap("Imagenes/enemigo3.png");
 	imagenEntradaMarco = al_load_bitmap("Imagenes/entradaMarco.png");;
 
 	if (!imagenParedHorizontal || !imagenParedVertical) {
