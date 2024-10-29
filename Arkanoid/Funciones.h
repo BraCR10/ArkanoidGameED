@@ -135,7 +135,7 @@ ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
 
 	return colorNegativo;
 }
-void GuardarPuntajes(PtrJugador jugador) {
+void GuardarPuntajesSolitario(PtrJugador jugador) {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
 
@@ -149,7 +149,7 @@ void GuardarPuntajes(PtrJugador jugador) {
 	fclose(archivo); // Cerrar el archivo después de escribir
 }
 
-unordered_map<int, Jugador> CargarPuntajes() {
+unordered_map<int, Jugador> CargarPuntajesSolitario() {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "r");
 	unordered_map<int, Jugador> puntajes;
@@ -171,7 +171,7 @@ unordered_map<int, Jugador> CargarPuntajes() {
 	fclose(archivo);
 	return puntajes; // Retorna el mapa de puntajes
 }
-int EncontrarMayorPuntaje(const unordered_map<int, Jugador>& puntajes) {
+int EncontrarMayorPuntajesSolitario(const unordered_map<int, Jugador>& puntajes) {
 	if (puntajes.empty()) {
 		return 0; // Retorna -1 si el mapa está vacío
 	}
@@ -186,9 +186,8 @@ int EncontrarMayorPuntaje(const unordered_map<int, Jugador>& puntajes) {
 
 	return mayorPuntaje;
 }
-
 // Función para encontrar los mejores puntajes
-vector<Jugador> EncontrarMejoresPuntajes(const unordered_map<int, Jugador>& puntajes, int cantidad) {
+vector<Jugador> EncontrarMejoresPuntajesSolitario(const unordered_map<int, Jugador>& puntajes, int cantidad) {
 	if (puntajes.empty()) {
 		return vector<Jugador>(); // Retorna un vector vacío si está vacío
 	}
@@ -212,7 +211,63 @@ vector<Jugador> EncontrarMejoresPuntajes(const unordered_map<int, Jugador>& punt
 	// Retornar los mejores puntajes
 	return vector<Jugador>(puntajesVector.begin(), puntajesVector.begin() + cantidad);
 }
+unordered_map<int, vector<Jugador>> CargarPuntajesMultijugador() {
+	FILE* archivo;
+	fopen_s(&archivo, "Puntajes_Multijugador.txt", "r");
+	unordered_map<int, vector<Jugador>> puntajes;
 
+	if (archivo == NULL) {
+		printf("No se pudo abrir el archivo\n");
+		return puntajes; // Retorna un mapa vacío si no se puede abrir el archivo
+	}
+
+	int id = 1;
+	int puntaje;
+	char nombreBuffer[100];
+	int puntaje2;
+	char nombreBuffer2[100];
+
+	while (fscanf_s(archivo, "%i %s %i %s", &puntaje, nombreBuffer, sizeof(nombreBuffer), &puntaje2, nombreBuffer2, sizeof(nombreBuffer2)) == 4) {
+		// Crea un vector para almacenar los jugadores
+		vector<Jugador> temp;
+		temp.push_back({ puntaje, nombreBuffer });
+		temp.push_back({ puntaje2, nombreBuffer2 });
+
+		// Almacena el vector de jugadores en el mapa
+		puntajes[id] = temp; // Asigna el vector al ID correspondiente
+		id++;
+	}
+
+	fclose(archivo);
+	return puntajes; // Retorna el mapa de puntajes
+}
+void GuardarPuntajesMultijugador(PtrJugador jugador1, PtrJugador jugador2) {
+	FILE* archivo;
+	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
+
+	if (archivo == NULL) {
+		printf("No se pudo abrir el archivo.\n");
+		return; // Salir de la función si no se pudo abrir el archivo
+	}
+
+	// Guardar el puntaje junto con el nombre
+	fprintf_s(archivo, "%i %s %i %s\n", jugador1->puntaje, jugador1->nombre.c_str(), jugador2->puntaje, jugador2->nombre.c_str());
+	fclose(archivo); // Cerrar el archivo después de escribir
+}
+vector<vector<Jugador>> ObtenerUltimos15PuntajesMultijugador(const unordered_map<int, vector<Jugador>>& puntajes) {
+	vector<vector<Jugador>> todosLosVectores;
+
+	// Recopilar todos los vectores de jugadores en un solo vector
+	for (const auto& par : puntajes) {
+		todosLosVectores.push_back(par.second);
+	}
+
+	// Determinar la posición de inicio para los últimos 15 vectores
+	size_t totalVectores = todosLosVectores.size();
+	size_t inicio = totalVectores > 15 ? totalVectores=totalVectores - 15 : 0;
+	// Retornar los últimos 15 vectores
+	return vector<vector<Jugador>>(todosLosVectores.begin() + inicio, todosLosVectores.end());
+}
 void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGRO_COLOR colorMarco, ALLEGRO_COLOR colorTitulo) {
 	// Dibujar el rect�ngulo
 	al_draw_filled_rectangle(marcador->x1, marcador->y1, marcador->x2, marcador->y2, colorMarco);
@@ -1350,7 +1405,6 @@ void generarMoviminetosEnemigos(PtrEnemigo& enemigo, int margenDer, int margenIz
 		}
 	}
 }
-
 
 void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, int& variableVidas) {
 	if (enemigo != NULL) {

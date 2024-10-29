@@ -112,6 +112,9 @@ int mejorPuntaje;
 vector<Jugador> mejores15Puntajes;
 string nombreJugador;
 string nombreJugador2;
+//Multijugador
+unordered_map<int, vector<Jugador>> puntajesMultijugador;
+vector<vector<Jugador>> ultimos15PuntajesMultijugador;
 
 int contadorBolasRebotadas = 0;
 int contadorBolasPerdidas = 0;
@@ -515,7 +518,7 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 	if (marcadorVida->cantidad <= 0) {
 		if (opcion == 1) {
 			if (jugador != NULL)
-				GuardarPuntajes(jugador);
+				GuardarPuntajesSolitario(jugador);
 
 			imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
 			fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
@@ -529,6 +532,7 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 			contadorVidas = NULL;
 			reiniciarContadoresGenerales();
 			destruirJugador(jugador);
+			imagenEnemigo = NULL;
 			al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
 		}
 		else if (opcion == 2) {
@@ -842,7 +846,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	return opcion;
 }
 
-void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+void dibujarEstadisticasSolitario(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	// Cálculo de posiciones de las opciones del menú
 	int posicionY_PrimerElemento = AltoMonitor * 1.1 / 10;
 	int posicionX_PrimerElemento = AnchoMonitor / 10;
@@ -1026,7 +1030,7 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 	al_start_timer(timerFondo);
 
 	while (true) {
-		dibujarEstadisticas(pantalla, AnchoMonitor, AltoMonitor);
+		dibujarEstadisticasSolitario(pantalla, AnchoMonitor, AltoMonitor);
 		al_flip_display();
 		ALLEGRO_EVENT evento;
 		al_wait_for_event(colaEventos, &evento);
@@ -1049,6 +1053,214 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 	al_destroy_event_queue(colaEventos);
 
 }
+
+void dibujarEstadisticasMultijugador(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+	// Cálculo de posiciones de las opciones del menú
+	int posicionY_PrimerElemento = AltoMonitor * 1.1 / 10;
+	int posicionX_PrimerElemento = AnchoMonitor / 10;
+	int altoDatos = al_get_font_line_height(fuenteOpcionesMenu) * 2.5;
+
+	// Cálculo de posiciones de los encabezados
+	int posicionY_Encabezados = AltoMonitor * 1.1 / 15;
+	int posicionX_Encabezados = AnchoMonitor / 10;
+	int espacioEntreEncabezados = AnchoMonitor / 6;
+
+	int posicionY_Encabezados_Superior = AltoMonitor * 1.1 / 35;
+	int posicionX_Encabezados_Superior = AnchoMonitor / 10 + espacioEntreEncabezados * 2 + espacioEntreEncabezados / 10;
+	int centradosDatos = espacioEntreEncabezados / 3;
+
+	// Definir las dimensiones del marco
+	int marcoX1 = posicionX_PrimerElemento - (AnchoMonitor / 16) * 1.01;
+	int marcoY1 = posicionY_PrimerElemento / 1.1;
+	int marcoX2 = posicionX_Encabezados + espacioEntreEncabezados * 5;
+	int marcoY2 = posicionY_PrimerElemento + altoDatos * 17;
+
+	// Dibujar marco sólido alrededor de la sección de estadísticas
+	al_draw_filled_rectangle(marcoX1, marcoY1, marcoX2, marcoY2, al_map_rgb(0, 0, 1)); // Fondo del marco
+	al_draw_rectangle(marcoX1, marcoY1, marcoX2, marcoY2, al_map_rgb(255, 255, 0), 3); // Borde amarillo
+
+	// Dibujar el título
+	const char* titulo = "Resultados de los ultimos 15 juegos en multijugador";
+	al_draw_text(
+		fuenteOpcionesMenu,
+		al_map_rgb(255, 255, 255),
+		AnchoMonitor / 2, // Centrar en el ancho
+		AltoMonitor / 20, // Ajustar la posición Y
+		ALLEGRO_ALIGN_CENTRE, // Alinear al centro
+		titulo
+	);
+
+	// Ajustar la posición de los elementos para evitar conflictos
+	int desplizamientoY = altoDatos * 2; // Espacio para el título
+
+	// Posiciones del selector
+	int altoSelector = altoDatos;
+	int anchoSelector = AnchoMonitor / 4;
+	int y1Selector = AltoMonitor - (AltoMonitor / 20);
+	int x1Selector = AnchoMonitor / 2 - 70;
+	int x2Selector = AnchoMonitor / 2 + 70;
+	int y2Selector = AltoMonitor - 5;
+
+	// Dibujar selector
+	al_draw_filled_rectangle(x1Selector, y1Selector, x2Selector, y2Selector, al_map_rgb(153, 153, 102));
+
+
+	// Dibujar texto "Volver"
+	const char* texto = "Volver";
+	float centroX = (x1Selector + x2Selector) / 2; // Centrar el texto
+	float centroY = (y1Selector + y2Selector) / 2; // Centrar el texto correctamente
+
+	al_draw_text(
+		fuenteOpcionesMenu,
+		al_map_rgb(255, 255, 255),
+		centroX,
+		centroY,
+		ALLEGRO_ALIGN_CENTRE,
+		texto
+	);
+
+	// Opciones del menú
+	const char* ENCABEZADO[5] = {
+		" NOMBRE 1 ",
+		" PUNTAJE ",
+		" ",
+		" NOMBRE 2 ",
+		" PUNTAJE"
+	};
+	const char* ENCABEZADO_SUPERIOR[3] = {
+		" ",
+		" ",
+		" "
+	};
+
+	// Dibujar encabezados
+	for (int i = 0; i < 5; i++) {
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_Encabezados + espacioEntreEncabezados * i,
+			posicionY_Encabezados + desplizamientoY, // Ajustar con offset
+			ALLEGRO_ALIGN_LEFT,
+			ENCABEZADO[i]
+		);
+	}
+
+	for (int i = 0; i < 3; i++) {
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_Encabezados_Superior + espacioEntreEncabezados * i,
+			posicionY_Encabezados_Superior + desplizamientoY, // Ajustar con offset
+			ALLEGRO_ALIGN_LEFT,
+			ENCABEZADO_SUPERIOR[i]
+		);
+	}
+
+	for (int i = 0; i < ultimos15PuntajesMultijugador.size(); i++) {
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento,
+			posicionY_PrimerElemento + altoDatos * i + desplizamientoY, // Ajustar con offset
+			ALLEGRO_ALIGN_LEFT,
+			(to_string(i + 1) + "." + ultimos15PuntajesMultijugador[i][0].nombre).c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados + centradosDatos,
+			posicionY_PrimerElemento + altoDatos * i + desplizamientoY,
+			ALLEGRO_ALIGN_LEFT,
+			to_string(ultimos15PuntajesMultijugador[i][0].puntaje).c_str()
+		);
+		string temp = "       ";
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados * 2 + centradosDatos,
+			posicionY_PrimerElemento + altoDatos * i + desplizamientoY,
+			ALLEGRO_ALIGN_LEFT,
+			temp.c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados * 3 + centradosDatos/8,
+			posicionY_PrimerElemento + altoDatos * i + desplizamientoY,
+			ALLEGRO_ALIGN_LEFT,
+			ultimos15PuntajesMultijugador[i][1].nombre.c_str()
+		);
+
+		al_draw_text(
+			fuenteOpcionesMenu,
+			al_map_rgb(255, 255, 255),
+			posicionX_PrimerElemento + espacioEntreEncabezados * 4 + centradosDatos,
+			posicionY_PrimerElemento + altoDatos * i + desplizamientoY,
+			ALLEGRO_ALIGN_LEFT,
+			to_string(ultimos15PuntajesMultijugador[i][1].puntaje).c_str()
+		);
+	}
+}
+
+void estadisticasMultijugador(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
+	// Cargar imagen de fondo
+	imagenFondoPartida = al_load_bitmap("Imagenes/imagenFondoPartida.jpg");
+	if (!imagenFondoPartida) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+
+	}
+
+	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 80, 0);
+	if (!fuenteOpcionesMenu) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+	}
+	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", AnchoMonitor / 13, 0);
+	if (!fuenteTituloMenu) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+	}
+
+
+	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_menu); //reproduce la musica
+
+	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
+	al_register_event_source(colaEventos, al_get_keyboard_event_source());
+
+
+	ALLEGRO_TIMER* timerFondo = al_create_timer(1.0 / 10);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerFondo));
+
+	al_start_timer(timerFondo);
+
+	while (true) {
+		dibujarEstadisticasMultijugador(pantalla, AnchoMonitor, AltoMonitor);
+		al_flip_display();
+		ALLEGRO_EVENT evento;
+		al_wait_for_event(colaEventos, &evento);
+		// Movimiento entre casillas
+		if (evento.type == ALLEGRO_EVENT_KEY_DOWN) {
+
+			if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+				break;
+			}
+		}
+
+		if (evento.type == ALLEGRO_EVENT_TIMER) {
+			if (evento.timer.source == timerFondo)
+				dibujarFondoPartida(AnchoMonitor, AltoMonitor, scroll_x, scrollVelocidad);
+			al_flip_display();
+		}
+	}
+	al_destroy_timer(timerFondo);
+	al_stop_sample(&sample_id_menu); //detiene canción cuando pasa a niveles
+	al_destroy_event_queue(colaEventos);
+
+}
+
 
 void main()
 {
@@ -1158,9 +1370,14 @@ void main()
 	char textoTransicion[30];
 
 	while (menu) {
-		puntajes = CargarPuntajes();
-		mejorPuntaje = EncontrarMayorPuntaje(puntajes);
-		mejores15Puntajes = EncontrarMejoresPuntajes(puntajes, 15);
+		//Cargar estadisticas solitario
+		puntajes = CargarPuntajesSolitario();
+		mejorPuntaje = EncontrarMayorPuntajesSolitario(puntajes);
+		mejores15Puntajes = EncontrarMejoresPuntajesSolitario(puntajes, 15);
+		//Cargar estadisticas multijugador
+		puntajesMultijugador = CargarPuntajesMultijugador();
+		ultimos15PuntajesMultijugador = ObtenerUltimos15PuntajesMultijugador(puntajesMultijugador);
+
 		opcion = menuInicial(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 		switch (opcion)
 		{
@@ -1193,7 +1410,7 @@ void main()
 			break;
 
 		case 6:
-			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
+			estadisticasMultijugador(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 			break;
 		case 7:
 			menu = false;
@@ -1275,13 +1492,10 @@ void main()
 						}
 
 					}
-				}
-				if (transicion) {
+				}if (transicion) {
 					al_clear_to_color(al_map_rgb(0, 0, 0));
 					al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 2, ALLEGRO_ALIGN_CENTER, textoTransicion);
-				}
-				else if (imagenGameOver == NULL)
-				{
+				}else if (imagenGameOver == NULL){
 					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
 					if (nivel == 1) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
@@ -1391,8 +1605,8 @@ void main()
 								}
 								else if (nivel == 33) {
 									juego = false; //falta pantalla win
-									GuardarPuntajes(jugador);
-									GuardarPuntajes(jugador2);
+									GuardarPuntajesSolitario(jugador);
+									GuardarPuntajesSolitario(jugador2);
 
 								}
 							}
@@ -1407,42 +1621,43 @@ void main()
 				}
 			}
 
-
-			ALLEGRO_EVENT eventoEnemigo;
-			if (imagenEnemigo != NULL) {
-				while (al_get_next_event(colaEventosEnemigos, &eventoEnemigo)) {
-					if (eventoEnemigo.timer.source == timer_AparicionEnemigo) {
-						if (colaEnemigo != NULL && flagNuevoEnemigoActor) {
-							enemigoActual = DescolarEnemigo(colaEnemigo);
-							flagNuevoEnemigoActor = false;
-							flagIngresoEnemigo = true;
-						}
-
-						if (!flagVariacionPuerta) {
-							crearEnemigo(nuevoEnemigo, ENTRADA_X_ENEMIGO2, ENTRADAS_Y_ENEMIGOS, imagenEnemigo);
-							encolarEnemigo(colaEnemigo, nuevoEnemigo);
-							flagVariacionPuerta = true;
-						}
-						else
-						{
-							crearEnemigo(nuevoEnemigo, ENTRADA_X_ENEMIGO1, ENTRADAS_Y_ENEMIGOS, imagenEnemigo);
-							encolarEnemigo(colaEnemigo, nuevoEnemigo);
-							flagVariacionPuerta = false;
-						}
-
-
-					}
-
-					if (eventoEnemigo.timer.source == timer_Movimiento_Enemigo) {
-
-						if (enemigoActual != NULL) {
-							generarMoviminetosEnemigos(enemigoActual, AnchoMonitor - AnchoMonitor / 4 - 30, AnchoMonitor / 4 + 30, AltoMonitor / 8 + 40, AltoMonitor, listaEnlazadaBloques, flagIngresoEnemigo);
-							if (!enemigoActual->estadoExistencia) {
-								eliminarEnemigo(enemigoActual);
-								enemigoActual = NULL;
-								flagNuevoEnemigoActor = true;
+			if (imagenGameOver == NULL) {
+				ALLEGRO_EVENT eventoEnemigo;
+				if (imagenEnemigo != NULL) {
+					while (al_get_next_event(colaEventosEnemigos, &eventoEnemigo)) {
+						if (eventoEnemigo.timer.source == timer_AparicionEnemigo) {
+							if (colaEnemigo != NULL && flagNuevoEnemigoActor) {
+								enemigoActual = DescolarEnemigo(colaEnemigo);
+								flagNuevoEnemigoActor = false;
+								flagIngresoEnemigo = true;
 							}
-							verficarColisionEnemigoBarra(enemigoActual, barra, variableVidas);
+
+							if (!flagVariacionPuerta) {
+								crearEnemigo(nuevoEnemigo, ENTRADA_X_ENEMIGO2, ENTRADAS_Y_ENEMIGOS, imagenEnemigo);
+								encolarEnemigo(colaEnemigo, nuevoEnemigo);
+								flagVariacionPuerta = true;
+							}
+							else
+							{
+								crearEnemigo(nuevoEnemigo, ENTRADA_X_ENEMIGO1, ENTRADAS_Y_ENEMIGOS, imagenEnemigo);
+								encolarEnemigo(colaEnemigo, nuevoEnemigo);
+								flagVariacionPuerta = false;
+							}
+
+
+						}
+
+						if (eventoEnemigo.timer.source == timer_Movimiento_Enemigo) {
+
+							if (enemigoActual != NULL) {
+								generarMoviminetosEnemigos(enemigoActual, AnchoMonitor - AnchoMonitor / 4 - 30, AnchoMonitor / 4 + 30, AltoMonitor / 8 + 40, AltoMonitor, listaEnlazadaBloques, flagIngresoEnemigo);
+								if (!enemigoActual->estadoExistencia) {
+									eliminarEnemigo(enemigoActual);
+									enemigoActual = NULL;
+									flagNuevoEnemigoActor = true;
+								}
+								verficarColisionEnemigoBarra(enemigoActual, barra, variableVidas);
+							}
 						}
 					}
 				}
