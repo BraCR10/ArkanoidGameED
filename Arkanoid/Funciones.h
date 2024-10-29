@@ -513,12 +513,13 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int habilidad = 0;
 	int n = 0;
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
-		break;
 		while (n < 12) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
+			
 			ubicadorX += anchoBloque;
+			
 			n++;
 
 		}
@@ -1083,8 +1084,8 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 	}
 }
 
-void eliminarVida(PtrVida& variableVidas) {
-	delete (variableVidas);
+void eliminarVida(PtrVida& Vidas) {
+	delete (Vidas);
 }
 void aumentarVida(int& variableVidas) {
 	variableVidas++;
@@ -1417,8 +1418,9 @@ void verficarColisionEnemigoBarra(PtrEnemigo& enemigo, PtrBarra& barra, int& var
 				if ((enemigo->y <= barra->y + barra->alto) && (enemigo->alto + enemigo->y >= barra->y)) { //verificar que este adentro de la posicion en Y de la barra
 					disminuirVida(variableVidas);
 					enemigo->estadoExistencia = false;
-				}
+				} 
 			}
+			if ((enemigo->y > barra->y + barra->alto))enemigo->estadoExistencia = false;
 
 		}
 	}
@@ -1489,7 +1491,6 @@ void setDatosJugador(PtrJugador& jugador1, int puntaje, int bolasPerdidas, int b
 	jugador1->bolasRebotadas = bolasRebotadas;
 }
 
-//obtiene los nombres de los jugadores del modo 2 jugadores
 void obtenerNombresMultijugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, string& jugador1, string& jugador2, int AnchoMonitor, int AltoMonitor) {
 	bool capturandoJugador1 = true;
 	ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
@@ -1503,26 +1504,27 @@ void obtenerNombresMultijugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, s
 		if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
 			if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) {
 				if (capturandoJugador1) {
-					if (jugador1.empty() || jugador1.find_first_not_of(' ') == string::npos) {
-						// Si el nombre del jugador 1 es vacío o solo espacios
+					if (jugador1.empty()) {
+						// Si el nombre del jugador 1 es vacío
 						continue; // No avanzar
 					}
 					capturandoJugador1 = false; // Cambiar a capturar jugador 2
 					nombreActual = &jugador2;
 				}
 				else {
-					if (jugador2.empty() || jugador2.find_first_not_of(' ') == string::npos) {
-						// Si el nombre del jugador 2 es vacío o solo espacios
+					if (jugador2.empty()) {
+						// Si el nombre del jugador 2 es vacío
 						continue; // No avanzar
 					}
 					break; // Salir del bucle si ambos nombres son válidos
 				}
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && !nombreActual->empty()) {
-				nombreActual->pop_back(); // Eliminar el último caracter
+				nombreActual->pop_back(); // Eliminar el último carácter
 			}
-			else if (ev.keyboard.unichar >= 32 && ev.keyboard.unichar <= 126) {
-				*nombreActual += static_cast<char>(ev.keyboard.unichar); // Agregar el caracter	
+			else if (ev.keyboard.unichar >= 32 && ev.keyboard.unichar <= 126 && ev.keyboard.unichar != ' ') {
+				// Agregar el carácter solo si no es un espacio
+				*nombreActual += static_cast<char>(ev.keyboard.unichar);
 			}
 		}
 
@@ -1536,9 +1538,7 @@ void obtenerNombresMultijugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, s
 
 	al_destroy_event_queue(event_queue);
 }
-
-//obtiene el nombre del jugador en modo un jugador
-string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int AnchoMonitor, int AltoMonitor) {
+string obtenerNombreJugadorSolitario(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int AnchoMonitor, int AltoMonitor) {
 	string nombre;
 	ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -1559,12 +1559,12 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && !nombre.empty()) {
 				nombre.pop_back(); // Elimina el último carácter si se presiona BACKSPACE
 			}
-			else if (ev.keyboard.unichar >= 32 && ev.keyboard.unichar <= 126) {
-				nombre += static_cast<char>(ev.keyboard.unichar); // Agrega el carácter a nombre
+			else if (ev.keyboard.unichar >= 32 && ev.keyboard.unichar <= 126 && ev.keyboard.unichar != ' ') {
+				// Agrega el carácter solo si no es un espacio
+				nombre += static_cast<char>(ev.keyboard.unichar);
 			}
 		}
 
-		// Limpia y muestra el texto en pantalla
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, "Ingrese su nombre: ") / 2, AltoMonitor / 2 - 20, 0, "Ingrese su nombre:");
 		al_draw_text(font, al_map_rgb(255, 255, 255), AnchoMonitor / 2 - al_get_text_width(font, nombre.c_str()) / 2, AltoMonitor / 2 + 20, 0, nombre.c_str());

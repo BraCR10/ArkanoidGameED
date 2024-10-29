@@ -515,72 +515,69 @@ void reiniciarContadoresGenerales() {
 	contadorBolasPerdidas = 0;
 	contadorBolasRebotadas = 0;
 }
-void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, int& nivel, bool& juego, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas) {
-	
-	if (marcadorVida->cantidad <= 0) {
-		if (opcion == 1) {
-			if (jugador1 != NULL)
-				GuardarPuntajesSolitario(jugador1);
+void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, bool& cambioNivel, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas) {
+	if (marcadorVida != NULL) {
+		if (marcadorVida->cantidad <= 0) {
+			if (opcion == 1) {
+				if (jugador1 != NULL)GuardarPuntajesSolitario(jugador1);
 
-			imagenGameOver = al_load_bitmap("Imagenes/gameOver.png");
-			fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
-			if (!imagenGameOver) {
-				al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagen de game over", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-				al_destroy_display(pantalla);
-				return;
-			}
-			destruirElementosGenerales();
-			reiniciarContadoresGenerales();
-			destruirJugador(jugador1);
-			imagenEnemigo = NULL;
-			al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
-		}
-		else if (opcion == 2 || opcion == 3) {
-			if (nivel == 1) {
-				contVidas = 3;
-				eliminarListaBloque(listaEnlazadaBloques);
-				listaEnlazadaBloques = NULL;
-				return;
-			}
-			else if (nivel == 11) {
-				contVidas = 3;
-				eliminarListaBloque(listaEnlazadaBloques);
-				listaEnlazadaBloques = NULL;
-				nivel = 11;
-				return;
-			}
-			else if (nivel == 2) {
-				contVidas = 3;
-				eliminarListaBloque(listaEnlazadaBloques);
-				listaEnlazadaBloques = NULL;
-				nivel = 2;
-				return;
-			}
-			else if (nivel == 22) {
-				contVidas = 3;
-				eliminarListaBloque(listaEnlazadaBloques);
-				listaEnlazadaBloques = NULL;
-				nivel = 22;
-				return;
-			}
-			else if (nivel == 3) {
-				contVidas = 3;
-				eliminarListaBloque(listaEnlazadaBloques);
-				listaEnlazadaBloques = NULL;
-				nivel = 3;
-				return;
-			}
-			else if (nivel == 33) {
-				juego = false; //falta pantalla win
-				if(jugador1!=NULL && jugador2!=NULL)GuardarPuntajesMultijugador(jugador1, jugador2);
+				imagenGameOver = al_load_bitmap("Imagenes/gameOver.png");
+				fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
+				if (!imagenGameOver) {
+					al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagen de game over", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+					al_destroy_display(pantalla);
+					return;
+				}
 				destruirElementosGenerales();
 				reiniciarContadoresGenerales();
 				destruirJugador(jugador1);
-				destruirJugador(jugador2);
-	            imagenEnemigo = NULL;
-				return;
+				imagenEnemigo = NULL;
+				al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
 			}
-			
+			else if (opcion == 2 || opcion == 3) {
+				cambioNivel = true;
+				if (nivel == 1) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel= 1;
+					return;
+				}
+				else if (nivel == 11) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 11;
+					return;
+				}
+				else if (nivel == 2) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 2;
+					return;
+				}
+				else if (nivel == 22) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 22;
+					return;
+				}
+				else if (nivel == 3) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 3;
+					return;
+				}
+				else if (nivel == 33) {
+					nivel = 33;
+					return;
+				}
+				
+
+			}
 		}
 	}
 
@@ -1463,7 +1460,8 @@ void main()
 	bool transicion = false;
 	int opcion = 0;
 	char textoTransicion[30];
-
+	//Flag multijugador
+	bool flagCambioNivelMultijugador = false;
 	while (menu) {
 		cout << "denueov" << endl;
 		//Cargar estadisticas solitario
@@ -1480,7 +1478,7 @@ void main()
 		case 1:
 			transicion = true;
 			strcpy_s(textoTransicion, "LEVEL 1");
-			nombreJugador = obtenerNombreJugador(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
+			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			al_start_timer(timerTransicion);
 			juego = true;
@@ -1501,7 +1499,7 @@ void main()
 			strcpy_s(textoTransicion, "READY PLAYER 1");
 			nombreJugador = " ";
 			nombreJugador2 = "Maquina";
-			nombreJugador = obtenerNombreJugador(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
+			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
 			al_start_timer(timerTransicion);
@@ -1523,6 +1521,7 @@ void main()
 		default:
 			break;
 		}
+
 		vaciarColaEventos(colaEventos);
 		vaciarColaEventos(colaEventosEnemigos);
 		while (juego)
@@ -1530,11 +1529,12 @@ void main()
 			ALLEGRO_EVENT evento;
 			al_wait_for_event(colaEventos, &evento);
 			al_get_keyboard_state(&teclado);
+
 			if (!transicion)//si no esta en transicion para evitar errores y movimientos
 			{
-				bool modoMaquinaJugador = opcion == 3 && (nivel != 33 && nivel != 22 && nivel != 11);
-				bool demasModos = opcion != 3;
-				if (modoMaquinaJugador || demasModos) {//validacion para que juegue la maquina en el modo 3
+				bool modoMaquina = opcion == 3 && (nivel == 33 || nivel == 22 || nivel == 11);
+
+				if (!modoMaquina ) {//validacion para que juegue la maquina en el modo 3
 					if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT) && imagenGameOver == NULL) {
 						moverBarra(barra, 10, true);
 						iniciarMovimientoBola(listaEnlazadaBolas, 5, true);
@@ -1549,15 +1549,13 @@ void main()
 						al_stop_sample(&sample_id_gameOver);
 					}
 				}
-				else
-				{
-					moverBarraMaquina(listaEnlazadaBolas,barra);
+				else moverBarraMaquina(listaEnlazadaBolas,barra);
+				//Si el usuario quiere salir
+				if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE) && imagenGameOver == NULL) {
+					destruirElementosGenerales(); 
+					reiniciarContadoresGenerales();
+					juego = false;
 				}
-			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE) && imagenGameOver == NULL) {
-				destruirElementosGenerales(); //reiniciar todo del nivel actual
-				reiniciarContadoresGenerales();
-				juego = false;
-			}
 			}
 			if (evento.type == ALLEGRO_EVENT_TIMER) {
 				if (evento.timer.source == timerTransicion && transicion) {
@@ -1565,7 +1563,6 @@ void main()
 					if (opcion == 1) { //modo de juego normal
 						if (nivel == 1) {
 							nivel1(pantalla, AnchoMonitor, AltoMonitor,opcion, variableVidas,contadorVidas);  // Iniciar el primer nivel
-
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1578,12 +1575,10 @@ void main()
 					}
 					else if (opcion == 2 || opcion==3) { //modo de juego jugador vs jugador
 						if (nivel == 1) {
-							vaciarColaEventos(colaEventosEnemigos);
 							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel player 1
 
 						}
 						else if (nivel == 11) {
-							vaciarColaEventos(colaEventosEnemigos);
 							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel player 2
 						}
 						else if (nivel == 2) {
@@ -1609,35 +1604,31 @@ void main()
 					al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 2, ALLEGRO_ALIGN_CENTER, textoTransicion);
 				}
 				else if (imagenGameOver == NULL){
+					//***************************************
+					//Dibujar cosas generales 
 					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
-					if (nivel == 1) {
+					if (nivel == 1 || nivel == 11) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
 					}
-					else if (nivel == 11) {
-						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
-					}
-					else if (nivel == 2) {
+					else if (nivel == 2 || nivel == 22) {
 						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
 					}
-					else if (nivel == 22) {
-						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
-					}
-					else if (nivel == 3) {
-						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
-					}
-					else if (nivel == 33) {
+					else if (nivel == 3|| nivel == 33) {
 						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
 					}
 					dibujarPantallaNivel();
-					if (evento.timer.source == timerBola_Colision) {
+					//***************************************
+					if (evento.timer.source == timerBola_Colision) {//Colisiones y rebotes
 						moverBola(listaEnlazadaBolas, 4);
 						moverComodines(listaEnlazadaBloques, 4, AltoMonitor);
 						reboteBolaPared(listaEnlazadaBolas, sonidoReboteBarra);
+						//Modo individual
 						if (opcion == 1) {
 							reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas, contadorBolasPerdidas, contadorBolasRebotadas);
 							reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, variableContadorPts);
 							aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, variableVidas, sonidoComodin, sonidoComodinMalo);
 						}
+						//Modo multijugador
 						else if (opcion == 2 || opcion == 3) {
 							if (nivel == 1 || nivel == 2 || nivel == 3) {
 								reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas, contadorBolasPerdidas, contadorBolasRebotadas);
@@ -1652,22 +1643,26 @@ void main()
 						}
 					}
 					if (evento.timer.source == timerBarra_Entorno) {
-						if ((opcion == 2 ||opcion==3) && (nivel == 11 || nivel == 22 || nivel == 33)) {
+						//Para jugador 2
+						if ((opcion == 2 || opcion == 3) && (nivel == 11 || nivel == 22 || nivel == 33)) {
 							setDatoMarco(marcoActualPts2, variableContadorPts2);
 							setDatoVidas(contadorVidas2, variableVidas2);
 							setDatosJugador(jugador2, variableContadorPts2, contadorBolasPerdidas, contadorBolasRebotadas);
-							verificadorGameOver(contadorVidas2, pantalla, sonidoGameOver, opcion, nivel, juego, textoTransicion, transicion, timerTransicion,variableVidas2);
+							verificadorGameOver(contadorVidas2, pantalla, sonidoGameOver, opcion, flagCambioNivelMultijugador, textoTransicion, transicion, timerTransicion, variableVidas2);
 						}
+						//Para jugador 1 O INDIVIDUAL
 						else {
 							setDatoMarco(marcoActualPts, variableContadorPts);
 							setDatoVidas(contadorVidas, variableVidas);
 							setDatosJugador(jugador1, variableContadorPts, contadorBolasPerdidas, contadorBolasRebotadas);
-							verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, nivel, juego, textoTransicion, transicion, timerTransicion,variableVidas);
+							verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, flagCambioNivelMultijugador, textoTransicion, transicion, timerTransicion, variableVidas);
 						}
-						//Validacion de existencia de bloques y no game over
+
+						//Validacion de existencia de bloques y no game over, gano! 
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
+
 							destruirElementosGenerales();
-							if (opcion == 1) {
+							if (opcion == 1) {//Modo individual
 								if (nivel == 1) {
 									nivel = 2;
 									strcpy_s(textoTransicion, "LEVEL 2");
@@ -1686,8 +1681,17 @@ void main()
 									break;
 									
 								}
+							}if(opcion==2||opcion==3){
+								flagCambioNivelMultijugador = true;//para multijugador
+								eliminarListaBloque(listaEnlazadaBloques);
+								listaEnlazadaBloques = NULL;
 							}
-							else if (opcion == 2 || opcion == 3) {
+						}
+						//Valiacion multijugador quedan bloques
+						// Paso entere niveles y panatalla final
+						if ( flagCambioNivelMultijugador) {
+							//Manejo de niveles
+							if (opcion == 2 || opcion == 3) {//Modo multijugador
 								if (nivel == 1) {
 									nivel = 11;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
@@ -1719,13 +1723,20 @@ void main()
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 33) {
-									juego = false; //falta pantalla win
-									if (jugador1 != NULL && jugador2 != NULL)GuardarPuntajesMultijugador(jugador1,jugador2);
+									if (jugador1 != NULL && jugador2 != NULL)GuardarPuntajesMultijugador(jugador1, jugador2);
+									destruirElementosGenerales();
+									reiniciarContadoresGenerales();
+									destruirJugador(jugador1);
+									destruirJugador(jugador2);
+									imagenEnemigo = NULL;
+									juego = false; //falta pantalla final resultados
 
 								}
 							}
-						};
+							flagCambioNivelMultijugador = false;
+						}
 					}
+					
 				}
 				else
 				{
@@ -1734,7 +1745,7 @@ void main()
 					dibujarGameOver(AnchoMonitor, AltoMonitor);
 				}
 			}
-
+			
 			if (imagenGameOver == NULL) {//Loguica de enemigos
 				ALLEGRO_EVENT eventoEnemigo;
 				if (imagenEnemigo != NULL) {
@@ -1762,7 +1773,6 @@ void main()
 						}
 
 						if (eventoEnemigo.timer.source == timer_Movimiento_Enemigo) {
-
 							if (enemigoActual != NULL) {
 								generarMoviminetosEnemigos(enemigoActual, AnchoMonitor - AnchoMonitor / 4 - 30, AnchoMonitor / 4 + 30, AltoMonitor / 8 + 40, AltoMonitor, listaEnlazadaBloques, flagIngresoEnemigo);
 								if (!enemigoActual->estadoExistencia) {
