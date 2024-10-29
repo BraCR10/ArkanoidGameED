@@ -1501,3 +1501,4 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 	al_destroy_event_queue(event_queue);
 	return nombre;
 }
+

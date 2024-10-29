@@ -508,40 +508,39 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 		}
 		else if (opcion == 2) {
 			if (nivel == 1) {
-				strcpy(textoTransicion, "READY PLAYER 2");
-				transicion = true;
 				reiniciarContadoresGenerales();
-				nivel = 11;
-				al_start_timer(timerTransicion);
+				eliminarListaBloque(listaEnlazadaBloques);
+				listaEnlazadaBloques = NULL;
 				return;
 			}
 			else if (nivel == 11) {
-				strcpy(textoTransicion, "READY PLAYER 1");
-				transicion = true;
 				reiniciarContadoresGenerales();
-				nivel = 2;
-				al_start_timer(timerTransicion);
+				eliminarListaBloque(listaEnlazadaBloques);
+				listaEnlazadaBloques = NULL;
+				nivel = 11;
+				return;
 			}
 			else if (nivel == 2) {
-				strcpy(textoTransicion, "READY PLAYER 2");
-				transicion = true;
 				reiniciarContadoresGenerales();
-				nivel = 22;
-				al_start_timer(timerTransicion);
+				eliminarListaBloque(listaEnlazadaBloques);
+				listaEnlazadaBloques = NULL;
+				nivel = 2;
+				return;
 			}
 			else if (nivel == 22) {
-				strcpy(textoTransicion, "READY PLAYER 1");
-				transicion = true;
 				reiniciarContadoresGenerales();
-				nivel = 3;
-				al_start_timer(timerTransicion);
+				eliminarListaBloque(listaEnlazadaBloques);
+				listaEnlazadaBloques = NULL;
+				nivel = 22;
+				return;
 			}
 			else if (nivel == 3) {
-				strcpy(textoTransicion, "READY PLAYER 2");
-				transicion = true;
 				reiniciarContadoresGenerales();
-				nivel = 33;
-				al_start_timer(timerTransicion);
+				eliminarListaBloque(listaEnlazadaBloques);
+				listaEnlazadaBloques = NULL;
+				nivel = 3;
+				//al_start_timer(timerTransicion);
+				return;
 			}
 			else if (nivel == 33) {
 				juego = false; //falta pantalla win
@@ -1053,7 +1052,6 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 
 void main()
 {
-
 	//Validacion de inicializacion de Allegro
 	if (!al_init()) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo inicializar Allegro", NULL, NULL);
@@ -1093,7 +1091,7 @@ void main()
 	ALLEGRO_SAMPLE* sonidoComodinMalo = al_load_sample("Sonidos/sonidoNegativo.wav");
 	
 	//inicializacion de canciones
-	
+
 	ALLEGRO_SAMPLE* musicamenu = al_load_sample("Musica/musicaMenu.mp3");
 
 	al_reserve_samples(6);
@@ -1280,35 +1278,18 @@ void main()
 					dibujarFondoGeneral(AnchoMonitor, AltoMonitor);
 					if (nivel == 1) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
-						/*
-						PtrBloque bloque = listaEnlazadaBloques;
-						while (bloque != NULL) {
-							bloque->estadoExistencia = false;
-							bloque = bloque->siguiente;
-						}*/
-
 					}
 					else if (nivel == 11) {
 						dibujarFondoNivel1(AnchoMonitor, AltoMonitor);
 					}
 					else if (nivel == 2) {
 						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
-						/*PtrBloque bloque = listaEnlazadaBloques;
-						while (bloque != NULL) {
-							bloque->estadoExistencia = false;
-							bloque = bloque->siguiente;
-						}*/
 					}
 					else if (nivel == 22) {
 						dibujarFondoNivel2(AnchoMonitor, AltoMonitor);
 					}
 					else if (nivel == 3) {
 						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
-						/*PtrBloque bloque = listaEnlazadaBloques;
-						while (bloque != NULL) {
-							bloque->estadoExistencia = false;
-							bloque = bloque->siguiente;
-						}*/
 					}
 					else if (nivel == 33) {
 						dibujarFondoNivel3(AnchoMonitor, AltoMonitor);
