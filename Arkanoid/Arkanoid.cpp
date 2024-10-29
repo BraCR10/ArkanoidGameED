@@ -48,6 +48,7 @@ ALLEGRO_BITMAP* imagenFondoNivel1 = NULL;
 ALLEGRO_BITMAP* imagenFondoNivel2 = NULL;
 ALLEGRO_BITMAP* imagenFondoNivel3 = NULL;
 ALLEGRO_BITMAP* imagenFondoGeneral = NULL;
+ALLEGRO_BITMAP* imagenFlechas = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -63,9 +64,11 @@ PtrMarcador marcoActualPts = NULL;
 
 //Creacion de contador de puntos
 int variableContadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
+int variableContadorPts2 = 0;
 
 //Creacion  de vidas
 PtrVida contadorVidas = NULL;
+PtrVida contadorVidas2 = NULL;
 
 //Creacion de nivel
 PtrMarcador NivelLabel = NULL;
@@ -111,6 +114,7 @@ string nombreJugador2;
 
 int contadorBolasRebotadas = 0;
 int contadorBolasPerdidas = 0;
+
 //Puntero a jugador
 PtrJugador jugador = NULL;
 PtrJugador jugador2 = NULL;
@@ -427,7 +431,6 @@ void dibujarPantallaNivel() {
 	dibujarBloques(listaEnlazadaBloques);
 	dibujarBola(listaEnlazadaBolas);
 	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
-	
 	dibujarMarco(NivelLabel, fuenteMarcadores, colorFondoLabelNivel, colorTitulosMarcos);
 	dibujarComodines(listaEnlazadaBloques);
 	if (imagenEnemigo != NULL) {
@@ -699,6 +702,16 @@ void dibujarFondoNivel3(int AnchoMonitor, int AltoMonitor) {
 	);
 }
 
+void dibujarAyuda(int AnchoMonitor, int AltoMonitor) {
+	al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 8, ALLEGRO_ALIGN_CENTER, "Ayuda");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 2 , AltoMonitor / 2.8, ALLEGRO_ALIGN_CENTER, "Movimiento de barra");
+	al_draw_scaled_bitmap(imagenFlechas,
+		0, 0, al_get_bitmap_width(imagenFlechas), al_get_bitmap_height(imagenFlechas),
+		AnchoMonitor / 2 - (AnchoMonitor/5)/2, AltoMonitor / 2.4, AnchoMonitor/5, AltoMonitor/10,
+		0);
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 1.4, ALLEGRO_ALIGN_CENTER, "Presione enter para volver al menú");
+}
+
 int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
 	int opcion = 0;
 	const int NUM_CASILLAS = 7; 
@@ -720,6 +733,13 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	// Cargar imagen de fondo
 	imagenFondoPartida = al_load_bitmap("Imagenes/imagenFondoPartida.jpg");
 	if (!imagenFondoPartida) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return 0;
+	}
+	// Cargar imagen de ayuda
+	imagenFlechas = al_load_bitmap("Imagenes/imagenFlechas.png");
+	if (!imagenFlechas) {
 		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(pantalla);
 		return 0;
@@ -751,7 +771,11 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 	al_start_timer(timerFondo);
 
 	while (true) {
-		dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
+
+		if (opcion != 5)
+			dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
+		else dibujarAyuda(AnchoMonitor, AltoMonitor);
+
 		al_flip_display();
 		ALLEGRO_EVENT evento;
 		al_wait_for_event(colaEventos, &evento);
@@ -769,8 +793,14 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 				}
 			}
 			else if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
-				opcion = casillaActual + 1; 
-				break;
+				if (opcion == 5) {
+					opcion = 0;
+				}
+				else {
+					opcion = casillaActual + 1;
+					if (opcion != 5)
+						break;
+				}
 	
 			}
 			y1SelectorMov = posicionesY[casillaActual];
@@ -1158,8 +1188,9 @@ void main()
 			break;
 		case 4:
 			break;
-		case 5:
-			break;
+		/*
+		case 5:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
+			break;*/
 		case 6:
 			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 			break;
@@ -1364,6 +1395,8 @@ void main()
 								}
 								else if (nivel == 33) {
 									juego = false; //falta pantalla win
+									GuardarPuntajes(jugador);
+									GuardarPuntajes(jugador2);
 
 								}
 							}
@@ -1474,6 +1507,7 @@ void main()
 	al_destroy_timer(timer_Movimiento_Enemigo);
 	al_destroy_bitmap(imagenEnemigo);
 	al_destroy_bitmap(imagenEntradaMarco);
+	al_destroy_bitmap(imagenFlechas);
 
 }
 

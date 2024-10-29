@@ -11,3 +11,5 @@
 30 fsdf 3 15 3
 40  jugador1 3 15 4
 60 gbh 3 16 6
+20  jugador uno 0 2 2
+0  jugador uno 0 0 1
