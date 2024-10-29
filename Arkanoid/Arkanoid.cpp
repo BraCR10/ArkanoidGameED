@@ -174,6 +174,10 @@ bool flagIngresoEnemigo = false;
 bool flagNuevoEnemigoActor = true;
 bool flagVariacionPuerta = false;
 
+//Cola de eventos y timer de pantalla gane
+ALLEGRO_EVENT_QUEUE* colaEventosWin;
+ALLEGRO_TIMER* timerWin;
+
 ALLEGRO_SAMPLE_ID sample_id_menu; //declaracion de variable para reproducir musica
 ALLEGRO_SAMPLE_ID sample_id_gameOver; //declaracion de variable para reproducir musica
 
@@ -397,6 +401,20 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	iniciarVidas(variableVidas, contadorVidas);
 
+}
+
+void inicializarGane(int AnchoMonitor, int AltoMonitor, ALLEGRO_DISPLAY* pantalla) {
+	colaEventosWin = al_create_event_queue();
+	al_register_event_source(colaEventosWin, al_get_keyboard_event_source());
+	timerWin = al_create_timer(1.0); //temporizador para pantallas del gane
+	al_register_event_source(colaEventosWin, al_get_timer_event_source(timerWin));
+	imagenWin = al_load_bitmap("Imagenes/imagenFondoWin.png"); //imagen de fondo de gane
+	fuenteGane = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 20, 0); //fuente gane
+	if (!fuenteGane) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
 }
 
 void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
@@ -654,7 +672,6 @@ void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJuga
 	GuardarPuntajesSolitario(jugador);
 	reiniciarContadoresGenerales();
 	destruirElementosGenerales();
-	cout << "termina" << endl;
 
 }
 
@@ -1403,18 +1420,8 @@ void main()
 		al_destroy_display(pantalla);
 		return;
 	}
-	//inicializacion elementos de pantalla de gane. Se inicializan aqui para evitar retardos a la hora de llamar a la funcion
-	ALLEGRO_EVENT_QUEUE* colaEventosWin = al_create_event_queue();
-	al_register_event_source(colaEventosWin, al_get_keyboard_event_source());
-	ALLEGRO_TIMER* timerWin = al_create_timer(1.0); //temporizador para pantallas del gane
-	al_register_event_source(colaEventosWin, al_get_timer_event_source(timerWin));
-	imagenWin = al_load_bitmap("Imagenes/imagenFondoWin.png"); //imagen de fondo de gane
-	fuenteGane = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 20, 0); //fuente gane
-	if (!fuenteGane) {
-		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		al_destroy_display(pantalla);
-		return;
-	}
+	
+	inicializarGane( AnchoMonitor, AltoMonitor, pantalla); //se inicializa elementos de la pantalla de gane para evitar retardos en su llamada
 
 	//Cola principal de eventos
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
@@ -1463,7 +1470,6 @@ void main()
 	//Flag multijugador
 	bool flagCambioNivelMultijugador = false;
 	while (menu) {
-		cout << "denueov" << endl;
 		//Cargar estadisticas solitario
 		puntajes = CargarPuntajesSolitario();
 		mejorPuntaje = EncontrarMayorPuntajesSolitario(puntajes);
@@ -1480,6 +1486,7 @@ void main()
 			strcpy_s(textoTransicion, "LEVEL 1");
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
+			al_set_timer_count(timerTransicion, 0);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1491,6 +1498,7 @@ void main()
 			obtenerNombresMultijugador(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
+			al_set_timer_count(timerTransicion, 0);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1502,6 +1510,7 @@ void main()
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
+			al_set_timer_count(timerTransicion, 0);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1517,7 +1526,7 @@ void main()
 			break;
 		case 7:
 			menu = false;
-			break;
+			return;
 		default:
 			break;
 		}
@@ -1667,12 +1676,14 @@ void main()
 									nivel = 2;
 									strcpy_s(textoTransicion, "LEVEL 2");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 3;
 									strcpy_s(textoTransicion, "LEVEL 3");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
@@ -1696,30 +1707,35 @@ void main()
 									nivel = 11;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 11) {
 									nivel = 2;
 									strcpy_s(textoTransicion, "READY PLAYER 1");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 22;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 22) {
 									nivel = 3;
 									strcpy_s(textoTransicion, "READY PLAYER 1");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
 									nivel = 33;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 33) {
@@ -1849,7 +1865,6 @@ void main()
 	al_destroy_bitmap(imagenWin);
 	al_destroy_font(fuenteGane);
 	al_destroy_sample(sonidoVictoria);
-
 }
 
 
