@@ -1588,6 +1588,10 @@ void main()
 									juego = false; //falta pantalla win
 									GuardarPuntajesSolitario(jugador1);
 								}
+							}if(opcion==2||opcion==3){
+								flagCambioNivelMultijugador = true;//para multijugador
+								eliminarListaBloque(listaEnlazadaBloques);
+								listaEnlazadaBloques = NULL;
 							}
 						}
 						//Valiacion multijugador quedan bloques
