@@ -521,7 +521,7 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
 			n++;
-			break;
+
 		}
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
@@ -1562,11 +1562,14 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 	al_destroy_event_queue(event_queue);
 	return nombre;
 }
-/*
+
 int tempCordenada=0;
 void moverBarraMaquina(PtrBola primerBola,PtrBarra barra) {
-	if(primerBola->)
-	moverBarra(barra, 1,true);
+	tempCordenada=primerBola->x;
+	if(primerBola->x<tempCordenada)
+		moverBarra(barra, 1,false);
+	if (primerBola->x > tempCordenada)
+		moverBarra(barra, 1, true);
 
 
-}*/
+}

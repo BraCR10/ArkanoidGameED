@@ -535,7 +535,7 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 			imagenEnemigo = NULL;
 			al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
 		}
-		else if (opcion == 2) {
+		else if (opcion == 2 || opcion == 3) {
 			if (nivel == 1) {
 				contVidas = 3;
 				eliminarListaBloque(listaEnlazadaBloques);
@@ -1455,7 +1455,7 @@ void main()
 				}
 				else
 				{
-					//moverBarraMaquina(listaEnlazadaBolas);
+					moverBarraMaquina(listaEnlazadaBolas,barra);
 				}
 			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE) && imagenGameOver == NULL) {
 				destruirElementosGenerales(); //reiniciar todo del nivel actual
