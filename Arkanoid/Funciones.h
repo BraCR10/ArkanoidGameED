@@ -587,7 +587,6 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 	int habilidad = 0;
 
 	while (n < 89) {
-		break;
 		while (n < 4) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);

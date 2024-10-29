@@ -1677,7 +1677,10 @@ void main()
 									enemigoActual = NULL;
 									flagNuevoEnemigoActor = true;
 								}
+								if(nivel == 1 || nivel == 2 || nivel == 3 )
 								verficarColisionEnemigoBarra(enemigoActual, barra, variableVidas);
+								if(nivel ==33|| nivel == 22 || nivel == 11)
+								verficarColisionEnemigoBarra(enemigoActual, barra, variableVidas2);
 							}
 						}
 					}
