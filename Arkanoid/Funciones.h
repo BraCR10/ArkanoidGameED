@@ -1080,8 +1080,8 @@ void dibujarContadorVidas(PtrVida& vidas, ALLEGRO_FONT*& fuente, ALLEGRO_COLOR c
 	}
 }
 
-void eliminarVida(PtrVida& variableVidas) {
-	delete (variableVidas);
+void eliminarVida(PtrVida& Vidas) {
+	delete (Vidas);
 }
 void aumentarVida(int& variableVidas) {
 	variableVidas++;
