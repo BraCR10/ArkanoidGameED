@@ -565,10 +565,10 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	int altoOpcion = al_get_font_line_height(fuenteOpcionesMenu) * 2.5;
 	// Dibujar fondo semitransparente para el menú
 	al_draw_filled_rectangle(
-		posicionX_PrimerElemento - (AnchoMonitor / 16) * 1.01,
+		posicionX_PrimerElemento - (AnchoMonitor / 16)/1.5,
 		posicionY_PrimerElemento / 1.1,
-		(posicionX_PrimerElemento + (AnchoMonitor / 3)) * 1.01,
-		posicionY_PrimerElemento + altoOpcion * 6,
+		(posicionX_PrimerElemento + (AnchoMonitor / 3)) * 1.05,
+		posicionY_PrimerElemento + altoOpcion * 7,
 		al_map_rgb(0, 0, 1)
 	);
 
@@ -577,7 +577,7 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	int anchoSelector = AnchoMonitor / 4;
 	int x1Selector = posicionX_PrimerElemento;
 	int y1Selector = y1SelectorMov;
-	int x2Selector = posicionX_PrimerElemento + (AnchoMonitor / 3.2) * 1.01;
+	int x2Selector = posicionX_PrimerElemento + (AnchoMonitor / 3.2) * 1.15;
 	int y2Selector = altoSelector + y2SelectorMov;
 
 
