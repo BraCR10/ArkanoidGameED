@@ -1387,7 +1387,7 @@ void main()
 		case 1:
 			transicion = true;
 			strcpy_s(textoTransicion, "LEVEL 1");
-			nombreJugador = obtenerNombreJugador(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
+			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			al_start_timer(timerTransicion);
 			juego = true;
@@ -1408,7 +1408,7 @@ void main()
 			strcpy_s(textoTransicion, "READY PLAYER 1");
 			nombreJugador = " ";
 			nombreJugador2 = "Maquina";
-			nombreJugador = obtenerNombreJugador(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
+			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
 			al_start_timer(timerTransicion);
