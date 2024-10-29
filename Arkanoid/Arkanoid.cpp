@@ -61,6 +61,7 @@ PtrMarcador marcoMaxPts = NULL;
 
 //Creacion de maracador para puntaje actual
 PtrMarcador marcoActualPts = NULL;
+PtrMarcador marcoActualPts2 = NULL;
 
 //Creacion de contador de puntos
 int variableContadorPts = 0;//Aumenta con cada bloque roto y de 10 en 10
@@ -139,6 +140,7 @@ float  y1ContadorVida;
 float altoVida;
 float anchoVida;
 int variableVidas = 3;
+int variableVidas2 = 3;
 //Level label
 float x1LabelNivel;
 float  y1LabelNivel;
@@ -215,11 +217,12 @@ void crearParedesVerticalesDerecha(int AnchoMonitor, int AltoMonitor) {
 	}
 }
 
-void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierdoPared, int limiteDerechoPared) {
+void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierdoPared, int limiteDerechoPared, PtrMarcador& marcoActual, int& variableContador) {
 	int margenX = AnchoMonitor / 4;
 	int margenY = AltoMonitor / 8;
 	const int x_Imagen_Ancho = AnchoMonitor / 40;
 	const int y_Imagen_Alto = AltoMonitor / 7;
+
 	// Crear barra
 	crearBarra(barra, AnchoMonitor / 2 - (ANCHO_BARRA / 2), AltoMonitor - margenY, ANCHO_BARRA, ALTO_BARRA, limiteDerechoPared, limiteIzquierdoPared, (AltoMonitor - margenY) - ALTO_BARRA, imagenParedHorizontal);
 
@@ -234,7 +237,7 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	x1ActualPts = limiteDerechoPared + x_Imagen_Ancho * 4;
 	x2ActualPts = limiteDerechoPared + x_Imagen_Ancho * 8;
 	y2ActualPts = y1ActualPts + y_Imagen_Alto;
-	crearMarco(marcoActualPts, variableContadorPts, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
+	crearMarco(marcoActual, variableContador, x1ActualPts, y1ActualPts, x2ActualPts, y2ActualPts, "Puntaje Actual");
 
 	//Label nivel
 	x1LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 8;
@@ -258,14 +261,17 @@ void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int Al
 	const int LIM_IZQ_PARED = AnchoMonitor / 4;
 	const int LIM_DER_PARED = (AnchoMonitor - AnchoMonitor / 4);
 	const int LIM_SUP_PARED = AltoMonitor / 8 + 40;//40 es el alto de la pared horizontal
-
-	crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED);
+	if (nivel == 11 || nivel == 22 || nivel == 33) {
+		crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED, marcoActualPts2, variableContadorPts2);
+	}
+	else {
+		crearBarraYMarcadores(AnchoMonitor, AltoMonitor, LIM_IZQ_PARED, LIM_DER_PARED, marcoActualPts, variableContadorPts);
+	}
 	crearBola(listaEnlazadaBolas, AnchoMonitor / 2 - (AnchoMonitor / 62) / 2, (AltoMonitor - AltoMonitor / 8) - (AnchoMonitor / 62) * 1.001, AnchoMonitor / 62, AnchoMonitor / 62, LIM_DER_PARED, LIM_IZQ_PARED, LIM_SUP_PARED, false, false, false, imagenBola);
-
 
 }
 
-void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int opcion, int& variablesVidas, PtrVida& contadorVidas ) {
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -288,18 +294,22 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	//Bloques
 	const float ANCHO_BLOQUE = AnchoMonitor / 24;
 	const float ALTO_BLOQUE = AltoMonitor / 19;
-
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
+	
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
-
 	//Contador de vidas
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
-	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
-
-	iniciarVidas(variableVidas, contadorVidas);
+	if (nivel == 11 || nivel == 22 || nivel == 33) {
+		crearSimboloVida(contadorVidas2, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+		iniciarVidas(variableVidas2, contadorVidas2);
+	}
+	else {
+		crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+		iniciarVidas(variableVidas, contadorVidas);
+	}
 }
 
 void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
@@ -435,10 +445,17 @@ void dibujarPantallaNivel() {
 	dibujarBarra(barra);
 	dibujarParedes(listaEnlazadaParedes, flagIngresoEnemigo, imagenEntradaMarco);
 	dibujarMarco(marcoMaxPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
-	dibujarMarco(marcoActualPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
+	if (nivel == 11 || nivel == 22 || nivel == 33) {
+		dibujarMarco(marcoActualPts2, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
+		dibujarContadorVidas(contadorVidas2, fuenteMarcadores, colorTitulosMarcos);
+	}
+	else
+	{
+		dibujarMarco(marcoActualPts, fuenteMarcadores, colorFondoMarcos, colorTitulosMarcos);
+		dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
+	}
 	dibujarBloques(listaEnlazadaBloques);
 	dibujarBola(listaEnlazadaBolas);
-	dibujarContadorVidas(contadorVidas, fuenteMarcadores, colorTitulosMarcos);
 	dibujarMarco(NivelLabel, fuenteMarcadores, colorFondoLabelNivel, colorTitulosMarcos);
 	dibujarComodines(listaEnlazadaBloques);
 	if (imagenEnemigo != NULL) {
@@ -493,8 +510,8 @@ void reiniciarContadoresGenerales() {
 	contadorBolasPerdidas = 0;
 	contadorBolasRebotadas = 0;
 }
-void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, int& nivel, bool& juego, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion) {
-
+void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, int& nivel, bool& juego, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas) {
+	
 	if (marcadorVida->cantidad <= 0) {
 		if (opcion == 1) {
 			if (jugador != NULL)
@@ -516,34 +533,34 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 		}
 		else if (opcion == 2) {
 			if (nivel == 1) {
-				reiniciarContadoresGenerales();
+				contVidas = 3;
 				eliminarListaBloque(listaEnlazadaBloques);
 				listaEnlazadaBloques = NULL;
 				return;
 			}
 			else if (nivel == 11) {
-				reiniciarContadoresGenerales();
+				contVidas = 3;
 				eliminarListaBloque(listaEnlazadaBloques);
 				listaEnlazadaBloques = NULL;
 				nivel = 11;
 				return;
 			}
 			else if (nivel == 2) {
-				reiniciarContadoresGenerales();
+				contVidas = 3;
 				eliminarListaBloque(listaEnlazadaBloques);
 				listaEnlazadaBloques = NULL;
 				nivel = 2;
 				return;
 			}
 			else if (nivel == 22) {
-				reiniciarContadoresGenerales();
+				contVidas = 3;
 				eliminarListaBloque(listaEnlazadaBloques);
 				listaEnlazadaBloques = NULL;
 				nivel = 22;
 				return;
 			}
 			else if (nivel == 3) {
-				reiniciarContadoresGenerales();
+				contVidas = 3;
 				eliminarListaBloque(listaEnlazadaBloques);
 				listaEnlazadaBloques = NULL;
 				nivel = 3;
@@ -1105,6 +1122,7 @@ void main()
 	int FPS_Game_Over_Msg = 1;
 	int FPS_Movimiento_Enemigo = 50;
 	float Controlador_AparicionEnemigo = 5;
+
 	//timers
 	ALLEGRO_TIMER* timerBarra_Entorno = al_create_timer(1.0 / FPS_AccionesEntorno);
 	al_register_event_source(colaEventos, al_get_timer_event_source(timerBarra_Entorno));
@@ -1131,12 +1149,14 @@ void main()
 	al_start_timer(timer_Game_Over_Msg);
 	al_start_timer(timer_AparicionEnemigo);
 	al_start_timer(timer_Movimiento_Enemigo);
+
 	//Bucle principal
 	bool juego = false;
 	bool menu = true;
 	bool transicion = false;
 	int opcion = 0;
 	char textoTransicion[30];
+
 	while (menu) {
 		puntajes = CargarPuntajes();
 		mejorPuntaje = EncontrarMayorPuntaje(puntajes);
@@ -1159,15 +1179,15 @@ void main()
 			nombreJugador2 = " ";
 			obtenerNombres(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
 			CrearJuagador(jugador, nombreJugador);
-			CrearJuagador(jugador2, nombreJugador);
+			CrearJuagador(jugador2, nombreJugador2);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
 		case 3:
-			/*
-			case 4:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
-			break;*/
 			break;
+		/*
+		case 4:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
+			break;*/
 		case 5:
 			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 			break;
@@ -1214,7 +1234,7 @@ void main()
 					transicion = false;  // Desactivar la transición al terminar el tiempo
 					if (opcion == 1) { //modo de juego normal
 						if (nivel == 1) {
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel
+							nivel1(pantalla, AnchoMonitor, AltoMonitor,opcion, variableVidas,contadorVidas);  // Iniciar el primer nivel
 
 						}
 						else if (nivel == 2) {
@@ -1230,12 +1250,12 @@ void main()
 					else if (opcion == 2) { //modo de juego jugador vs jugador
 						if (nivel == 1) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel player 1
+							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel player 1
 
 						}
 						else if (nivel == 11) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel1(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el primer nivel player 2
+							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel player 2
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1298,18 +1318,26 @@ void main()
 								aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, variableVidas, sonidoComodin, sonidoComodinMalo);
 							}
 							else if (nivel == 11 || nivel == 22 || nivel == 33) {
-								reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas, contadorBolasPerdidas, contadorBolasRebotadas);
-								reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, variableContadorPts);
-								aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, variableVidas, sonidoComodin, sonidoComodinMalo);
+								reboteBolaBarra_Fuera(listaEnlazadaBolas, barra, AnchoMonitor, AltoMonitor, sonidoReboteBarra, variableVidas2, contadorBolasPerdidas, contadorBolasRebotadas);
+								reboteBolaBloque(listaEnlazadaBolas, listaEnlazadaBloques, sonidoReboteBloque, variableContadorPts2);
+								aplicarComodines(barra, listaEnlazadaBloques, listaEnlazadaBolas, variableVidas2, sonidoComodin, sonidoComodinMalo);
 							}
 						}
 					}
 
 					if (evento.timer.source == timerBarra_Entorno) {
-						setDatoMarco(marcoActualPts, variableContadorPts);
-						setDatoVidas(contadorVidas, variableVidas);
-						setDatosJugador(jugador, variableContadorPts, contadorBolasPerdidas, contadorBolasRebotadas);
-						verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, nivel, juego, textoTransicion, transicion, timerTransicion);
+						if (opcion == 2 && (nivel == 11 || nivel == 22 || nivel == 33)) {
+							setDatoMarco(marcoActualPts2, variableContadorPts2);
+							setDatoVidas(contadorVidas2, variableVidas2);
+							setDatosJugador(jugador2, variableContadorPts2, contadorBolasPerdidas, contadorBolasRebotadas);
+							verificadorGameOver(contadorVidas2, pantalla, sonidoGameOver, opcion, nivel, juego, textoTransicion, transicion, timerTransicion,variableVidas2);
+						}
+						else {
+							setDatoMarco(marcoActualPts, variableContadorPts);
+							setDatoVidas(contadorVidas, variableVidas);
+							setDatosJugador(jugador, variableContadorPts, contadorBolasPerdidas, contadorBolasRebotadas);
+							verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, nivel, juego, textoTransicion, transicion, timerTransicion,variableVidas);
+						}
 						//Validacion de existencia de bloques y no game over
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
 							destruirElementosGenerales();
@@ -1370,11 +1398,9 @@ void main()
 							}
 						};
 					}
-
 				}
 				else
 				{
-					cout<<"entro"<<endl;
 					if (evento.timer.source == timer_Game_Over_Msg)
 						flagGameOverMsg = !flagGameOverMsg;
 					dibujarGameOver(AnchoMonitor, AltoMonitor);

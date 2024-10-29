@@ -216,7 +216,7 @@ vector<Jugador> EncontrarMejoresPuntajes(const unordered_map<int, Jugador>& punt
 void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGRO_COLOR colorMarco, ALLEGRO_COLOR colorTitulo) {
 	// Dibujar el rect�ngulo
 	al_draw_filled_rectangle(marcador->x1, marcador->y1, marcador->x2, marcador->y2, colorMarco);
-
+	cout << "dibujar47" << endl;
 	// Convertir el dato a cadena de caracteres
 	char texto[15];
 	snprintf(texto, sizeof(texto), "%d", marcador->dato);
@@ -458,7 +458,6 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int habilidad = 0;
 	int n = 0;
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
-		break;
 		while (n < 12) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
