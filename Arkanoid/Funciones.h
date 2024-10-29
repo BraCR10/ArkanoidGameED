@@ -173,7 +173,7 @@ unordered_map<int, Jugador> CargarPuntajes() {
 }
 int EncontrarMayorPuntaje(const unordered_map<int, Jugador>& puntajes) {
 	if (puntajes.empty()) {
-		return -1; // Retorna -1 si el mapa está vacío
+		return 0; // Retorna -1 si el mapa está vacío
 	}
 
 	int mayorPuntaje = numeric_limits<int>::lowest();
@@ -458,6 +458,7 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int habilidad = 0;
 	int n = 0;
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
+		break;
 		while (n < 12) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -531,6 +532,7 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 	int habilidad = 0;
 
 	while (n < 89) {
+		break;
 		while (n < 4) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -1146,7 +1148,7 @@ void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 }
 
 //revisa si la barra colisiona con un comodin
-void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, int variableVidas, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
+void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, int& variableVidas, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
 	PtrBola bola = lista2;
 	PtrBloque aux = lista;
 	PtrBola nueva;
@@ -1195,12 +1197,14 @@ void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, int va
 		aux = aux->siguiente;
 	}
 }
+
 enum class PosicionEnemigoSprite {
 	IZQ,
 	DER,
 	FRENTE,
 	ATRAS
 };
+
 void setSprintPosicionEnemigo(PtrEnemigo& enemigo, PosicionEnemigoSprite posicion) {
 	if (enemigo != NULL) {
 		switch (posicion) {
@@ -1441,7 +1445,7 @@ void obtenerNombres(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, string& jugad
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
-		if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
+		if (ev.type == ALLEGRO_EVENT_KEY_CHAR && ev.keyboard.keycode != ALLEGRO_KEY_SPACE) {
 			if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) {
 				if (capturandoJugador1) {
 					capturandoJugador1 = false;	// Cambiar a capturar jugador 2
@@ -1480,7 +1484,7 @@ string obtenerNombreJugador(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* font, int A
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
-		if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
+		if (ev.type == ALLEGRO_EVENT_KEY_CHAR && ev.keyboard.keycode != ALLEGRO_KEY_SPACE) {
 			if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER) {
 				break; // Finaliza la captura cuando se presiona ENTER
 			}

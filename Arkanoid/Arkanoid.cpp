@@ -167,6 +167,8 @@ bool flagIngresoEnemigo = false;
 bool flagNuevoEnemigoActor = true;
 bool flagVariacionPuerta = false;
 
+ALLEGRO_SAMPLE_ID sample_id_menu; //declaracion de variable para reproducir musica
+ALLEGRO_SAMPLE_ID sample_id_gameOver; //declaracion de variable para reproducir musica
 
 void crearParedesHorizontales(int AnchoMonitor, int AltoMonitor) {
 	int margenX = AnchoMonitor / 4;
@@ -239,7 +241,11 @@ void crearBarraYMarcadores(int AnchoMonitor, int AltoMonitor, int limiteIzquierd
 	y1LabelNivel = AltoMonitor / 4;
 	x2LabelNivel = limiteIzquierdoPared - x_Imagen_Ancho * 4;
 	y2LabelNivel = AltoMonitor / 3.3;
-	crearMarco(NivelLabel, nivel, x1LabelNivel, y1LabelNivel, x2LabelNivel, y2LabelNivel, "Nivel");
+	//Error se puede corregir
+	if(nivel==11)crearMarco(NivelLabel, 1, x1LabelNivel, y1LabelNivel, x2LabelNivel, y2LabelNivel, "Nivel");
+	else if(nivel==22)crearMarco(NivelLabel, 2, x1LabelNivel, y1LabelNivel, x2LabelNivel, y2LabelNivel, "Nivel");
+	else if(nivel==33)crearMarco(NivelLabel, 3, x1LabelNivel, y1LabelNivel, x2LabelNivel, y2LabelNivel, "Nivel");
+	else crearMarco(NivelLabel, nivel, x1LabelNivel, y1LabelNivel, x2LabelNivel, y2LabelNivel, "Nivel");
 }
 
 void cargarElementoGenerales(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
@@ -506,7 +512,7 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 			contadorVidas = NULL;
 			reiniciarContadoresGenerales();
 			destruirJugador(jugador);
-			al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
 		}
 		else if (opcion == 2) {
 			if (nivel == 1) {
@@ -583,10 +589,10 @@ void dibujarMenu(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 		"1. Jugar",
 		"2. Jugador vs Jugador",
 		"3. Jugador vs Máquina",
-		"4. Máquina vs Máquina",
-		"5. Ayuda",
-		"6. Mostrar estadísticas",
-		"7. Salir",
+		"4. Ayuda",
+		"5. Estadisticas solitario",
+		"6. Estadisticas multijugador",
+		"7. Salir"
 	};
 
 	// Dibujar cada opción del menú
@@ -758,8 +764,8 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 		return 0;
 	}
 
-	ALLEGRO_SAMPLE_ID sample_id; //declaracion de variable para reproducir musica
-	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id); //reproduce la musica
+	ALLEGRO_SAMPLE_ID sample_id_menu; //declaracion de variable para reproducir musica
+	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_menu); //reproduce la musica
 
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
@@ -772,7 +778,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 
 	while (true) {
 
-		if (opcion != 5)
+		if (opcion != 4)
 			dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
 		else dibujarAyuda(AnchoMonitor, AltoMonitor);
 
@@ -793,12 +799,12 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 				}
 			}
 			else if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
-				if (opcion == 5) {
+				if (opcion == 4) {
 					opcion = 0;
 				}
 				else {
 					opcion = casillaActual + 1;
-					if (opcion != 5)
+					if (opcion != 4)
 						break;
 				}
 
@@ -814,11 +820,10 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 		}
 	}
 	al_destroy_timer(timerFondo);
-	al_stop_sample(&sample_id); //detiene canción cuando pasa a niveles
+	al_stop_sample(&sample_id_menu); //detiene canción cuando pasa a niveles
 	al_destroy_event_queue(colaEventos);
 	return opcion;
 }
-
 
 void dibujarEstadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	// Cálculo de posiciones de las opciones del menú
@@ -991,8 +996,8 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 		al_destroy_display(pantalla);
 	}
 
-	ALLEGRO_SAMPLE_ID sample_id; //declaracion de variable para reproducir musica
-	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id); //reproduce la musica
+
+	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_menu); //reproduce la musica
 
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
@@ -1023,204 +1028,11 @@ void estadisticas(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, 
 		}
 	}
 	al_destroy_timer(timerFondo);
-	al_stop_sample(&sample_id); //detiene canción cuando pasa a niveles
+	al_stop_sample(&sample_id_menu); //detiene canción cuando pasa a niveles
 	al_destroy_event_queue(colaEventos);
 
 }
 
-
-
-void dibujarAyuda(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
-	// Cálculo de posiciones de los elementos
-	int margen = 50;
-	int anchoCaja = AnchoMonitor - 2 * margen;
-	int altoCaja = AltoMonitor * 0.7;
-	int posicionX = margen;
-	int posicionY = AltoMonitor * 0.15;
-
-	// Dibujar fondo sólido para la ayuda
-	al_draw_filled_rectangle(0, 0, AnchoMonitor, AltoMonitor, al_map_rgb(30, 30, 30)); // Fondo oscuro
-
-	// Dibujar contenedor para la ayuda
-	al_draw_filled_rectangle(posicionX, posicionY, posicionX + anchoCaja, posicionY + altoCaja, al_map_rgba(0, 0, 0, 150)); // Fondo semi-transparente
-
-	// Dibujar borde alrededor de la caja
-	al_draw_rectangle(posicionX, posicionY, posicionX + anchoCaja, posicionY + altoCaja, al_map_rgb(255, 255, 0), 3); // Borde amarillo
-
-	// Dibujar el título
-	const char* titulo = "Ayuda";
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		AnchoMonitor / 2,
-		posicionY + 20,
-		ALLEGRO_ALIGN_CENTRE,
-		titulo
-	);
-
-	// Instrucciones de movimiento
-	const char* instruccionesMovimiento = "Movimiento de la barra: -> <-";
-	const char* instruccionesComodines = "Comodines disponibles:";
-
-	// Dibujar instrucciones de movimiento
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 20,
-		posicionY + 60,
-		ALLEGRO_ALIGN_LEFT,
-		instruccionesMovimiento
-	);
-
-	// Dibujar instrucciones de comodines
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 20,
-		posicionY + 100,
-		ALLEGRO_ALIGN_LEFT,
-		instruccionesComodines
-	);
-
-	// Dibujar comodines
-	int offsetY = 140;
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Aumenta vida"
-	);
-
-	offsetY += 40; // Espacio entre comodines
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Aumenta barra"
-	);
-
-	offsetY += 40;
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Bajar vida"
-	);
-
-	offsetY += 40;
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Comodín 4"
-	);
-
-	offsetY += 40;
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Comodín 5"
-	);
-
-	offsetY += 40;
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Comodín 6"
-	);
-
-	// Información sobre el enemigo
-	offsetY += 40;
-	//al_draw_bitmap(imagenFondoGeneral, posicionX + 20, posicionY + offsetY, 0);
-	al_draw_text(
-		fuenteOpcionesMenu,
-		al_map_rgb(255, 255, 255),
-		posicionX + 80,
-		posicionY + offsetY,
-		ALLEGRO_ALIGN_LEFT,
-		"Enemigos en el juego"
-	);
-
-	// Liberar imágenes después de usarlas
-
-
-}
-
-void ayuda(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
-	// Cargar imagen de fondo
-	imagenFondoPartida = al_load_bitmap("imagenes/fondo_ayuda.jpeg");
-	if (!imagenFondoPartida) {
-		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las imágenes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		al_destroy_display(pantalla);
-
-	}
-
-	fuenteOpcionesMenu = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 80, 0);
-	if (!fuenteOpcionesMenu) {
-		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		al_destroy_display(pantalla);
-	}
-	fuenteTituloMenu = al_load_ttf_font("Fuentes/TITLE_MENU_FONT.ttf", AnchoMonitor / 13, 0);
-	if (!fuenteTituloMenu) {
-		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		al_destroy_display(pantalla);
-	}
-
-	ALLEGRO_SAMPLE_ID sample_id; //declaracion de variable para reproducir musica
-	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id); //reproduce la musica
-
-	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
-	al_register_event_source(colaEventos, al_get_keyboard_event_source());
-
-
-	ALLEGRO_TIMER* timerFondo = al_create_timer(1.0 / 10);
-	al_register_event_source(colaEventos, al_get_timer_event_source(timerFondo));
-
-	al_start_timer(timerFondo);
-
-	while (true) {
-		dibujarAyuda(pantalla, AnchoMonitor, AltoMonitor);
-		al_flip_display();
-		ALLEGRO_EVENT evento;
-		al_wait_for_event(colaEventos, &evento);
-		// Movimiento entre casillas
-		if (evento.type == ALLEGRO_EVENT_KEY_DOWN) {
-
-			if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
-				break;
-			}
-		}
-
-		if (evento.type == ALLEGRO_EVENT_TIMER) {
-			if (evento.timer.source == timerFondo)
-				dibujarFondoPartida(AnchoMonitor, AltoMonitor, scroll_x, scrollVelocidad);
-			al_flip_display();
-		}
-	}
-	al_destroy_timer(timerFondo);
-	al_stop_sample(&sample_id); //detiene canción cuando pasa a niveles
-	al_destroy_event_queue(colaEventos);
-}
 void main()
 {
 	//Validacion de inicializacion de Allegro
@@ -1237,6 +1049,7 @@ void main()
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 	ALLEGRO_DISPLAY* pantalla = al_create_display(AnchoMonitor, AltoMonitor);
 	al_set_window_title(pantalla, "Arkanoid in the space");
+
 	//Validacion de creacion de pantalla
 	if (!pantalla)
 	{
@@ -1260,11 +1073,7 @@ void main()
 	ALLEGRO_SAMPLE* sonidoGameOver = al_load_sample("Sonidos/sonidoGameOver.mp3");
 	ALLEGRO_SAMPLE* sonidoComodin = al_load_sample("Sonidos/sonidoPowerUp.mp3");
 	ALLEGRO_SAMPLE* sonidoComodinMalo = al_load_sample("Sonidos/sonidoNegativo.wav");
-
-	//inicializacion de canciones
-
 	ALLEGRO_SAMPLE* musicamenu = al_load_sample("Musica/musicaMenu.mp3");
-
 	al_reserve_samples(6);
 
 	//Configuracion de teclado
@@ -1285,6 +1094,7 @@ void main()
 		al_destroy_display(pantalla);
 		return;
 	}
+
 	//Cola principal de eventos
 	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
 	al_register_event_source(colaEventos, al_get_keyboard_event_source());
@@ -1354,12 +1164,14 @@ void main()
 			juego = true;
 			break;
 		case 3:
-			break;
-		case 4:
-			break;
 			/*
-			case 5:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
-				break;*/
+			case 4:		LA AYUDA ES UNA FUNCION QUE SE LLAMA EN EL MENU INICIAL
+			break;*/
+			break;
+		case 5:
+			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
+			break;
+
 		case 6:
 			estadisticas(pantalla, AnchoMonitor, AltoMonitor, musicamenu);
 			break;
@@ -1376,7 +1188,8 @@ void main()
 			ALLEGRO_EVENT evento;
 			al_wait_for_event(colaEventos, &evento);
 			al_get_keyboard_state(&teclado);
-
+			if (!transicion)
+			{
 			if (al_key_down(&teclado, ALLEGRO_KEY_RIGHT) && imagenGameOver == NULL) {
 				moverBarra(barra, 10, true);
 				iniciarMovimientoBola(listaEnlazadaBolas, 5, true);
@@ -1388,11 +1201,13 @@ void main()
 			if (al_key_down(&teclado, ALLEGRO_KEY_ENTER) && imagenGameOver != NULL) {
 				imagenGameOver = NULL;
 				juego = false;
+				al_stop_sample(&sample_id_gameOver);
 			}
-			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE)) {
+			if (al_key_down(&teclado, ALLEGRO_KEY_ESCAPE) && imagenGameOver == NULL) {
+				destruirElementosGenerales(); //reiniciar todo del nivel actual
 				reiniciarContadoresGenerales();
 				juego = false;
-				destruirElementosGenerales(); //reiniciar todo del nivel actual
+			}
 			}
 			if (evento.type == ALLEGRO_EVENT_TIMER) {
 				if (evento.timer.source == timerTransicion && transicion) {
@@ -1559,6 +1374,7 @@ void main()
 				}
 				else
 				{
+					cout<<"entro"<<endl;
 					if (evento.timer.source == timer_Game_Over_Msg)
 						flagGameOverMsg = !flagGameOverMsg;
 					dibujarGameOver(AnchoMonitor, AltoMonitor);
@@ -1618,7 +1434,6 @@ void main()
 
 	//Destruccion de elemontos propios del juego
 	destruirElementosGenerales();
-
 	//Destruccion de elementos Allegro
 	al_destroy_display(pantalla);
 	al_destroy_bitmap(imagenParedHorizontal);
