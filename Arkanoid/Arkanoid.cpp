@@ -520,10 +520,10 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 			if (jugador1 != NULL)
 				GuardarPuntajesSolitario(jugador1);
 
-			imagenGameOver = al_load_bitmap("Imagenes/gameOver.jpg");
+			imagenGameOver = al_load_bitmap("Imagenes/gameOver.png");
 			fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
 			if (!imagenGameOver) {
-				al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar las im�genes de las paredes", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+				al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagen de game over", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 				al_destroy_display(pantalla);
 				return;
 			}
