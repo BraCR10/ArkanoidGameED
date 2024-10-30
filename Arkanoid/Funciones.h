@@ -450,16 +450,16 @@ Comodin* crearComodin(int x, int y, int habilidad, float ancho, float alto, bool
 		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
 		break;
 	case 1:
-		comodin->imagen = al_load_bitmap("Imagenes/bloqueVerde.png"); //cambiar imagen P
+		comodin->imagen = al_load_bitmap("Imagenes/comodin2.png"); //cambiar imagen P
 		break;
 	case 2:
-		comodin->imagen = al_load_bitmap("Imagenes/bloqueAmarillo.png"); //cambiar imagen E
+		comodin->imagen = al_load_bitmap("Imagenes/comodin3.png"); //cambiar imagen E
 		break;
 	case 3:
-		comodin->imagen = al_load_bitmap("Imagenes/bloqueCeleste.png"); //cambiar imagen V
+		comodin->imagen = al_load_bitmap("Imagenes/comodin4.png"); //cambiar imagen V
 		break;
 	case 4:
-		comodin->imagen = al_load_bitmap("Imagenes/bloqueCafe.png"); //cambiar imagen X
+		comodin->imagen = al_load_bitmap("Imagenes/comodin5.png"); //cambiar imagen X
 		break;
 	case 5: //no tiene comodin
 		comodin->imagen = NULL;
@@ -487,19 +487,19 @@ int generarHabilidad(int nivel) {
 	int a;
 	while (cont != nivel) {
 		a = 1 + rand() % 100;
-		if (a % 26 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 26: 3%
-			return 0; 
+		if (a % 97 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 97: 1%
+			return 0; //ampliar barra
 		}
-		if (a % 27 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 27: 3%
+		if (a % 45 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 45: 2%
 			return 4; //multiplicar bolas
 		}
-		if (a % 25 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 26: 4%
+		if (a % 33 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 33: 2%
 			return 3; //quitar vida
 		}
-		if (a % 22 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 22: 4%
+		if (a % 100 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 100: 1%
 			return 1; //bola m�s peque�a
 		}
-		if (a % 21 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 21: 4%
+		if (a % 35 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 35: 2%
 			return 2; // vida extra
 		}
 		cont++;
@@ -513,7 +513,6 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int habilidad = 0;
 	int n = 0;
 	while (n < 84) { //va creando los bloques en filas de 12 bloques
-		break;
 		while (n < 12) {
 			habilidad = generarHabilidad(1);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
