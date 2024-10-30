@@ -178,6 +178,23 @@ bool flagVariacionPuerta = false;
 ALLEGRO_EVENT_QUEUE* colaEventosWin;
 ALLEGRO_TIMER* timerWin;
 
+//Cola de eventos y timers de juego
+ALLEGRO_EVENT_QUEUE* colaEventos;
+ALLEGRO_EVENT_QUEUE* colaEventosEnemigos;
+ALLEGRO_TIMER* timerBarra_Entorno;
+ALLEGRO_TIMER* timerBola_Colision;
+ALLEGRO_TIMER* timer_Game_Over_Msg;
+ALLEGRO_TIMER* timerTransicion;
+ALLEGRO_TIMER* timer_AparicionEnemigo;
+ALLEGRO_TIMER* timer_Movimiento_Enemigo;
+
+//FPS de cada timer
+int FPS_AccionesEntorno = 50;
+int FPS_Bola_Colision = 80;
+int FPS_Game_Over_Msg = 1;
+int FPS_Movimiento_Enemigo = 50;
+float Controlador_AparicionEnemigo = 5;
+
 ALLEGRO_SAMPLE_ID sample_id_menu; //declaracion de variable para reproducir musica
 ALLEGRO_SAMPLE_ID sample_id_gameOver; //declaracion de variable para reproducir musica
 
@@ -401,6 +418,30 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 
 	iniciarVidas(variableVidas, contadorVidas);
 
+}
+
+void inicializarGeneral() {	//Cola principal de eventos
+	colaEventos = al_create_event_queue();
+	al_register_event_source(colaEventos, al_get_keyboard_event_source());
+
+	timerBarra_Entorno = al_create_timer(1.0 / FPS_AccionesEntorno);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerBarra_Entorno));
+
+	timerBola_Colision = al_create_timer(1.0 / FPS_Bola_Colision);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerBola_Colision));
+
+	timer_Game_Over_Msg = al_create_timer(1.0 / FPS_Game_Over_Msg);
+	al_register_event_source(colaEventos, al_get_timer_event_source(timer_Game_Over_Msg));
+
+	timerTransicion = al_create_timer(3.0); //temporizador para pantallas de transición
+	al_register_event_source(colaEventos, al_get_timer_event_source(timerTransicion));
+
+	colaEventosEnemigos = al_create_event_queue();
+	timer_AparicionEnemigo = al_create_timer(Controlador_AparicionEnemigo);
+	al_register_event_source(colaEventosEnemigos, al_get_timer_event_source(timer_AparicionEnemigo));
+
+	timer_Movimiento_Enemigo = al_create_timer(1.0 / FPS_Movimiento_Enemigo);
+	al_register_event_source(colaEventosEnemigos, al_get_timer_event_source(timer_Movimiento_Enemigo));
 }
 
 void inicializarGane(int AnchoMonitor, int AltoMonitor, ALLEGRO_DISPLAY* pantalla) {
@@ -1399,7 +1440,6 @@ void main()
 	ALLEGRO_SAMPLE* sonidoComodinMalo = al_load_sample("Sonidos/sonidoNegativo.wav");
 	ALLEGRO_SAMPLE* musicamenu = al_load_sample("Musica/musicaMenu.mp3");
 	ALLEGRO_SAMPLE* sonidoVictoria = al_load_sample("Sonidos/sonidoVictoria.mp3");
-
 	al_reserve_samples(7);
 
 	//Configuracion de teclado
@@ -1422,37 +1462,7 @@ void main()
 	}
 	
 	inicializarGane( AnchoMonitor, AltoMonitor, pantalla); //se inicializa elementos de la pantalla de gane para evitar retardos en su llamada
-
-	//Cola principal de eventos
-	ALLEGRO_EVENT_QUEUE* colaEventos = al_create_event_queue();
-	al_register_event_source(colaEventos, al_get_keyboard_event_source());
-
-	//FPS de cada timer
-	int FPS_AccionesEntorno = 50;
-	int FPS_Bola_Colision = 80;
-	int FPS_Game_Over_Msg = 1;
-	int FPS_Movimiento_Enemigo = 50;
-	float Controlador_AparicionEnemigo = 5;
-
-	//timers
-	ALLEGRO_TIMER* timerBarra_Entorno = al_create_timer(1.0 / FPS_AccionesEntorno);
-	al_register_event_source(colaEventos, al_get_timer_event_source(timerBarra_Entorno));
-
-	ALLEGRO_TIMER* timerBola_Colision = al_create_timer(1.0 / FPS_Bola_Colision);
-	al_register_event_source(colaEventos, al_get_timer_event_source(timerBola_Colision));
-
-	ALLEGRO_TIMER* timer_Game_Over_Msg = al_create_timer(1.0 / FPS_Game_Over_Msg);
-	al_register_event_source(colaEventos, al_get_timer_event_source(timer_Game_Over_Msg));
-
-	ALLEGRO_TIMER* timerTransicion = al_create_timer(3.0); //temporizador para pantallas de transición
-	al_register_event_source(colaEventos, al_get_timer_event_source(timerTransicion));
-
-	ALLEGRO_EVENT_QUEUE* colaEventosEnemigos = al_create_event_queue();
-	ALLEGRO_TIMER* timer_AparicionEnemigo = al_create_timer(Controlador_AparicionEnemigo);
-	al_register_event_source(colaEventosEnemigos, al_get_timer_event_source(timer_AparicionEnemigo));
-
-	ALLEGRO_TIMER* timer_Movimiento_Enemigo = al_create_timer(1.0 / FPS_Movimiento_Enemigo);
-	al_register_event_source(colaEventosEnemigos, al_get_timer_event_source(timer_Movimiento_Enemigo));
+	inicializarGeneral(); //se inicializa todos los timers y colas de eventos del juego
 
 	//Inicio de timers
 	al_start_timer(timerBarra_Entorno);
@@ -1486,7 +1496,7 @@ void main()
 			strcpy_s(textoTransicion, "LEVEL 1");
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
-			al_set_timer_count(timerTransicion, 0);
+			al_set_timer_count(timerTransicion, 3);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1498,7 +1508,7 @@ void main()
 			obtenerNombresMultijugador(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
-			al_set_timer_count(timerTransicion, 0);
+			al_set_timer_count(timerTransicion, 3);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1510,7 +1520,7 @@ void main()
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
-			al_set_timer_count(timerTransicion, 0);
+			al_set_timer_count(timerTransicion, 3);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1676,14 +1686,14 @@ void main()
 									nivel = 2;
 									strcpy_s(textoTransicion, "LEVEL 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 3;
 									strcpy_s(textoTransicion, "LEVEL 3");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
@@ -1707,35 +1717,35 @@ void main()
 									nivel = 11;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 11) {
 									nivel = 2;
 									strcpy_s(textoTransicion, "READY PLAYER 1");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 22;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 22) {
 									nivel = 3;
 									strcpy_s(textoTransicion, "READY PLAYER 1");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
 									nivel = 33;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 0);
+									al_set_timer_count(timerTransicion, 3);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 33) {
