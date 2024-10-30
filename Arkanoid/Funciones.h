@@ -11,11 +11,13 @@
 #include <unordered_map>
 #include <algorithm> 
 using namespace std;
-
+/***************************************************************/
+//Funciones para la pared
 void insertarPared(PtrPared& lista, PtrPared& Nuevo) {//Inserta un nuevo nodo al principio de la lista, eficiente para listas enlazadas
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
 }
+
 void crearPared(PtrPared& lista, int x, int y, float ancho, float alto, bool dinamico, ALLEGRO_BITMAP* imagen)
 {
 
@@ -30,6 +32,7 @@ void crearPared(PtrPared& lista, int x, int y, float ancho, float alto, bool din
 	pared->dinamico = dinamico;
 	insertarPared(lista, pared);
 }
+
 void eliminarListaParedes(PtrPared& lista) {
 	PtrPared aux;
 	while (lista != NULL) {
@@ -69,7 +72,8 @@ void dibujarParedes(PtrPared& paredes, bool habilitarEntradas, ALLEGRO_BITMAP* i
 	}
 
 }
-
+/***************************************************************/
+//Funciones para la barra
 void crearBarra(PtrBarra& barra, int x, int y, float ancho, float alto, int limiteDerecho, int limiteIzquierdo, int superficie, ALLEGRO_BITMAP* imagen)
 {
 
@@ -114,27 +118,8 @@ void moverBarra(PtrBarra& barra, int velocidad, bool dir) {
 void eliminarBarra(PtrBarra& barra) {
 	delete (barra);
 }
-
-void crearMarco(PtrMarcador& marcador, int max, float x1, float y1, float x2, float y2, const char* titulo) {
-	marcador = new Marcador;
-	marcador->dato = max;
-	marcador->x1 = x1;
-	marcador->y1 = y1;
-	marcador->x2 = x2;
-	marcador->y2 = y2;
-	strcpy_s(marcador->titulo, sizeof(marcador->titulo), titulo);
-}
-
-ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
-	// Extraer los componentes RGB del color original
-	float r, g, b, a;
-	al_unmap_rgba_f(colorOriginal, &r, &g, &b, &a);
-
-	// Calcular el color negativo
-	ALLEGRO_COLOR colorNegativo = al_map_rgba_f(1.0f - r, 1.0f - g, 1.0f - b, a);
-
-	return colorNegativo;
-}
+/***************************************************************/
+//Funciones para gestionar los archivos
 void GuardarPuntajesSolitario(PtrJugador jugador1) {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntaje_Un_Jugador.txt", "a");
@@ -171,6 +156,7 @@ unordered_map<int, Jugador> CargarPuntajesSolitario() {
 	fclose(archivo);
 	return puntajes; // Retorna el mapa de puntajes
 }
+
 int EncontrarMayorPuntajesSolitario(const unordered_map<int, Jugador>& puntajes) {
 	if (puntajes.empty()) {
 		return 0; // Retorna -1 si el mapa está vacío
@@ -186,6 +172,7 @@ int EncontrarMayorPuntajesSolitario(const unordered_map<int, Jugador>& puntajes)
 
 	return mayorPuntaje;
 }
+/***************************************************************/
 // Función para encontrar los mejores puntajes
 vector<Jugador> EncontrarMejoresPuntajesSolitario(const unordered_map<int, Jugador>& puntajes, int cantidad) {
 	if (puntajes.empty()) {
@@ -211,6 +198,7 @@ vector<Jugador> EncontrarMejoresPuntajesSolitario(const unordered_map<int, Jugad
 	// Retornar los mejores puntajes
 	return vector<Jugador>(puntajesVector.begin(), puntajesVector.begin() + cantidad);
 }
+
 unordered_map<int, vector<Jugador>> CargarPuntajesMultijugador() {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntajes_Multijugador.txt", "r");
@@ -241,6 +229,7 @@ unordered_map<int, vector<Jugador>> CargarPuntajesMultijugador() {
 	fclose(archivo);
 	return puntajes; // Retorna el mapa de puntajes
 }
+
 void GuardarPuntajesMultijugador(PtrJugador jugador1, PtrJugador jugador2) {
 	FILE* archivo;
 	fopen_s(&archivo, "Puntajes_Multijugador.txt", "a");
@@ -254,6 +243,7 @@ void GuardarPuntajesMultijugador(PtrJugador jugador1, PtrJugador jugador2) {
 	fprintf_s(archivo, "%i %s %i %s\n", jugador1->puntaje, jugador1->nombre.c_str(), jugador2->puntaje, jugador2->nombre.c_str());
 	fclose(archivo); // Cerrar el archivo después de escribir
 }
+
 vector<vector<Jugador>> ObtenerUltimos15PuntajesMultijugador(const unordered_map<int, vector<Jugador>>& puntajes) {
 	vector<vector<Jugador>> todosLosVectores;
 
@@ -268,6 +258,29 @@ vector<vector<Jugador>> ObtenerUltimos15PuntajesMultijugador(const unordered_map
 	// Retornar los últimos 15 vectores
 	return vector<vector<Jugador>>(todosLosVectores.begin() + inicio, todosLosVectores.end());
 }
+/***************************************************************/
+//Funciones para el marcador
+ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
+	// Extraer los componentes RGB del color original
+	float r, g, b, a;
+	al_unmap_rgba_f(colorOriginal, &r, &g, &b, &a);
+
+	// Calcular el color negativo
+	ALLEGRO_COLOR colorNegativo = al_map_rgba_f(1.0f - r, 1.0f - g, 1.0f - b, a);
+
+	return colorNegativo;
+}
+
+void crearMarco(PtrMarcador& marcador, int max, float x1, float y1, float x2, float y2, const char* titulo) {
+	marcador = new Marcador;
+	marcador->dato = max;
+	marcador->x1 = x1;
+	marcador->y1 = y1;
+	marcador->x2 = x2;
+	marcador->y2 = y2;
+	strcpy_s(marcador->titulo, sizeof(marcador->titulo), titulo);
+}
+
 void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGRO_COLOR colorMarco, ALLEGRO_COLOR colorTitulo) {
 	// Dibujar el rect�ngulo
 	al_draw_filled_rectangle(marcador->x1, marcador->y1, marcador->x2, marcador->y2, colorMarco);
@@ -301,9 +314,12 @@ void dibujarMarco(PtrMarcador& marcador, ALLEGRO_FONT*& fuenteMarcadores, ALLEGR
 void setDatoMarco(PtrMarcador& marcador, int dato) {
 	marcador->dato = dato;
 }
+
 void setDatoVidas(PtrVida& marcador, int dato) {
 	marcador->cantidad = dato;
 }
+/***************************************************************/
+//Funciones para la bola
 void insertarBola(PtrBola& lista, PtrBola nuevo) {
 	nuevo->siguiente = lista;
 	lista = nuevo;
@@ -430,12 +446,25 @@ void reboteBolaPared(PtrBola& lista, ALLEGRO_SAMPLE* efectoSonido) {
 	}
 }
 
+// revisa cantidad de bolas en pantalla
+int contarBolas(PtrBola& lista) {
+	PtrBola aux = lista;
+	int contador = 0;
+	while (aux != NULL) {
+		contador++;
+		aux = aux->siguiente;
+	}
+	return contador;
+}
+
+/***************************************************************/
+//Funciones para el comodin y los bloques
+//inicializan valores de comodin
 void insertarBloque(PtrBloque& lista, PtrBloque Nuevo) {
 	Nuevo->siguiente = lista;
 	lista = Nuevo;
 }
 
-//inicializan valores de comodin
 Comodin* crearComodin(int x, int y, int habilidad, float ancho, float alto, bool visibilidad) {
 
 	PtrComodin comodin = new Comodin;
@@ -1044,6 +1073,8 @@ bool revisarExistenciaBloques(PtrBloque& lista) {
 	return true; //si logra salir del while significa que no hay bloques existentes
 }
 
+/***************************************************************/
+// Funciones para el manejo de las vidas del jugador
 void crearSimboloVida(PtrVida& variableVidas, float x, float y, float alto, float ancho) {
 	variableVidas = new Vida;
 	variableVidas->cantidad = 3;
@@ -1099,16 +1130,7 @@ void iniciarVidas(int& variableVidas, PtrVida& vidas) {
 	vidas->cantidad = variableVidas;
 }
 
-// revisa cantidad de bolas en pantalla
-int contarBolas(PtrBola& lista) {
-	PtrBola aux = lista;
-	int contador = 0;
-	while (aux != NULL) {
-		contador++;
-		aux = aux->siguiente;
-	}
-	return contador;
-}
+
 
 //elimina bola espec�fica de lista
 void eliminarBolaEspecifica(PtrBola& lista, int n) {
