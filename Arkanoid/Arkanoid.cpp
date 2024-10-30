@@ -110,6 +110,7 @@ float x1MaxPts;
 float y1MaxPts;
 float x2MaxPts;
 float y2MaxPts;
+//Solitario
 unordered_map<int, Jugador> puntajes;
 int mejorPuntaje;
 vector<Jugador> mejores15Puntajes;
