@@ -22,3 +22,7 @@
 0 effes 0 0 0
 0 fes 0 0 0
 0 fe 0 0 00 gesgs 0 0 0
+40 rd 3 15 4
+40 fes 3 15 4
+40 guy 3 15 4
+40 fwa 3 15 4
