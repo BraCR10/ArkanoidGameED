@@ -321,8 +321,8 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int op
 	//Bloques
 	const float ANCHO_BLOQUE = AnchoMonitor / 24;
 	const float ALTO_BLOQUE = AltoMonitor / 19;
+
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
-	
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
 	//Contador de vidas
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
@@ -588,6 +588,7 @@ void destruirElementosGenerales() {
 	flagNuevoEnemigoActor = true;
 
 }
+
 void reiniciarContadoresGenerales() {
 	variableContadorPts = 0;
 	variableContadorPts2 = 0;
@@ -1789,7 +1790,7 @@ void main()
 
 						}
 						else if (nivel == 11) {
-							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas, contadorVidas);  // Iniciar el primer nivel player 2
+							nivel1(pantalla, AnchoMonitor, AltoMonitor, opcion, variableVidas2, contadorVidas2);  // Iniciar el primer nivel player 2
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1797,7 +1798,7 @@ void main()
 						}
 						else if (nivel == 22) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);// Iniciar el segundo nivel player 2
+							nivel2(pantalla, AnchoMonitor, AltoMonitor, variableVidas2, contadorVidas2);// Iniciar el segundo nivel player 2
 						}
 						else if (nivel == 3) {
 							vaciarColaEventos(colaEventosEnemigos);
@@ -1805,7 +1806,7 @@ void main()
 						}
 						else if (nivel == 33) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);  // Iniciar el tercer nivel player 2
+							nivel3(pantalla, AnchoMonitor, AltoMonitor, variableVidas2, contadorVidas2);  // Iniciar el tercer nivel player 2
 						}
 					}
 				}
