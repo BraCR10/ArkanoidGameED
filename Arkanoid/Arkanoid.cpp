@@ -93,6 +93,7 @@ ALLEGRO_FONT* fuenteOpcionesMenu = NULL;
 ALLEGRO_FONT* fuenteTituloMenu = NULL;
 ALLEGRO_FONT* fuenteTransicion = NULL;
 ALLEGRO_FONT* fuenteGane = NULL;
+ALLEGRO_FONT* fuenteGaneMultijugador = NULL;
 
 //Colores del nivel
 ALLEGRO_COLOR colorFondoMarcos = al_map_rgb(0, 0, 0);
@@ -456,6 +457,12 @@ void inicializarGane(int AnchoMonitor, int AltoMonitor, ALLEGRO_DISPLAY* pantall
 		al_destroy_display(pantalla);
 		return;
 	}
+	fuenteGaneMultijugador = al_load_ttf_font("Fuentes/ARLETA.ttf", AnchoMonitor / 30, 0); //fuente gane
+	if (!fuenteGaneMultijugador) {
+		al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la fuente", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_destroy_display(pantalla);
+		return;
+	}
 }
 
 void dibujarGameOver(int AnchoMonitor, int AltoMonitor) {
@@ -574,75 +581,175 @@ void reiniciarContadoresGenerales() {
 	contadorBolasPerdidas = 0;
 	contadorBolasRebotadas = 0;
 }
-void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, bool& cambioNivel, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas) {
-	if (marcadorVida != NULL) {
-		if (marcadorVida->cantidad <= 0) {
-			if (opcion == 1) {
-				if (jugador1 != NULL)GuardarPuntajesSolitario(jugador1);
 
-				imagenGameOver = al_load_bitmap("Imagenes/gameOver.png");
-				fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
-				if (!imagenGameOver) {
-					al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagen de game over", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-					al_destroy_display(pantalla);
-					return;
-				}
-				destruirElementosGenerales();
-				reiniciarContadoresGenerales();
-				destruirJugador(jugador1);
-				imagenEnemigo = NULL;
-				al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
-			}
-			else if (opcion == 2 || opcion == 3) {
-				cambioNivel = true;
-				if (nivel == 1) {
-					contVidas = 3;
-					eliminarListaBloque(listaEnlazadaBloques);
-					listaEnlazadaBloques = NULL;
-					nivel= 1;
-					return;
-				}
-				else if (nivel == 11) {
-					contVidas = 3;
-					eliminarListaBloque(listaEnlazadaBloques);
-					listaEnlazadaBloques = NULL;
-					nivel = 11;
-					return;
-				}
-				else if (nivel == 2) {
-					contVidas = 3;
-					eliminarListaBloque(listaEnlazadaBloques);
-					listaEnlazadaBloques = NULL;
-					nivel = 2;
-					return;
-				}
-				else if (nivel == 22) {
-					contVidas = 3;
-					eliminarListaBloque(listaEnlazadaBloques);
-					listaEnlazadaBloques = NULL;
-					nivel = 22;
-					return;
-				}
-				else if (nivel == 3) {
-					contVidas = 3;
-					eliminarListaBloque(listaEnlazadaBloques);
-					listaEnlazadaBloques = NULL;
-					nivel = 3;
-					return;
-				}
-				else if (nivel == 33) {
-					nivel = 33;
-					return;
-				}
-				
+void dibujarEmpate(ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMonitor) {
+	bool win = true;
+	int contadorParpadeo = 0;
+	bool mostrarTexto = true;
+	string mensaje = "¡EMPATE!";
 
-			}
+	const char* charMensaje = mensaje.c_str(); //conversion de string a char para utilizarlo en la funcion de dibujo
+
+	al_play_sample(sonidoVictoria, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	al_set_timer_count(timerWin, 0); //reiniciar timer
+	al_start_timer(timerWin);
+
+	while (win) {
+		ALLEGRO_EVENT eventoWin;
+		al_wait_for_event(colaEventosWin, &eventoWin);
+
+		// Dibujar imagen de fondo
+		al_draw_scaled_bitmap(imagenWin, 0, 0, al_get_bitmap_width(imagenWin), al_get_bitmap_height(imagenWin), 0, 0, AnchoMonitor, AltoMonitor, 0);
+
+		// Cambiar color en función del contador
+		ALLEGRO_COLOR colorTexto;
+		ALLEGRO_COLOR colorTexto2;
+		ALLEGRO_COLOR colorTexto3;
+		if (contadorParpadeo % 2 == 0) {
+			colorTexto = al_map_rgb(255, 255, 255);  // Blanco
+			colorTexto2 = al_map_rgb(255, 255, 255);  // Blanco
+			colorTexto3 = al_map_rgb(255, 255, 0);  // Amarillo
+		}
+		else {
+			colorTexto = al_map_rgb(140, 140, 140);  // Gris
+			colorTexto2 = al_map_rgb(255, 255, 0);  // Amarillo
+			colorTexto3 = al_map_rgb(255, 255, 255);  // Blanco
+		}
+
+		// Mostrar texto si la bandera de parpadeo está activada
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 2 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 6 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 3.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 4.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 2.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 5.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 3 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 2 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 6 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 3.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 4.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 2.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 5.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+		al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 3 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+		al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+
+		al_draw_text(fuenteGane, colorTexto, AnchoMonitor / 2, AltoMonitor / 2 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, charMensaje);
+
+		al_flip_display();
+
+		// Actualizar el parpadeo y el color cada segundo
+		if (eventoWin.type == ALLEGRO_EVENT_TIMER && eventoWin.timer.source == timerWin) {
+			mostrarTexto = !mostrarTexto;  // Alterna visibilidad para parpadeo
+			contadorParpadeo++;               // Cambia color cada segundo
+		}
+
+		if (al_get_timer_count(timerWin) >= 8) {
+			win = false;
 		}
 	}
 
+	al_stop_timer(timerWin);
+	GuardarPuntajesMultijugador(jugador1, jugador2);
+	destruirElementosGenerales();
+	reiniciarContadoresGenerales();
+	destruirJugador(jugador1);
+	destruirJugador(jugador2);
+	imagenEnemigo = NULL;
 }
 
-void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJugador jugador, ALLEGRO_EVENT_QUEUE* colaEventosWin, ALLEGRO_TIMER* timerWin, ALLEGRO_SAMPLE* sonidoVictoria) {
+void dibujarGaneMultijugador(PtrJugador jugador, PtrJugador jugador2, ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMonitor) {
+	int gane = revisarGanador(jugador, jugador2);
+	if (gane == 1 || gane ==2) {
+		bool win = true;
+		int contadorParpadeo = 0;
+		bool mostrarTexto = true;
+		string mensaje = "HA GANADO";
+		if (gane == 1)mensaje += jugador->nombre;
+				else mensaje += jugador2->nombre;
+
+		const char* charMensaje = mensaje.c_str(); //conversion de string a char para utilizarlo en la funcion de dibujo
+
+		al_play_sample(sonidoVictoria, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		al_set_timer_count(timerWin, 0); //reiniciar timer
+		al_start_timer(timerWin);
+
+		while (win) {
+			ALLEGRO_EVENT eventoWin;
+			al_wait_for_event(colaEventosWin, &eventoWin);
+
+			// Dibujar imagen de fondo
+			al_draw_scaled_bitmap(imagenWin, 0, 0, al_get_bitmap_width(imagenWin), al_get_bitmap_height(imagenWin), 0, 0, AnchoMonitor, AltoMonitor, 0);
+
+			// Cambiar color en función del contador
+			ALLEGRO_COLOR colorTexto;
+			ALLEGRO_COLOR colorTexto2;
+			ALLEGRO_COLOR colorTexto3;
+			if (contadorParpadeo % 2 == 0) {
+				colorTexto = al_map_rgb(255, 255, 255);  // Blanco
+				colorTexto2 = al_map_rgb(255, 255, 255);  // Blanco
+				colorTexto3 = al_map_rgb(255, 255, 0);  // Amarillo
+			}
+			else {
+				colorTexto = al_map_rgb(140, 140, 140);  // Gris
+				colorTexto2 = al_map_rgb(255, 255, 0);  // Amarillo
+				colorTexto3 = al_map_rgb(255, 255, 255);  // Blanco
+			}
+
+			// Mostrar texto si la bandera de parpadeo está activada
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 1.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 6.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 2 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 6 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 3.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 4.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 2.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 5.5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 3 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 5 / 8, AltoMonitor / 3 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 1.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 6.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 2 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 6 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 3.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 4.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 2.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 5.5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+			al_draw_text(fuenteGane, colorTexto2, AnchoMonitor * 3 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "/");
+			al_draw_text(fuenteGane, colorTexto3, AnchoMonitor * 5 / 8, AltoMonitor / 1.5 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, "\\");
+
+			al_draw_text(fuenteGaneMultijugador, colorTexto, AnchoMonitor / 2, AltoMonitor / 2 - al_get_font_line_height(fuenteGane) / 2, ALLEGRO_ALIGN_CENTER, charMensaje);
+
+			al_flip_display();
+
+			// Actualizar el parpadeo y el color cada segundo
+			if (eventoWin.type == ALLEGRO_EVENT_TIMER && eventoWin.timer.source == timerWin) {
+				mostrarTexto = !mostrarTexto;  // Alterna visibilidad para parpadeo
+				contadorParpadeo++;               // Cambia color cada segundo
+			}
+
+			if (al_get_timer_count(timerWin) >= 8) {
+				win = false;
+			}
+		}
+
+		al_stop_timer(timerWin);
+		GuardarPuntajesMultijugador(jugador1, jugador2);
+		destruirElementosGenerales();
+		reiniciarContadoresGenerales();
+		destruirJugador(jugador1);
+		destruirJugador(jugador2);
+		imagenEnemigo = NULL;
+
+	}
+	else if (gane == 3) {
+		dibujarEmpate(sonidoVictoria, AnchoMonitor,AltoMonitor);	
+	}
+}
+
+void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJugador jugador, ALLEGRO_SAMPLE* sonidoVictoria) {
 
 	bool win = true;
 	int contadorParpadeo = 0;
@@ -666,12 +773,12 @@ void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJuga
 		if (contadorParpadeo % 2 == 0) {
 			colorTexto = al_map_rgb(255, 255, 255);  // Blanco
 			colorTexto2 = al_map_rgb(255, 255, 255);  // Blanco
-			colorTexto3 = al_map_rgb(255, 255, 0);
+			colorTexto3 = al_map_rgb(255, 255, 0);  // Amarillo
 		}
 		else {
 			colorTexto = al_map_rgb(140, 140, 140);  // Gris
-			colorTexto2 = al_map_rgb(255, 255, 0);
-			colorTexto3 = al_map_rgb(255, 255, 255);
+			colorTexto2 = al_map_rgb(255, 255, 0);  // Amarillo
+			colorTexto3 = al_map_rgb(255, 255, 255);  // Blanco
 		}
 
 		// Mostrar texto si la bandera de parpadeo está activada
@@ -713,6 +820,74 @@ void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJuga
 	GuardarPuntajesSolitario(jugador);
 	reiniciarContadoresGenerales();
 	destruirElementosGenerales();
+
+}
+
+void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, bool& cambioNivel, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas) {
+	if (marcadorVida != NULL) {
+		if (marcadorVida->cantidad <= 0) {
+			if (opcion == 1) {
+				if (jugador1 != NULL)GuardarPuntajesSolitario(jugador1);
+
+				imagenGameOver = al_load_bitmap("Imagenes/gameOver.png");
+				fuenteGameOver = al_load_ttf_font("Fuentes/ARLETA.ttf", 40, 0);
+				if (!imagenGameOver) {
+					al_show_native_message_box(NULL, "Ventana Emergente", "Error", "No se pudo cargar la imagen de game over", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+					al_destroy_display(pantalla);
+					return;
+				}
+				destruirElementosGenerales();
+				reiniciarContadoresGenerales();
+				destruirJugador(jugador1);
+				imagenEnemigo = NULL;
+				al_play_sample(sonidoGameOver, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, &sample_id_gameOver);
+			}
+			else if (opcion == 2 || opcion == 3) {
+				cambioNivel = true;
+				if (nivel == 1) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 1;
+					return;
+				}
+				else if (nivel == 11) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 11;
+					return;
+				}
+				else if (nivel == 2) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 2;
+					return;
+				}
+				else if (nivel == 22) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 22;
+					return;
+				}
+				else if (nivel == 3) {
+					contVidas = 3;
+					eliminarListaBloque(listaEnlazadaBloques);
+					listaEnlazadaBloques = NULL;
+					nivel = 3;
+					return;
+				}
+				else if (nivel == 33) {
+					nivel = 33;
+					return;//*******************************************************************
+				}
+
+
+			}
+		}
+	}
 
 }
 
@@ -1496,7 +1671,7 @@ void main()
 			strcpy_s(textoTransicion, "LEVEL 1");
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
-			al_set_timer_count(timerTransicion, 3);
+			al_set_timer_count(timerTransicion, 0);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1508,7 +1683,7 @@ void main()
 			obtenerNombresMultijugador(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
-			al_set_timer_count(timerTransicion, 3);
+			al_set_timer_count(timerTransicion, 0);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1520,7 +1695,7 @@ void main()
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
-			al_set_timer_count(timerTransicion, 3);
+			al_set_timer_count(timerTransicion, 0);
 			al_start_timer(timerTransicion);
 			juego = true;
 			break;
@@ -1686,19 +1861,19 @@ void main()
 									nivel = 2;
 									strcpy_s(textoTransicion, "LEVEL 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 3;
 									strcpy_s(textoTransicion, "LEVEL 3");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
 									al_clear_to_color(al_map_rgb(0, 0, 0));
-									dibujarGaneSolitario(AnchoMonitor, AltoMonitor, juego, jugador1,colaEventosWin,timerWin,sonidoVictoria); // se muestra pantalla de win
+									dibujarGaneSolitario(AnchoMonitor, AltoMonitor, juego, jugador1,sonidoVictoria); // se muestra pantalla de win
 									break;
 									
 								}
@@ -1717,45 +1892,43 @@ void main()
 									nivel = 11;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 11) {
 									nivel = 2;
 									strcpy_s(textoTransicion, "READY PLAYER 1");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 22;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion,0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 22) {
 									nivel = 3;
 									strcpy_s(textoTransicion, "READY PLAYER 1");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
 									nivel = 33;
 									strcpy_s(textoTransicion, "READY PLAYER 2");
 									transicion = true;
-									al_set_timer_count(timerTransicion, 3);
+									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 33) {
-									if (jugador1 != NULL && jugador2 != NULL)GuardarPuntajesMultijugador(jugador1, jugador2);
-									destruirElementosGenerales();
-									reiniciarContadoresGenerales();
-									destruirJugador(jugador1);
-									destruirJugador(jugador2);
-									imagenEnemigo = NULL;
-									juego = false; //falta pantalla final resultados
+									if (jugador1 != NULL && jugador2 != NULL){
+										juego = false;
+										dibujarGaneMultijugador(jugador1, jugador2, sonidoVictoria, AnchoMonitor, AltoMonitor); // se muestra pantalla de win
+										break;
+									}
 
 								}
 							}
