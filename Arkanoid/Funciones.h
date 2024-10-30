@@ -270,7 +270,7 @@ ALLEGRO_COLOR obtenerColorNegativo(ALLEGRO_COLOR colorOriginal) {
 
 	return colorNegativo;
 }
-
+		
 void crearMarco(PtrMarcador& marcador, int max, float x1, float y1, float x2, float y2, const char* titulo) {
 	marcador = new Marcador;
 	marcador->dato = max;
@@ -1131,8 +1131,6 @@ void iniciarVidas(int& variableVidas, PtrVida& vidas) {
 	vidas->cantidad = variableVidas;
 }
 
-
-
 //elimina bola espec�fica de lista
 void eliminarBolaEspecifica(PtrBola& lista, int n) {
 	if (n < 0) return; // Verifica si la posici�n es v�lida
@@ -1228,7 +1226,8 @@ void vaciarColaEventos(ALLEGRO_EVENT_QUEUE* colaEventos) {
 	while (al_get_next_event(colaEventos, &evento)) {
 	}
 }
-
+/***************************************************************/
+// Funciones para el manejo de los enemigos
 //revisa si la barra colisiona con un comodin
 void aplicarComodines(PtrBarra& barra, PtrBloque& lista, PtrBola& lista2, int& variableVidas, ALLEGRO_SAMPLE* efectoSonido, ALLEGRO_SAMPLE* efectoSonidoNegativo) {
 	PtrBola bola = lista2;
@@ -1494,7 +1493,8 @@ void destruirEnemigos(PtrEnemigo& lista) {
 	}
 	lista = NULL;
 }
-
+/***************************************************************/
+//Funciones para el manejo de los jugadores
 void CrearJugador(PtrJugador& jugador1, string nombre) {
 	jugador1 = new Jugador;
 	jugador1->nombre = nombre;
@@ -1600,7 +1600,21 @@ string obtenerNombreJugadorSolitario(ALLEGRO_DISPLAY* pantalla, ALLEGRO_FONT* fo
 	return nombre;
 }
 
-
+int revisarGanador(PtrJugador jugador, PtrJugador jugador2) {
+	if (jugador2 != NULL && jugador != NULL) {
+		if (jugador->puntaje > jugador2->puntaje) {
+			return 1; //jugador 1 ganó
+		}
+		else if (jugador->puntaje < jugador2->puntaje) {
+			return 2; //jugador 2 ganó
+		}
+		else if (jugador->puntaje == jugador2->puntaje) {
+			return 3; //empate
+		}
+	}
+}
+/***************************************************************/
+// Funciones para la maquina
 int tempCordenada=0;
 void moverBarraMaquina(PtrBola& primerBola,PtrBarra& barra) {
 	if (primerBola != NULL && barra != NULL) {
@@ -1618,16 +1632,3 @@ void moverBarraMaquina(PtrBola& primerBola,PtrBarra& barra) {
 
 }
 
-int revisarGanador(PtrJugador jugador, PtrJugador jugador2) {
-	if (jugador2 != NULL && jugador != NULL) {
-		if (jugador->puntaje > jugador2->puntaje) {
-			return 1; //jugador 1 ganó
-		}
-		else if (jugador->puntaje < jugador2->puntaje) {
-			return 2; //jugador 2 ganó
-		}
-		else if (jugador->puntaje == jugador2->puntaje) {
-			return 3; //empate
-		}
-	}
-}
