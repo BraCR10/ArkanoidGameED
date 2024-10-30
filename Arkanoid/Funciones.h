@@ -318,6 +318,9 @@ void setDatoMarco(PtrMarcador& marcador, int dato) {
 void setDatoVidas(PtrVida& marcador, int dato) {
 	marcador->cantidad = dato;
 }
+void eliminarMarco(PtrMarcador& marcador) {
+	delete (marcador);
+}
 /***************************************************************/
 //Funciones para la bola
 void insertarBola(PtrBola& lista, PtrBola nuevo) {
@@ -423,9 +426,7 @@ void moverBola(PtrBola lista, int velocidad) {
 	}
 }
 
-void eliminarMarco(PtrMarcador& marcador) {
-	delete (marcador);
-}
+
 
 void reboteBolaPared(PtrBola& lista, ALLEGRO_SAMPLE* efectoSonido) {
 	PtrBola bola = lista;

@@ -58,7 +58,7 @@ typedef struct Bola {
 	Bola* siguiente;
 	ALLEGRO_BITMAP* imagen;
 }*PtrBola;
-
+	
 //Estructura de comodin
 typedef struct Comodin {
 	int x;
