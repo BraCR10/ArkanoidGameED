@@ -324,18 +324,23 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int op
 
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
+
 	//Contador de vidas
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
 	if (nivel == 11 || nivel == 22 || nivel == 33) {
+
 		crearSimboloVida(contadorVidas2, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 		iniciarVidas(variableVidas2, contadorVidas2);
+
 	}
 	else {
+
 		crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 		iniciarVidas(variableVidas, contadorVidas);
+
 	}
 }
 
@@ -840,7 +845,7 @@ void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJuga
 
 }
 
-void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, bool& cambioNivel, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas) {
+void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, bool& cambioNivel, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas, int AnchoMonitor, int AltoMonitor,ALLEGRO_SAMPLE* sonidoVictoria, bool& juego) {
 	if (marcadorVida != NULL) {
 		if (marcadorVida->cantidad <= 0) {
 			if (opcion == 1) {
@@ -898,7 +903,9 @@ void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEG
 				}
 				else if (nivel == 33) {
 					nivel = 33;
-					return;//*******************************************************************
+					juego = false;
+					dibujarGaneMultijugador(jugador1, jugador2, sonidoVictoria, AnchoMonitor, AltoMonitor); // se muestra pantalla de win
+					return;
 				}
 
 
@@ -1059,12 +1066,25 @@ void dibujarFondoNivel3(int AnchoMonitor, int AltoMonitor) {
 }
 
 void dibujarAyuda(int AnchoMonitor, int AltoMonitor) {
-	al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 8, ALLEGRO_ALIGN_CENTER, "Ayuda");
-	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 2.8, ALLEGRO_ALIGN_CENTER, "Movimiento de barra");
+	al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 25, ALLEGRO_ALIGN_CENTER, "Ayuda");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 1.7, AltoMonitor / 3, ALLEGRO_ALIGN_CENTER, "Movimiento de barra");
 	al_draw_scaled_bitmap(imagenFlechas,
 		0, 0, al_get_bitmap_width(imagenFlechas), al_get_bitmap_height(imagenFlechas),
-		AnchoMonitor / 2 - (AnchoMonitor / 5) / 2, AltoMonitor / 2.4, AnchoMonitor / 5, AltoMonitor / 10,
+		AnchoMonitor / 1.7 - (AnchoMonitor / 5) / 2, AltoMonitor / 2.4, AnchoMonitor / 5, AltoMonitor / 10,
 		0);
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 5, AltoMonitor /10, ALLEGRO_ALIGN_CENTER, "Comodines");
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 5, AltoMonitor / 5, ALLEGRO_ALIGN_CENTER, "Disminuir tamaño bola");
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 12, AltoMonitor /2.8, ALLEGRO_ALIGN_CENTER, "Quitar vida");
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 3.2, AltoMonitor / 2.8, ALLEGRO_ALIGN_CENTER, "Sumar vida");
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 12, AltoMonitor / 1.8, ALLEGRO_ALIGN_CENTER, "Bola extra");
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 3.2, AltoMonitor / 1.8, ALLEGRO_ALIGN_CENTER, "Ampliar barra");
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 1.15, AltoMonitor / 10, ALLEGRO_ALIGN_CENTER, "Enemigos");
+
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 1.4, ALLEGRO_ALIGN_CENTER, "Presione enter para volver al menú");
 }
 
@@ -1685,7 +1705,7 @@ void main()
 		{
 		case 1:
 			transicion = true;
-			strcpy_s(textoTransicion, "LEVEL 1");
+			strcpy_s(textoTransicion, "NIVEL 1");
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			al_set_timer_count(timerTransicion, 0);
@@ -1694,7 +1714,7 @@ void main()
 			break;
 		case 2:
 			transicion = true;
-			strcpy_s(textoTransicion, "READY PLAYER 1");
+			strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 			nombreJugador = " ";
 			nombreJugador2 = " ";
 			obtenerNombresMultijugador(pantalla, fuenteMarcadores, nombreJugador, nombreJugador2, AnchoMonitor, AltoMonitor);
@@ -1706,7 +1726,7 @@ void main()
 			break;
 		case 3:
 			transicion = true;
-			strcpy_s(textoTransicion, "READY PLAYER 1");
+			strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 			nombreJugador = " ";
 			nombreJugador2 = "Maquina";
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
@@ -1859,14 +1879,14 @@ void main()
 							setDatoMarco(marcoActualPts2, variableContadorPts2);
 							setDatoVidas(contadorVidas2, variableVidas2);
 							setDatosJugador(jugador2, variableContadorPts2, contadorBolasPerdidas, contadorBolasRebotadas);
-							verificadorGameOver(contadorVidas2, pantalla, sonidoGameOver, opcion, flagCambioNivelMultijugador, textoTransicion, transicion, timerTransicion, variableVidas2);
+							verificadorGameOver(contadorVidas2, pantalla, sonidoGameOver, opcion, flagCambioNivelMultijugador, textoTransicion, transicion, timerTransicion, variableVidas2,AnchoMonitor,AltoMonitor,sonidoVictoria,juego);
 						}
 						//Para jugador 1 O INDIVIDUAL
 						else {
 							setDatoMarco(marcoActualPts, variableContadorPts);
 							setDatoVidas(contadorVidas, variableVidas);
 							setDatosJugador(jugador1, variableContadorPts, contadorBolasPerdidas, contadorBolasRebotadas);
-							verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, flagCambioNivelMultijugador, textoTransicion, transicion, timerTransicion, variableVidas);
+							verificadorGameOver(contadorVidas, pantalla, sonidoGameOver, opcion, flagCambioNivelMultijugador, textoTransicion, transicion, timerTransicion, variableVidas, AnchoMonitor, AltoMonitor,sonidoVictoria, juego);
 						}
 
 						//Validacion de existencia de bloques y no game over, gano! 
@@ -1876,14 +1896,14 @@ void main()
 							if (opcion == 1) {//Modo individual
 								if (nivel == 1) {
 									nivel = 2;
-									strcpy_s(textoTransicion, "LEVEL 2");
+									strcpy_s(textoTransicion, "NIVEL 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 3;
-									strcpy_s(textoTransicion, "LEVEL 3");
+									strcpy_s(textoTransicion, "NIVEL 3");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
@@ -1907,35 +1927,35 @@ void main()
 							if (opcion == 2 || opcion == 3) {//Modo multijugador
 								if (nivel == 1) {
 									nivel = 11;
-									strcpy_s(textoTransicion, "READY PLAYER 2");
+									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 11) {
 									nivel = 2;
-									strcpy_s(textoTransicion, "READY PLAYER 1");
+									strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 2) {
 									nivel = 22;
-									strcpy_s(textoTransicion, "READY PLAYER 2");
+									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion,0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 22) {
 									nivel = 3;
-									strcpy_s(textoTransicion, "READY PLAYER 1");
+									strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
 								}
 								else if (nivel == 3) {
 									nivel = 33;
-									strcpy_s(textoTransicion, "READY PLAYER 2");
+									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
 									al_start_timer(timerTransicion);
