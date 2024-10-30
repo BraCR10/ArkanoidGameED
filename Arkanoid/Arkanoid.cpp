@@ -339,7 +339,7 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int op
 	}
 }
 
-void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int& variablesVidas, PtrVida& contadorVidas) {
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -375,12 +375,17 @@ void nivel2(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
-	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
-
-	iniciarVidas(variableVidas, contadorVidas);
+	if (nivel == 11 || nivel == 22 || nivel == 33) {
+		crearSimboloVida(contadorVidas2, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+		iniciarVidas(variableVidas2, contadorVidas2);
+	}
+	else {
+		crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+		iniciarVidas(variableVidas, contadorVidas);
+	}
 }
 
-void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
+void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int& variablesVidas, PtrVida& contadorVidas) {
 	imagenParedHorizontal = al_load_bitmap("Imagenes/paredDemoHorizontal.png");
 	imagenParedVertical = al_load_bitmap("Imagenes/paredDemoVertical.png");
 	imagenBola = al_load_bitmap("Imagenes/bola.png");
@@ -415,9 +420,14 @@ void nivel3(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor) {
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
-	crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
-
-	iniciarVidas(variableVidas, contadorVidas);
+	if (nivel == 11 || nivel == 22 || nivel == 33) {
+		crearSimboloVida(contadorVidas2, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+		iniciarVidas(variableVidas2, contadorVidas2);
+	}
+	else {
+		crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
+		iniciarVidas(variableVidas, contadorVidas);
+	}
 
 }
 
@@ -553,6 +563,9 @@ void destruirElementosGenerales() {
 	eliminarMarco(marcoActualPts);
 	marcoActualPts = NULL;
 
+	eliminarMarco(marcoActualPts2);
+	marcoActualPts2 = NULL;
+
 	eliminarListaBloque(listaEnlazadaBloques);
 	listaEnlazadaBloques = NULL;
 
@@ -561,6 +574,9 @@ void destruirElementosGenerales() {
 
 	eliminarVida(contadorVidas);
 	contadorVidas = NULL;
+
+	eliminarVida(contadorVidas2);
+	contadorVidas2 = NULL;
 
 	eliminarMarco(NivelLabel);
 	NivelLabel = NULL;
@@ -571,18 +587,18 @@ void destruirElementosGenerales() {
 	enemigoActual = NULL;
 	flagNuevoEnemigoActor = true;
 
-	eliminarVida(contadorVidas); //se elimina aparte porque se mantiene durante todo el juego
-	contadorVidas = NULL;
 }
 void reiniciarContadoresGenerales() {
 	variableContadorPts = 0;
+	variableContadorPts2 = 0;
 	variableVidas = 3;
+	variableVidas2 = 3;
 	nivel = 1;
 	contadorBolasPerdidas = 0;
 	contadorBolasRebotadas = 0;
 }
 
-void dibujarEmpate(ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMonitor) {
+void dibujarEmpate(ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMonitor, PtrJugador& jugador, PtrJugador& jugador2) {
 	bool win = true;
 	int contadorParpadeo = 0;
 	bool mostrarTexto = true;
@@ -659,7 +675,7 @@ void dibujarEmpate(ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMon
 	imagenEnemigo = NULL;
 }
 
-void dibujarGaneMultijugador(PtrJugador jugador, PtrJugador jugador2, ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMonitor) {
+void dibujarGaneMultijugador(PtrJugador& jugador, PtrJugador& jugador2, ALLEGRO_SAMPLE* sonidoVictoria, int AnchoMonitor, int AltoMonitor) {
 	int gane = revisarGanador(jugador, jugador2);
 	if (gane == 1 || gane ==2) {
 		bool win = true;
@@ -745,7 +761,7 @@ void dibujarGaneMultijugador(PtrJugador jugador, PtrJugador jugador2, ALLEGRO_SA
 
 	}
 	else if (gane == 3) {
-		dibujarEmpate(sonidoVictoria, AnchoMonitor,AltoMonitor);	
+		dibujarEmpate(sonidoVictoria, AnchoMonitor,AltoMonitor, jugador, jugador2);	
 	}
 }
 
@@ -1636,7 +1652,7 @@ void main()
 		return;
 	}
 	
-	inicializarGane( AnchoMonitor, AltoMonitor, pantalla); //se inicializa elementos de la pantalla de gane para evitar retardos en su llamada
+	inicializarGane( AnchoMonitor, AltoMonitor, pantalla); //se inicializa elementos de las pantallas de gane para evitar retardos en sus llamadas
 	inicializarGeneral(); //se inicializa todos los timers y colas de eventos del juego
 
 	//Inicio de timers
@@ -1760,11 +1776,11 @@ void main()
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel
+							nivel2(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);  // Iniciar el segundo nivel
 						}
 						else if (nivel == 3) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel
+							nivel3(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);  // Iniciar el tercer nivel
 						}
 					}
 					else if (opcion == 2 || opcion==3) { //modo de juego jugador vs jugador
@@ -1777,19 +1793,19 @@ void main()
 						}
 						else if (nivel == 2) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el segundo nivel player 1
+							nivel2(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);  // Iniciar el segundo nivel player 1
 						}
 						else if (nivel == 22) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel2(pantalla, AnchoMonitor, AltoMonitor);// Iniciar el segundo nivel player 2
+							nivel2(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);// Iniciar el segundo nivel player 2
 						}
 						else if (nivel == 3) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel player 1
+							nivel3(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);  // Iniciar el tercer nivel player 1
 						}
 						else if (nivel == 33) {
 							vaciarColaEventos(colaEventosEnemigos);
-							nivel3(pantalla, AnchoMonitor, AltoMonitor);  // Iniciar el tercer nivel player 2
+							nivel3(pantalla, AnchoMonitor, AltoMonitor, variableVidas, contadorVidas);  // Iniciar el tercer nivel player 2
 						}
 					}
 				}

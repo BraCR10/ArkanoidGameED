@@ -447,19 +447,19 @@ Comodin* crearComodin(int x, int y, int habilidad, float ancho, float alto, bool
 	comodin->visibilidad = visibilidad;
 	switch (habilidad) {
 	case 0:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); //cambiar imagen B
+		comodin->imagen = al_load_bitmap("Imagenes/comodin.png"); 
 		break;
 	case 1:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin2.png"); //cambiar imagen P
+		comodin->imagen = al_load_bitmap("Imagenes/comodin2.png"); 
 		break;
 	case 2:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin3.png"); //cambiar imagen E
+		comodin->imagen = al_load_bitmap("Imagenes/comodin3.png"); 
 		break;
 	case 3:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin4.png"); //cambiar imagen V
+		comodin->imagen = al_load_bitmap("Imagenes/comodin4.png"); 
 		break;
 	case 4:
-		comodin->imagen = al_load_bitmap("Imagenes/comodin5.png"); //cambiar imagen X
+		comodin->imagen = al_load_bitmap("Imagenes/comodin5.png"); 
 		break;
 	case 5: //no tiene comodin
 		comodin->imagen = NULL;
@@ -487,7 +487,7 @@ int generarHabilidad(int nivel) {
 	int a;
 	while (cont != nivel) {
 		a = 1 + rand() % 100;
-		if (a % 97 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 97: 1%
+		if (a % 89 == 0) {//probabilidad de que un n�m del 1 al 100 sea divisible por 89: 1%
 			return 0; //ampliar barra
 		}
 		if (a % 45 == 0) { //probabilidad de que un n�m del 1 al 100 sea divisible por 45: 2%
@@ -518,9 +518,11 @@ void crearBloquesPrimerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
 			crearBloque(lista, ubicadorX, ubicadorY, comodin, imagenBloqueCafe, anchoBloque, altoBloque);
 			ubicadorX += anchoBloque;
+			break;
 			n++;
 
 		}
+		break;
 		ubicadorY += altoBloque;
 		ubicadorX = anchoMonitor / 4;
 		while (n > 11 && n < 24) {
@@ -586,7 +588,6 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 	int habilidad = 0;
 
 	while (n < 89) {
-		break;
 		while (n < 4) {
 			habilidad = generarHabilidad(2);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
@@ -786,7 +787,6 @@ void crearBloquesTercerNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP* 
 	int habilidad = 0;
 
 	while (n < 67) {
-		break;
 		while (n < 11) {
 			habilidad = generarHabilidad(3);
 			Comodin* comodin = crearComodin(ubicadorX + anchoBloque / 2, ubicadorY, habilidad, anchoBloque / 2.5, altoBloque / 2.2, false);
