@@ -50,6 +50,13 @@ ALLEGRO_BITMAP* imagenFondoNivel3 = NULL;
 ALLEGRO_BITMAP* imagenFondoGeneral = NULL;
 ALLEGRO_BITMAP* imagenFlechas = NULL;
 ALLEGRO_BITMAP* imagenWin = NULL;
+ALLEGRO_BITMAP* imagenComodinAyuda = NULL;
+ALLEGRO_BITMAP* imagenComodinAyuda2 = NULL;
+ALLEGRO_BITMAP* imagenComodinAyuda3 = NULL;
+ALLEGRO_BITMAP* imagenComodinAyuda4 = NULL;
+ALLEGRO_BITMAP* imagenComodinAyuda5 = NULL;
+ALLEGRO_BITMAP* imagenEnemigoAyuda = NULL;
+ALLEGRO_BITMAP* imagenEnemigoAyuda2 = NULL;
 
 // Crear la lista enlazada de paredes para el marco
 PtrPared listaEnlazadaParedes = NULL;
@@ -1066,7 +1073,7 @@ void dibujarFondoNivel3(int AnchoMonitor, int AltoMonitor) {
 	);
 }
 
-void dibujarAyuda(int AnchoMonitor, int AltoMonitor) {
+void dibujarAyuda(int AnchoMonitor, int AltoMonitor, ALLEGRO_BITMAP *imagenComodinAyuda, ALLEGRO_BITMAP* imagenComodinAyuda2, ALLEGRO_BITMAP* imagenComodinAyuda3, ALLEGRO_BITMAP* imagenComodinAyuda4, ALLEGRO_BITMAP* imagenComodinAyuda5, ALLEGRO_BITMAP* imagenEnemigoAyuda, ALLEGRO_BITMAP* imagenEnemigoAyuda2) {
 	al_draw_text(fuenteTransicion, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 25, ALLEGRO_ALIGN_CENTER, "Ayuda");
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 1.7, AltoMonitor / 3, ALLEGRO_ALIGN_CENTER, "Movimiento de barra");
 	al_draw_scaled_bitmap(imagenFlechas,
@@ -1076,17 +1083,51 @@ void dibujarAyuda(int AnchoMonitor, int AltoMonitor) {
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 5, AltoMonitor /10, ALLEGRO_ALIGN_CENTER, "Comodines");
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 5, AltoMonitor / 5, ALLEGRO_ALIGN_CENTER, "Disminuir tamaño bola");
 
+	al_draw_scaled_bitmap(imagenComodinAyuda2,
+		0, 0, al_get_bitmap_width(imagenComodinAyuda2), al_get_bitmap_height(imagenComodinAyuda2),
+		AnchoMonitor / 5 - (AnchoMonitor / 9) / 2, AltoMonitor / 4.2, AnchoMonitor / 9, AltoMonitor / 11,
+		0);
+
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 12, AltoMonitor /2.8, ALLEGRO_ALIGN_CENTER, "Quitar vida");
 
-	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 3.2, AltoMonitor / 2.8, ALLEGRO_ALIGN_CENTER, "Sumar vida");
+	al_draw_scaled_bitmap(imagenComodinAyuda4,
+		0, 0, al_get_bitmap_width(imagenComodinAyuda4), al_get_bitmap_height(imagenComodinAyuda4),
+		AnchoMonitor / 12 - (AnchoMonitor / 9) / 2, AltoMonitor / 2.4, AnchoMonitor / 9, AltoMonitor / 11,
+		0);
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 3.2, AltoMonitor / 2.8, ALLEGRO_ALIGN_CENTER, "Vida extra");
+
+	al_draw_scaled_bitmap(imagenComodinAyuda3,
+		0, 0, al_get_bitmap_width(imagenComodinAyuda3), al_get_bitmap_height(imagenComodinAyuda3),
+		AnchoMonitor / 3.2 - (AnchoMonitor / 9) / 2, AltoMonitor / 2.4, AnchoMonitor / 9, AltoMonitor / 11,
+		0);
 
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 12, AltoMonitor / 1.8, ALLEGRO_ALIGN_CENTER, "Bola extra");
 
+	al_draw_scaled_bitmap(imagenComodinAyuda5,
+		0, 0, al_get_bitmap_width(imagenComodinAyuda5), al_get_bitmap_height(imagenComodinAyuda5),
+		AnchoMonitor / 12 - (AnchoMonitor / 9) / 2, AltoMonitor / 1.67, AnchoMonitor / 9, AltoMonitor / 11,
+		0);
+
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 3.2, AltoMonitor / 1.8, ALLEGRO_ALIGN_CENTER, "Ampliar barra");
+
+	al_draw_scaled_bitmap(imagenComodinAyuda,
+		0, 0, al_get_bitmap_width(imagenComodinAyuda), al_get_bitmap_height(imagenComodinAyuda),
+		AnchoMonitor / 3.2 - (AnchoMonitor / 9) / 2, AltoMonitor / 1.67, AnchoMonitor / 9, AltoMonitor / 11,
+		0);
 
 	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 1.15, AltoMonitor / 10, ALLEGRO_ALIGN_CENTER, "Enemigos");
 
-	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 1.4, ALLEGRO_ALIGN_CENTER, "Presione enter para volver al menú");
+	al_draw_scaled_bitmap(imagenEnemigoAyuda,
+		0, 0, al_get_bitmap_width(imagenEnemigoAyuda), al_get_bitmap_height(imagenEnemigoAyuda),
+		AnchoMonitor / 1.15 - (AnchoMonitor / 6.5) / 2, AltoMonitor / 5, AnchoMonitor / 6.5, AltoMonitor / 7,
+		0);
+	al_draw_scaled_bitmap(imagenEnemigoAyuda2,
+		0, 0, al_get_bitmap_width(imagenEnemigoAyuda2), al_get_bitmap_height(imagenEnemigoAyuda2),
+		AnchoMonitor / 1.15 - (AnchoMonitor / 6.5) / 2, AltoMonitor / 2, AnchoMonitor / 6.5, AltoMonitor / 7,
+		0);
+
+	al_draw_text(fuenteOpcionesMenu, al_map_rgb(255, 255, 255), AnchoMonitor / 2, AltoMonitor / 1.35, ALLEGRO_ALIGN_CENTER, "Presione enter para volver al menú");
 }
 
 int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, ALLEGRO_SAMPLE* musicamenu) {
@@ -1135,6 +1176,14 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 		return 0;
 	}
 
+	imagenComodinAyuda = al_load_bitmap("Imagenes/comodin.png");
+	imagenComodinAyuda2 = al_load_bitmap("Imagenes/comodin2.png");
+	imagenComodinAyuda3 = al_load_bitmap("Imagenes/comodin3.png");
+	imagenComodinAyuda4 = al_load_bitmap("Imagenes/comodin4.png");
+	imagenComodinAyuda5 = al_load_bitmap("Imagenes/comodin5.png");
+	imagenEnemigoAyuda = al_load_bitmap("Imagenes/enemigoAyuda.png");
+	imagenEnemigoAyuda2 = al_load_bitmap("Imagenes/enemigoAyuda2.png");
+
 	ALLEGRO_SAMPLE_ID sample_id_menu; //declaracion de variable para reproducir musica
 	al_play_sample(musicamenu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &sample_id_menu); //reproduce la musica
 
@@ -1150,7 +1199,7 @@ int menuInicial(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, AL
 
 		if (opcion != 4)
 			dibujarMenu(pantalla, AnchoMonitor, AltoMonitor);
-		else dibujarAyuda(AnchoMonitor, AltoMonitor);
+		else dibujarAyuda(AnchoMonitor, AltoMonitor, imagenComodinAyuda, imagenComodinAyuda2, imagenComodinAyuda3, imagenComodinAyuda4, imagenComodinAyuda5, imagenEnemigoAyuda, imagenEnemigoAyuda2);
 
 		al_flip_display();
 		ALLEGRO_EVENT evento;
@@ -2086,6 +2135,13 @@ void main()
 	al_destroy_bitmap(imagenWin);
 	al_destroy_font(fuenteGane);
 	al_destroy_sample(sonidoVictoria);
+	al_destroy_bitmap(imagenComodinAyuda);
+	al_destroy_bitmap(imagenComodinAyuda2);
+	al_destroy_bitmap(imagenComodinAyuda3);
+	al_destroy_bitmap(imagenComodinAyuda4);
+	al_destroy_bitmap(imagenComodinAyuda5);
+	al_destroy_bitmap(imagenEnemigoAyuda);
+	al_destroy_bitmap(imagenEnemigoAyuda2);
 }
 
 
