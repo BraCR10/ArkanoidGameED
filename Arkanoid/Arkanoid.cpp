@@ -1764,6 +1764,8 @@ void main()
 			break;
 		case 2:
 			transicion = true;
+			destruirElementosGenerales();
+			reiniciarContadoresGenerales();
 			strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 			nombreJugador = " ";
 			nombreJugador2 = " ";
@@ -1776,9 +1778,11 @@ void main()
 			break;
 		case 3:
 			transicion = true;
+			destruirElementosGenerales();
+			reiniciarContadoresGenerales();
 			strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 			nombreJugador = " ";
-			nombreJugador2 = "Maquina";
+			nombreJugador2 = " Maquina";
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
 			CrearJugador(jugador2, nombreJugador2);
@@ -1971,12 +1975,18 @@ void main()
 							}
 						}
 						//Valiacion multijugador quedan bloques
-						// Paso entere niveles y panatalla final
+						// Paso entre niveles y panatalla final
 						if ( flagCambioNivelMultijugador) {
 							//Manejo de niveles
 							if (opcion == 2 || opcion == 3) {//Modo multijugador
 								if (nivel == 1) {
 									nivel = 11;
+									//se verifica que se reinicien las vidas de los jugadores durante cada turno
+									eliminarVida(contadorVidas);
+									contadorVidas = NULL;
+									eliminarVida(contadorVidas2);
+									contadorVidas2 = NULL;
+
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
@@ -1984,6 +1994,12 @@ void main()
 								}
 								else if (nivel == 11) {
 									nivel = 2;
+									//se verifica que se reinicien las vidas de los jugadores durante cada turno
+									eliminarVida(contadorVidas);
+									contadorVidas = NULL;
+									eliminarVida(contadorVidas2);
+									contadorVidas2 = NULL;
+
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
@@ -1991,6 +2007,12 @@ void main()
 								}
 								else if (nivel == 2) {
 									nivel = 22;
+									//se verifica que se reinicien las vidas de los jugadores durante cada turno
+									eliminarVida(contadorVidas);
+									contadorVidas = NULL;
+									eliminarVida(contadorVidas2);
+									contadorVidas2 = NULL;
+
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion,0);
@@ -1998,6 +2020,12 @@ void main()
 								}
 								else if (nivel == 22) {
 									nivel = 3;
+									//se verifica que se reinicien las vidas de los jugadores durante cada turno
+									eliminarVida(contadorVidas);
+									contadorVidas = NULL;
+									eliminarVida(contadorVidas2);
+									contadorVidas2 = NULL;
+
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
@@ -2005,6 +2033,12 @@ void main()
 								}
 								else if (nivel == 3) {
 									nivel = 33;
+									//se verifica que se reinicien las vidas de los jugadores durante cada turno
+									eliminarVida(contadorVidas);
+									contadorVidas = NULL;
+									eliminarVida(contadorVidas2);
+									contadorVidas2 = NULL;
+
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
@@ -2032,7 +2066,7 @@ void main()
 				}
 			}
 			
-			if (imagenGameOver == NULL) {//Loguica de enemigos
+			if (imagenGameOver == NULL) {//Logica de enemigos
 				ALLEGRO_EVENT eventoEnemigo;
 				if (imagenEnemigo != NULL) {
 					while (al_get_next_event(colaEventosEnemigos, &eventoEnemigo)) {

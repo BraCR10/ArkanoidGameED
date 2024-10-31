@@ -74,7 +74,7 @@ typedef struct Comodin {
 typedef struct Bloque {
 	int x;
 	int y;
-	Comodin* comodin; // 5 si no posee comodin
+	Comodin* comodin;
 	float ancho;
 	float alto;
 	bool estadoExistencia;
