@@ -1982,11 +1982,8 @@ void main()
 								if (nivel == 1) {
 									nivel = 11;
 									//se verifica que se reinicien las vidas de los jugadores durante cada turno
-									eliminarVida(contadorVidas);
-									contadorVidas = NULL;
-									eliminarVida(contadorVidas2);
-									contadorVidas2 = NULL;
-
+									variableVidas = 3;
+									variableVidas2 = 3;
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
 									al_set_timer_count(timerTransicion, 0);
@@ -1995,10 +1992,8 @@ void main()
 								else if (nivel == 11) {
 									nivel = 2;
 									//se verifica que se reinicien las vidas de los jugadores durante cada turno
-									eliminarVida(contadorVidas);
-									contadorVidas = NULL;
-									eliminarVida(contadorVidas2);
-									contadorVidas2 = NULL;
+									variableVidas = 3;
+									variableVidas2 = 3;
 
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 									transicion = true;
@@ -2008,10 +2003,8 @@ void main()
 								else if (nivel == 2) {
 									nivel = 22;
 									//se verifica que se reinicien las vidas de los jugadores durante cada turno
-									eliminarVida(contadorVidas);
-									contadorVidas = NULL;
-									eliminarVida(contadorVidas2);
-									contadorVidas2 = NULL;
+									variableVidas = 3;
+									variableVidas2 = 3;
 
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
@@ -2021,10 +2014,8 @@ void main()
 								else if (nivel == 22) {
 									nivel = 3;
 									//se verifica que se reinicien las vidas de los jugadores durante cada turno
-									eliminarVida(contadorVidas);
-									contadorVidas = NULL;
-									eliminarVida(contadorVidas2);
-									contadorVidas2 = NULL;
+									variableVidas = 3;
+									variableVidas2 = 3;
 
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 1");
 									transicion = true;
@@ -2034,10 +2025,8 @@ void main()
 								else if (nivel == 3) {
 									nivel = 33;
 									//se verifica que se reinicien las vidas de los jugadores durante cada turno
-									eliminarVida(contadorVidas);
-									contadorVidas = NULL;
-									eliminarVida(contadorVidas2);
-									contadorVidas2 = NULL;
+									variableVidas = 3;
+									variableVidas2 = 3;
 
 									strcpy_s(textoTransicion, "PREPARADO JUGADOR 2");
 									transicion = true;
