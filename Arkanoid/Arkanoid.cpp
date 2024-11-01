@@ -332,23 +332,18 @@ void nivel1(ALLEGRO_DISPLAY* pantalla, int AnchoMonitor, int AltoMonitor, int op
 
 	crearBloquesPrimerNivel(AnchoMonitor, AltoMonitor, imagenBloqueRojo, imagenBloqueAmarillo, imagenBloqueCeleste, imagenBloqueVerde, imagenBloqueNaranja, imagenBloqueCafe, imagenBloqueRosado, listaEnlazadaBloques, ANCHO_BLOQUE, ALTO_BLOQUE);
 	cargarElementoGenerales(pantalla, AnchoMonitor, AltoMonitor);
-
 	//Contador de vidas
 	x1ContadorVida = AnchoMonitor / 4 - AnchoMonitor / 40 * 8;
 	y1ContadorVida = AltoMonitor / 4 + (AltoMonitor / 7) * 2;
 	altoVida = (AltoMonitor / 4 + AltoMonitor / 7) - (AltoMonitor / 4);
 	anchoVida = (AnchoMonitor / 4 - (AnchoMonitor / 40) * 4) - (AnchoMonitor / 4 - (AnchoMonitor / 40) * 8);
 	if (nivel == 11 || nivel == 22 || nivel == 33) {
-
 		crearSimboloVida(contadorVidas2, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 		iniciarVidas(variableVidas2, contadorVidas2);
-
 	}
 	else {
-
 		crearSimboloVida(contadorVidas, x1ContadorVida, y1ContadorVida, altoVida, anchoVida);
 		iniciarVidas(variableVidas, contadorVidas);
-
 	}
 }
 
@@ -764,7 +759,6 @@ void dibujarGaneMultijugador(PtrJugador& jugador, PtrJugador& jugador2, ALLEGRO_
 				win = false;
 			}
 		}
-
 		al_stop_timer(timerWin);
 		GuardarPuntajesMultijugador(jugador1, jugador2);
 		destruirElementosGenerales();
@@ -850,7 +844,7 @@ void dibujarGaneSolitario(int AnchoMonitor, int AltoMonitor, bool& juego,PtrJuga
 	GuardarPuntajesSolitario(jugador);
 	reiniciarContadoresGenerales();
 	destruirElementosGenerales();
-
+	destruirJugador(jugador1);
 }
 
 void verificadorGameOver(PtrVida& marcadorVida, ALLEGRO_DISPLAY* pantalla, ALLEGRO_SAMPLE* sonidoGameOver, int opcion, bool& cambioNivel, char* textoTransicion, bool& transicion, ALLEGRO_TIMER* timerTransicion, int& contVidas, int AnchoMonitor, int AltoMonitor,ALLEGRO_SAMPLE* sonidoVictoria, bool& juego) {
@@ -1755,6 +1749,8 @@ void main()
 		{
 		case 1:
 			transicion = true;
+			destruirElementosGenerales();
+			reiniciarContadoresGenerales();
 			strcpy_s(textoTransicion, "NIVEL 1");
 			nombreJugador = obtenerNombreJugadorSolitario(pantalla, fuenteMarcadores, AnchoMonitor, AltoMonitor);
 			CrearJugador(jugador1, nombreJugador);
@@ -1945,7 +1941,6 @@ void main()
 
 						//Validacion de existencia de bloques y no game over, gano! 
 						if (revisarExistenciaBloques(listaEnlazadaBloques) && imagenGameOver == NULL) {
-
 							destruirElementosGenerales();
 							if (opcion == 1) {//Modo individual
 								if (nivel == 1) {
@@ -2037,6 +2032,7 @@ void main()
 									if (jugador1 != NULL && jugador2 != NULL){
 										juego = false;
 										dibujarGaneMultijugador(jugador1, jugador2, sonidoVictoria, AnchoMonitor, AltoMonitor); // se muestra pantalla de win
+										flagCambioNivelMultijugador = false;
 										break;
 									}
 

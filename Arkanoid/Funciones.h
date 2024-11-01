@@ -426,8 +426,6 @@ void moverBola(PtrBola lista, int velocidad) {
 	}
 }
 
-
-
 void reboteBolaPared(PtrBola& lista, ALLEGRO_SAMPLE* efectoSonido) {
 	PtrBola bola = lista;
 	while (bola != NULL) {
@@ -511,7 +509,7 @@ void crearBloque(PtrBloque& lista, int x, int y, Comodin* comodin, ALLEGRO_BITMA
 	insertarBloque(lista, bloque);
 }
 
-// se encargar de generar aleatoriamente las habilidades
+// se encarga de generar aleatoriamente las habilidades
 int generarHabilidad(int nivel) {
 	int cont = 0;
 	int a;
@@ -625,7 +623,6 @@ void crearBloquesSegundoNivel(int anchoMonitor, int altoMonitor, ALLEGRO_BITMAP*
 			n++;
 			;
 		}
-
 		n++;
 		ubicadorX += anchoBloque * 2;
 		while (n > 3 && n < 9) {
