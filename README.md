@@ -1,6 +1,7 @@
 # 🕹️ Juego de Arkanoid en C++  
+Este juego fue desarrollado como un proyecto del curso de estructuras de datos en el Instituto Tecnológico de Costa Rica (TEC).
 
-Este proyecto es una versión mejorada del clásico **Arkanoid**, desarrollada en **C++** utilizando la biblioteca **Allegro**. Está diseñado para ofrecer una experiencia divertida y desafiante, incorporando nuevos elementos y mecánicas, así como la posibilidad de aprender y aplicar estructuras de datos simples como colas, pilas y listas enlazadas.  
+Es una versión mejorada del clásico **Arkanoid**, desarrollada en **C++** utilizando la biblioteca **Allegro**. Está diseñado para ofrecer una experiencia divertida y desafiante, incorporando nuevos elementos y mecánicas, así como la posibilidad de aprender y aplicar estructuras de datos simples como colas, pilas y listas enlazadas.  
 
 ---
 
